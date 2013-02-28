@@ -1,0 +1,81 @@
+<div class="sa_table">
+<table id="index">
+  {% if sa_crud %}
+  <tr>
+  {% for col in sa_crud['col'] %}
+    <th>
+      {{ col.name }}
+    </th>
+  {% endfor %}
+  <th>actions</th>
+  </tr>
+  <tr>
+    {% set obj=sa_crud['obj'] %}
+    {% for col in sa_crud['col'] %}
+    <td>
+      {{ obj.__getattribute__(col.name) }}
+    </td>
+    {% endfor %}
+    <td>
+      <!--delete-->
+      <div class="inline">
+      <form action="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
+            id=obj[sa_crud['pk']]) }}" 
+            method='POST'>
+        <input type="submit" value="delete">
+      </form>
+      </div>
+      <!--edit-->
+      <div class="inline">
+      <form action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
+            id=obj[sa_crud['pk']]) }}" 
+            method='POST'>
+        <input type="submit" value="edit">
+      </form>
+      </div>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td>There are no open objects</td></tr>
+  {% endif %}
+</table>
+<!--relations-->
+{% for rel in sa_crud['rel'] %}
+{% if rel[1] %}
+<h1>{{ rel[0] }}</h1>
+<table>
+  <tr>
+    {% for col in rel[1][0].__table__.columns %}
+    <th>{{ col.name }}</th>
+    {% endfor %}
+    <th>actions</th>
+  </tr>
+  {% for obj in rel[1] %}
+  <tr>
+    {% for col in rel[1][0].__table__.columns %}
+    <td>{{ obj.__getattribute__(col.name) }}</td>
+    {% endfor %}
+    <td>
+      <!--delete-->
+      <div class="inline">
+      <form action="{{ request.route_url('sa_delete', table=obj.__tablename__,
+            id=obj.__getattribute__(obj.__mapper__.primary_key[0].name)) }}" 
+            method='POST'>
+        <input type="submit" value="delete">
+      </form>
+      </div>
+      <!--edit-->
+      <div class="inline">
+      <form action="{{ request.route_url('sa_update', table=obj.__tablename__,
+            id=obj.__getattribute__(obj.__mapper__.primary_key[0].name)) }}" 
+            method='POST'>
+        <input type="submit" value="edit">
+      </form>
+      </div>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endfor %}
+</div>

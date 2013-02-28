@@ -1,0 +1,11 @@
+{% extends "/sacrud/base.jinja2" %}
+
+{% block sa_body %}
+<div class="sa_body">
+  <h1>Tables</h1>
+  {% for table in tables %}
+  {% set tname = table.__tablename__ %}
+  <a href="/sacrud/{{ tname }}">{{ tname }}</a><br /><hr />
+  {% endfor %}
+</div>
+{% endblock %}

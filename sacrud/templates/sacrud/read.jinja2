@@ -1,0 +1,8 @@
+{% extends "sacrud/base.jinja2" %}
+
+{% block sa_body %}
+<h1>view {{ sa_crud['table'].__tablename__ }}</h1>
+
+{% include 'sacrud/forms/read.jinja2' %}
+
+{% endblock %}

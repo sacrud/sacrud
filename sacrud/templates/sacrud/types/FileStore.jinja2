@@ -1,0 +1,10 @@
+<input type="file" 
+       class="sacrud_filestore" 
+       id="String"
+       name="{{ col.name }}"
+       value="{% if obj %}{{ getattr(obj, col.name) }}{% endif %}"
+       />
+
+{% if obj and getattr(obj, col.name) %}
+  <a href="{{ getattr(obj, col.name) }}">file</a>
+{% endif %}
