@@ -17,8 +17,6 @@ USAGE
 
 Add to your project config:
 
-.. code:: python
-
     # pyramid_jinja2 configuration
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("myprojectname:templates")
