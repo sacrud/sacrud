@@ -27,4 +27,4 @@ Add to your project config:
     settings = config.registry.settings
     settings['sacrud_models'] = (Model1, Model2, Model3)
 
-go to http://localhost:6541/sacrud (http://localhost:6541/sacrud) 
+go to http://localhost:6543/sacrud 
