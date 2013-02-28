@@ -63,7 +63,7 @@ setup(
                     'templates/types/*.jinja2']
     },
     description='SQLAlchemy CRUD.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     install_requires=[
         "sqlalchemy",
         "pyramid",
