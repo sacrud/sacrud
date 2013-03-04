@@ -6,6 +6,7 @@ import unittest
 from sacrud.test_models import User, Profile
 from action import get_relations
 from sqlalchemy.schema import MetaData
+from sacrud.action import get_pk, index
 
 
 class SacrudTests(unittest.TestCase):
@@ -26,7 +27,6 @@ class SacrudTests(unittest.TestCase):
         pass
 
     def test_relations(self):
-
         user = User(u'Vasya', u'Pupkin', u"123")
 
         self.session.add(user)
@@ -38,4 +38,19 @@ class SacrudTests(unittest.TestCase):
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(get_relations(user), [('profile', [profile,])])
- 
+
+    def test_get_pk(self):
+        pk = get_pk(User)
+        self.assertEqual("id", pk)
+
+    def test_index(self):
+        user = User(u'Vasya', u'Pupkin', u"123")
+
+        self.session.add(user)
+        self.session.commit()
+
+        result = index(self.session, User)
+        self.assertEqual(result['pk'], 'id')
+        self.assertEqual(result["prefix"], "crud")
+        self.assertEqual(result["table"], User)
+        self.assertEqual(result["row"], [user,])
