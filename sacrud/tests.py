@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 import unittest
 from sacrud.test_models import User, Profile
 from action import get_relations
-from sacrud.action import get_pk, index
+from sacrud.action import get_pk, index, create
+from pyramid.testing import DummyRequest
 
 
 class SacrudTests(unittest.TestCase):
@@ -54,3 +55,16 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(result["prefix"], "crud")
         self.assertEqual(result["table"], User)
         self.assertEqual(result["row"], [user, ])
+
+    def test_create(self):
+
+        request = DummyRequest()
+        request['name'] = ["Vasya", ]
+        request['fullname'] = ["Vasya Pupkin", ]
+        request['password'] = ["123", ]
+
+        create(self.session, User, request)
+        user = self.session.query(User).get(1)
+        self.assertEqual(user.name, "Vasya")
+        self.assertEqual(user.fullname, "Vasya Pupkin")
+        self.assertEqual(user.password, "123")
