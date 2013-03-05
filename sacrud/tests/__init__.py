@@ -4,12 +4,11 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import unittest
 from sacrud.tests.test_models import User, Profile, PHOTO_PATH
-from sacrud.action import get_relations, delete_fileobj, read
+from sacrud.action import get_relations, delete_fileobj, read, update
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
 from StringIO import StringIO
-import subprocess
-import shlex
+import glob
 import os
 
 
@@ -32,7 +31,10 @@ class SacrudTests(unittest.TestCase):
         Profile.metadata.create_all(engine)
 
     def tearDown(self):
-        pass
+        def clear_files():
+            for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
+                os.remove(os.path.join(PHOTO_PATH, filename))
+        clear_files()
 
     def test_relations(self):
         user = User(u'Vasya', u'Pupkin', u"123")
@@ -84,13 +86,8 @@ class SacrudTests(unittest.TestCase):
         request['phone'] = ["213123123", ]
         request['cv'] = ["Vasya Pupkin was born in Moscow", ]
         request['married'] = ["true", ]
-        request["salary"] = ["23.0"]
-        request["user_id"] = ["1"]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
+        request["salary"] = ["23.0", ]
+        request["user_id"] = ["1", ]
 
         create(self.session, Profile, request)
 
@@ -101,7 +98,6 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile.salary, float(23))
         self.assertEqual(profile.user.id, 1)
 
-        delete_fileobj(Profile, profile, 'photo')
         self.session.delete(profile)
         self.session.delete(user)
 
@@ -116,3 +112,40 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(result['prefix'], "crud")
         self.assertEqual(result['table'], User)
         self.assertEqual(result['rel'], [('profile', [])])
+
+    def test_update(self):
+
+        user = User(u'Vasya', u'Pupkin', u"123")
+        self.session.add(user)
+        self.session.commit()
+        
+        profile = Profile(user=user, salary="25.7")
+
+        self.session.add(profile)
+        self.session.commit()
+
+        user = User(u'Vasya', u'Pupkin', u"123")
+        self.session.add(user)
+        self.session.commit()
+
+        profile = self.session.query(Profile).get(1)
+        request = DummyRequest()
+        request['phone'] = ["213123123", ]
+        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
+        request['married'] = ["true", ]
+        request["salary"] = ["23.0", ]
+        request["user_id"] = ["2", ]
+
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+        request["photo"] = [upload, ]
+
+        update(self.session, Profile, 1, request)
+
+        self.assertEqual(profile.phone, "213123123")
+        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
+        self.assertEqual(profile.married, True)
+        self.assertEqual(profile.user.id, 2)
+        self.assertEqual(profile.salary, float(23))
+

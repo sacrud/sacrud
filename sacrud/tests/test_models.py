@@ -49,6 +49,7 @@ class Profile(Base):
         self.phone = phone
         self.cv = cv
         self.married = married
+        self.salary = salary
 
     def __repr__(self):
         return "<Profile of user '%s'" % ((self.user, ))
