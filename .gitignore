@@ -1,0 +1,9 @@
+.settings
+.project
+.pydevproject
+sacrud/.coverage
+*.pyc
+sacrud/cover
+
+cover
+.coverage
