@@ -83,20 +83,19 @@ def update(session, table, pk, request=''):
     """docstring for read"""
     pk_name = get_pk(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in table.__table__.columns]
+    col_list = [c for c in table.__table__.columns]
 
     if request:
-        for c in col:
-            if c.name not in request:
+        for col in col_list:
+            if col.name not in request:
                 continue
-            if getattr(obj, c.name) == request[c.name][0]:
+            if getattr(obj, col.name) == request[col.name][0]:
                 continue
-            if c.type.__class__.__name__ == 'FileStore':
-                if not hasattr(request[c.name][0], 'filename'):
+            if col.type.__class__.__name__ == 'FileStore':
+                if not hasattr(request[col.name][0], 'filename'):
                     continue
-            value = check_type(request, table, c.name, obj)
-            setattr(obj, c.name, value)
-
+            value = check_type(request, table, col.name, obj)
+            setattr(obj, col.name, value)
         session.add(obj)
         transaction.commit()
         return
@@ -168,7 +167,6 @@ def store_file(request, key, path):
     # WARNING: this example does not deal with the fact that IE sends an
     # absolute file *path* as the filename.  This example is naive; it
     # trusts user input.
-    print "path", path
 
     filename = request[key][0].filename
 
@@ -181,7 +179,6 @@ def store_file(request, key, path):
     # insecure so please keep that in mind when writing your own
     # file handlingself.
     file_path = os.path.join(path, filename)
-    print file_path
     output_file = open(file_path, 'wb')
 
     # Finally write the data to the output file
