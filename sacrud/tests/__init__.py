@@ -89,6 +89,11 @@ class SacrudTests(unittest.TestCase):
         request["salary"] = ["23.0", ]
         request["user_id"] = ["1", ]
 
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+        request["photo"] = [upload, ]
+
         create(self.session, Profile, request)
 
         profile = self.session.query(Profile).get(1)
@@ -98,6 +103,7 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile.salary, float(23))
         self.assertEqual(profile.user.id, 1)
 
+        delete_fileobj(Profile, profile, "photo")
         self.session.delete(profile)
         self.session.delete(user)
 
