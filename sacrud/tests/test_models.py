@@ -8,7 +8,7 @@ import os
 Base = declarative_base()
 
 DIRNAME = os.path.dirname(__file__)
-PHOTO_PATH = os.path.join((DIRNAME, "assets", "photo"))
+PHOTO_PATH = os.path.join(DIRNAME)
 
 
 class User(Base):

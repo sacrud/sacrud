@@ -3,10 +3,18 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import unittest
-from sacrud.tests.test_models import User, Profile
-from sacrud.action import get_relations
+from sacrud.tests.test_models import User, Profile, PHOTO_PATH
+from sacrud.action import get_relations, delete_fileobj
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
+from StringIO import StringIO
+import subprocess
+import shlex
+import os
+
+
+class MockCGIFieldStorage(object):
+    pass
 
 
 class SacrudTests(unittest.TestCase):
@@ -39,6 +47,8 @@ class SacrudTests(unittest.TestCase):
         profile = self.session.query(Profile).get(1)
         self.assertEqual(get_relations(user), [('profile',
                                                 [profile, ])])
+        self.session.delete(profile)
+        self.session.delete(user)
 
     def test_get_pk(self):
         pk = get_pk(User)
@@ -55,6 +65,7 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(result["prefix"], "crud")
         self.assertEqual(result["table"], User)
         self.assertEqual(result["row"], [user, ])
+        self.session.delete(user)
 
     def test_create(self):
 
@@ -75,6 +86,12 @@ class SacrudTests(unittest.TestCase):
         request['married'] = ["true", ]
         request["salary"] = ["23.0"]
         request["user_id"] = ["1"]
+
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+        request["photo"] = [upload, ]
+
         create(self.session, Profile, request)
 
         profile = self.session.query(Profile).get(1)
@@ -83,8 +100,9 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile.married, True)
         self.assertEqual(profile.salary, float(23))
         self.assertEqual(profile.user.id, 1)
-        
-        
 
+        delete_fileobj(Profile, profile, 'photo')
+        self.session.delete(profile)
+        self.session.delete(user)
 
         
