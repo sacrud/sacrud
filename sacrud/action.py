@@ -42,6 +42,7 @@ def index(session, table):
 
 def create(session, table, request=''):
     """docstring for create"""
+    print request
     if request:
         args = {}
         # FIXME: я чувствую здесь диссонанс

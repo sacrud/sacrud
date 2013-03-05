@@ -1,1 +1,3 @@
-/home/uralbash/projects/python/web/pyramid/SQLAlchemyCRUD/sacrud/templates/sacrud/types/Text.jinja2
+<textarea class="sacrud_text" 
+          id="sacrud_string"
+          name="{{ col.name }}">{% if obj %}{{ getattr(obj, col.name) }}{% endif %}</textarea>
