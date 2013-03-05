@@ -161,13 +161,24 @@ class SacrudTests(unittest.TestCase):
         self.session.add(user)
         self.session.commit()
 
-        profile = Profile(user=user, salary="25.7")
+        request = DummyRequest()
+        request['phone'] = ["213123123", ]
+        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
+        request['married'] = ["true", ]
+        request["salary"] = ["23.0", ]
+        request["user_id"] = ["1", ]
 
-        self.session.add(profile)
-        self.session.commit()
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+        request["photo"] = [upload, ]
+
+        create(self.session, Profile, request)
         delete(self.session, Profile, 1)
         self.session.commit()
+
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)
+        # check file also deleted
+        self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
 
- 
