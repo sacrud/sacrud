@@ -1,8 +1,9 @@
 .settings
 .project
 .pydevproject
-
-sacrud/cover
-sacrud/cover
 sacrud/.coverage
 *.pyc
+sacrud/cover
+
+cover
+.coverage
