@@ -2,8 +2,13 @@
 .project
 .pydevproject
 sacrud/.coverage
+sacrud/TODO
 *.pyc
 sacrud/cover
 
 cover
 .coverage
+
+build
+dist
+*.egg-info

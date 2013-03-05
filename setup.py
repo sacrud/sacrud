@@ -45,7 +45,7 @@ print 'files', files
 
 setup(
     name='sacrud',
-    version='0.0.1b',
+    version='0.0.1b3',
     url='http://github.com/uralbash/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
