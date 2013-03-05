@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, orm
 import unittest
 from sacrud.tests.test_models import User, Profile, PHOTO_PATH
 from sacrud.action import get_relations, delete_fileobj, read, update, delete
@@ -10,6 +10,8 @@ from pyramid.testing import DummyRequest
 from StringIO import StringIO
 import glob
 import os
+from zope.sqlalchemy import ZopeTransactionExtension
+import transaction
 
 
 class MockCGIFieldStorage(object):
@@ -19,12 +21,17 @@ class MockCGIFieldStorage(object):
 class SacrudTests(unittest.TestCase):
 
     def setUp(self):
+
         engine = create_engine('sqlite:///:memory:')
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        # You probably need to create some tables and 
-        # load some test data, do so here.
+        DBSession = orm.scoped_session(
+                                       orm.sessionmaker(extension=ZopeTransactionExtension()))
+
+        DBSession.remove()
+        DBSession.configure(bind=engine)
+
+        session = DBSession
         self.session = session
+
         # To create tables, you typically do:
         #User.metadata.create_all(engine)
         User.metadata.create_all(engine)
@@ -35,22 +42,27 @@ class SacrudTests(unittest.TestCase):
             for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
                 os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
+        self.session.remove()
 
     def test_relations(self):
         user = User(u'Vasya', u'Pupkin', u"123")
 
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
+
         profile = Profile(user=user)
 
         self.session.add(profile)
-        self.session.commit()
+        transaction.commit()
 
         profile = self.session.query(Profile).get(1)
+        user = self.session.query(User).get(1)
+
         self.assertEqual(get_relations(user), [('profile',
                                                 [profile, ])])
         self.session.delete(profile)
         self.session.delete(user)
+        transaction.commit()
 
     def test_get_pk(self):
         pk = get_pk(User)
@@ -60,13 +72,16 @@ class SacrudTests(unittest.TestCase):
         user = User(u'Vasya', u'Pupkin', u"123")
 
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
         result = index(self.session, User)
+        user = self.session.query(User).get(1)
+
         self.assertEqual(result['pk'], 'id')
         self.assertEqual(result["prefix"], "crud")
         self.assertEqual(result["table"], User)
         self.assertEqual(result["row"], [user, ])
+
         self.session.delete(user)
 
     def test_create(self):
@@ -78,6 +93,7 @@ class SacrudTests(unittest.TestCase):
 
         create(self.session, User, request)
         user = self.session.query(User).get(1)
+
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, "123")
@@ -97,6 +113,7 @@ class SacrudTests(unittest.TestCase):
         create(self.session, Profile, request)
 
         profile = self.session.query(Profile).get(1)
+
         self.assertEqual(profile.phone, "213123123")
         self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
         self.assertEqual(profile.married, True)
@@ -104,13 +121,16 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile.user.id, 1)
 
         delete_fileobj(Profile, profile, "photo")
+
         self.session.delete(profile)
+        user = self.session.query(User).get(1)
         self.session.delete(user)
+        transaction.commit()
 
     def test_read(self):
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
         result = read(self.session, User, 1)
         self.assertEqual(result['obj'].id, 1)
@@ -123,16 +143,18 @@ class SacrudTests(unittest.TestCase):
 
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
+        user = self.session.query(User).get(1)
         profile = Profile(user=user, salary="25.7")
 
         self.session.add(profile)
-        self.session.commit()
+        transaction.commit()
 
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
+        user = self.session.query(User).get(2)
 
         profile = self.session.query(Profile).get(1)
         request = DummyRequest()
@@ -148,6 +170,7 @@ class SacrudTests(unittest.TestCase):
         request["photo"] = [upload, ]
 
         update(self.session, Profile, 1, request)
+        profile = self.session.query(Profile).get(1)
 
         self.assertEqual(profile.phone, "213123123")
         self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
@@ -159,7 +182,7 @@ class SacrudTests(unittest.TestCase):
 
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
         request = DummyRequest()
         request['phone'] = ["213123123", ]
@@ -175,7 +198,6 @@ class SacrudTests(unittest.TestCase):
 
         create(self.session, Profile, request)
         delete(self.session, Profile, 1)
-        self.session.commit()
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)
