@@ -5,3 +5,4 @@ sacrud/.coverage
 *.pyc
 sacrud/cover
 
+cover
