@@ -2,7 +2,7 @@
 .project
 .pydevproject
 
-sacrud/cover
-sacrud/cover
 sacrud/.coverage
 *.pyc
+sacrud/cover
+sacrud/cover/*.*
