@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import unittest
 from sacrud.tests.test_models import User, Profile, PHOTO_PATH
-from sacrud.action import get_relations, delete_fileobj
+from sacrud.action import get_relations, delete_fileobj, read
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
 from StringIO import StringIO
@@ -105,4 +105,14 @@ class SacrudTests(unittest.TestCase):
         self.session.delete(profile)
         self.session.delete(user)
 
-        
+    def test_read(self):
+        user = User(u'Vasya', u'Pupkin', u"123")
+        self.session.add(user)
+        self.session.commit()
+
+        result = read(self.session, User, 1)
+        self.assertEqual(result['obj'].id, 1)
+        self.assertEqual(result['pk'], "id")
+        self.assertEqual(result['prefix'], "crud")
+        self.assertEqual(result['table'], User)
+        self.assertEqual(result['rel'], [('profile', [])])
