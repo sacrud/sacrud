@@ -68,3 +68,23 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, "123")
+
+        request = DummyRequest()
+        request['phone'] = ["213123123", ]
+        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
+        request['married'] = ["true", ]
+        request["salary"] = ["23.0"]
+        request["user_id"] = ["1"]
+        create(self.session, Profile, request)
+
+        profile = self.session.query(Profile).get(1)
+        self.assertEqual(profile.phone, "213123123")
+        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
+        self.assertEqual(profile.married, True)
+        self.assertEqual(profile.salary, float(23))
+        self.assertEqual(profile.user.id, 1)
+        
+        
+
+
+        
