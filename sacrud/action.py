@@ -103,7 +103,7 @@ def update(session, table, pk, request=''):
 
     return {'obj': obj,
             'pk': pk_name,
-            'col': col,
+            'col': col_list,
             'table': table,
             'prefix': prefix}
 
