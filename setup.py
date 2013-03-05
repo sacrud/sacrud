@@ -69,6 +69,7 @@ setup(
         "pyramid",
         "transaction",
         'zope.sqlalchemy',
+        'pyramid_jinja2'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
