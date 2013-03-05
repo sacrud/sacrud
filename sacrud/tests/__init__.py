@@ -3,8 +3,8 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import unittest
-from sacrud.test_models import User, Profile
-from action import get_relations
+from sacrud.tests.test_models import User, Profile
+from sacrud.action import get_relations
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
 
