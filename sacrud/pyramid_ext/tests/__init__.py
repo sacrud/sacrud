@@ -15,10 +15,15 @@ import transaction
 from pyramid import testing
 from sacrud.pyramid_ext.views import sa_home
 from pyramid.config import Configurator
+from paste.deploy.loadwsgi import appconfig
 
 
 class MockCGIFieldStorage(object):
     pass
+
+
+here = os.path.dirname(__file__)
+settings = appconfig('config:' + os.path.join(here, 'test.ini'))
 
 
 class SacrudTests(unittest.TestCase):
@@ -35,17 +40,16 @@ class SacrudTests(unittest.TestCase):
         session = DBSession
         self.session = session
 
-        # To create tables, you typically do:
-        #User.metadata.create_all(engine)
-        User.metadata.create_all(engine)
-        Profile.metadata.create_all(engine)
-
-        Base.metadata.bind = engine
-        config = Configurator()
+        config = Configurator({})
         config.include('sacrud.pyramid_ext')
         settings = config.registry.settings
         settings['sacrud_models'] = (User, Profile)
         config.scan()
+
+        # To create tables, you typically do:
+        #User.metadata.create_all(engine)
+        User.metadata.create_all(engine)
+        Profile.metadata.create_all(engine)
 
         app = config.make_wsgi_app()
         self.app = app
