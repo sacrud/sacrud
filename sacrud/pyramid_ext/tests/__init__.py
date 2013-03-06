@@ -35,9 +35,11 @@ class SacrudTests(unittest.TestCase):
 
         session = DBSession
         self.session = session
-
+        
         request = testing.DummyRequest()
         config = testing.setUp(request=request)
+
+        config['sqlalchemy.url'] = "sqlite:///:memory:"
         config.include('sacrud.pyramid_ext')
         settings = config.registry.settings
         settings['sacrud_models'] = (User, Profile)
