@@ -160,7 +160,57 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile.salary,  200.23)
 
     def test_update_view(self):
-        pass
+        user = self.user_add()
+        self.profile_add(user)
+        request = testing.DummyRequest()
+        name = route_url('sa_update', request,
+                                      table="user",
+                                      id="1")
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
+
+        form = response.form
+        form['name'] = "Karlson"
+        form['fullname'] = "Karlson the Third"
+        form['password'] = 123
+        response = form.submit("form.submitted").follow()
+
+        self.failUnlessEqual(response.status, '200 OK')
+        user = self.session.query(User).get(1)
+
+        self.assertFalse(user is None)
+        self.assertEqual(user.name,  "Karlson")
+        self.assertEqual(user.fullname,  "Karlson the Third")
+        self.assertEqual(user.password,  "123")
+
+        name = route_url('sa_create', request,
+                                      table="profile",
+                                      id="1")
+
+        response = self.testapp.get(name)
+        form = response.form
+        form['user_id'] = "1"
+        form['phone'] = "123"
+        form['cv'] = "Karlson live on the roof"
+        field = form.get('married', index=0)
+        field.checked = False
+
+        form['salary'] = "200.23"
+        upload = Upload('filename.txt', 'data')
+        form['photo'] = upload
+
+        response = form.submit("form.submitted").follow()
+
+        self.failUnlessEqual(response.status, '200 OK')
+
+        profile = self.session.query(Profile).get(1)
+
+        self.assertFalse(profile is None)
+        self.assertEqual(profile.user.id, 1)
+        self.assertEqual(profile.phone,  "123")
+        self.assertEqual(profile.cv, "Karlson live on the roof")
+        self.assertEqual(profile.married,  False)
+        self.assertEqual(profile.salary,  200.23)
 
     def test_delete_view(self):
         user = self.user_add()
