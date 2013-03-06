@@ -127,7 +127,7 @@ class SacrudTests(unittest.TestCase):
         user = self.session.query(User).get(1)
 
         self.assertFalse(user is None)
-        self.assertEqual(user.username,  "Karlson")
+        self.assertEqual(user.name,  "Karlson")
         self.assertEqual(user.fullnamename,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
 
@@ -136,13 +136,21 @@ class SacrudTests(unittest.TestCase):
         form = response.form
         form['phone'] = "123"
         form['cv'] = "Karlson live on the roof"
-        form['married'] = Fasle
+        form['married'] = False
         form['salary'] = 200.23
         upload = Upload('filename.txt', 'data')
         form['photo'] = upload
 
         response = form.submit('form.sumbitted').follow()
         self.failUnlessEqual(response.status, '200 OK')
+
+        profile = self.session.query(Profile).get(1)
+
+        self.assertFalse(profile is None)
+        self.assertEqual(profile.phone,  "123")
+        self.assertEqual(profile.cv, "Karlson live on the roof")
+        self.assertEqual(profile.married,  False)
+        self.assertEqual(profile.salary,  200.23)
 
     def test_update_view(self):
         pass
