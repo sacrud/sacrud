@@ -13,7 +13,6 @@ import os
 from zope.sqlalchemy import ZopeTransactionExtension
 import transaction
 from pyramid import testing
-from sacrud.pyramid_ext.views import sa_home
 from pyramid.config import Configurator
 from webtest.app import TestApp
 
@@ -69,10 +68,10 @@ class SacrudTests(unittest.TestCase):
         return user
 
     def test_home_view(self):
-        user = self.add_user()
         request = testing.DummyRequest()
-        result = sa_home(request)
-        self.assertEqual(result.status, '200 OK')
+        introspector = request.registry.introspector
+        name = introspector.get('routes', "sa_home")
+        result = self.testapp.get('/')
 
     def test_list_view(self):
         pass
