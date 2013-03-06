@@ -128,7 +128,7 @@ class SacrudTests(unittest.TestCase):
 
         self.assertFalse(user is None)
         self.assertEqual(user.name,  "Karlson")
-        self.assertEqual(user.fullnamename,  "Karlson the Third")
+        self.assertEqual(user.fullname,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
 
         response = self.testapp.get(name)
