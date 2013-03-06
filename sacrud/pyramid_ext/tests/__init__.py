@@ -110,19 +110,17 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual(response.status, '200 OK')
 
     def test_create_view(self):
-        request = testing.DummyRequest({'form.submitted':True})
+         request = testing.DummyRequest({'form.submitted':True})
         name = route_url('sa_create', request,
                                       table="user")
         response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
 
-        params = {'form.submitted': True}
-        params['name'] = "Karlson"
-        params['fullname'] = "Karlson the Third"
-        params['password'] = 123
-        request = testing.DummyRequest(params=params)
-
-        response = self.testapp.post(name)
+        form = response.form
+        form['name'] = "Karlson"
+        form['fullname'] = "Karlson the Third"
+        form['password'] = 123
+        response = form.submit("form.submitted").follow()
 
         self.failUnlessEqual(response.status, '200 OK')
         user = self.session.query(User).get(1)
@@ -132,24 +130,17 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(user.fullnamename,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
 
-        request = testing.DummyRequest({'form.submitted':True})
-        name = route_url('sa_create', request,
-                                      table="profile")
         response = self.testapp.get(name)
+
         form = response.form
         form['phone'] = "123"
         form['cv'] = "Karlson live on the roof"
         form['married'] = Fasle
         form['salary'] = 200.23
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-
+        upload = Upload('filename.txt', 'data')
         form['photo'] = upload
 
-        form['photo'] = upload
-
-        response = form.submit()
+        response = form.submit('form.sumbitted').follow()
         self.failUnlessEqual(response.status, '200 OK')
 
     def test_update_view(self):
