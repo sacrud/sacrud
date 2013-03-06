@@ -39,8 +39,7 @@ class SacrudTests(unittest.TestCase):
         engine = create_engine('sqlite:///:memory:')
         DBSession.configure(bind=engine)
 
-        session = DBSession
-        self.session = session
+        self.session = DBSession
 
         # To create tables, you typically do:
         #User.metadata.create_all(engine)
@@ -65,6 +64,13 @@ class SacrudTests(unittest.TestCase):
         user = self.session.query(User).get(1)
         return user
 
+    def test_add_profiule(self, user):
+        profile = Profile(user=user)
+        self.session.add(profile)
+        transaction.commit()
+        profile = self.session.query(Profile).get(1)
+        return profile
+
     def test_home_view(self):
         self.add_user()
         request = testing.DummyRequest()
@@ -76,16 +82,55 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual("profile" in response, True)
 
     def test_list_view(self):
+        user = self.add_user()
+        self.add_profile(user)
+        
         request = testing.DummyRequest()
         name = route_url('sa_list', request, table="user")
         response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
+        name = route_url('sa_list', request, table="profile")
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
+
+    def test_read_view(self):
+        user = self.add_user()
+        self.add_profile(user)
+        request = testing.DummyRequest()
+        name = route_url('sa_read', request,
+                                    table="user",
+                                    id=1)
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
+        name = route_url('sa_read', request,
+                                    table="profile", 
+                                    id=1)
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
 
     def test_add_view(self):
-        pass
+        request = testing.DummyRequest()
+        name = route_url('sa_delete', request,
+                                      table="profile")
+        response = self.testapp.get(name)
+        form = response.form
+        response.showbrowser()
 
     def test_update_view(self):
         pass
-    
+
     def test_delete_view(self):
-        pass
+        user = self.add_user()
+        self.add_profile(user)
+        request = testing.DummyRequest()
+        name = route_url('sa_delete', request,
+                                      table="profile",
+                                      id=1)
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
+
+        name = route_url('sa_delete', request,
+                                      table="user",
+                                      id=1)
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
