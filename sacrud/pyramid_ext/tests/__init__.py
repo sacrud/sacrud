@@ -110,7 +110,7 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual(response.status, '200 OK')
 
     def test_create_view(self):
-         request = testing.DummyRequest({'form.submitted':True})
+        request = testing.DummyRequest()
         name = route_url('sa_create', request,
                                       table="user")
         response = self.testapp.get(name)
