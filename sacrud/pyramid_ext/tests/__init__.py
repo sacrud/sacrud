@@ -183,7 +183,7 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(user.fullname,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
 
-        name = route_url('sa_create', request,
+        name = route_url('sa_update', request,
                                       table="profile",
                                       id="1")
 
@@ -200,9 +200,8 @@ class SacrudTests(unittest.TestCase):
         form['photo'] = upload
 
         response = form.submit("form.submitted").follow()
-
         self.failUnlessEqual(response.status, '200 OK')
-
+        response.showbrowser()
         profile = self.session.query(Profile).get(1)
 
         self.assertFalse(profile is None)
