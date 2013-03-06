@@ -66,7 +66,7 @@ def sa_home(request):
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
 def sa_list(request):
     tname = request.matchdict['table']
-    resp = action.index(DBSession, get_table(tname, request))
+    resp = action.index(request.session, get_table(tname, request))
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
