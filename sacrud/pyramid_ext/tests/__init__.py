@@ -109,14 +109,18 @@ class SacrudTests(unittest.TestCase):
         response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
 
-    def test_add_view(self):
+    def test_create_view(self):
         request = testing.DummyRequest()
         name = route_url('sa_create', request,
-                                      table="profile")
+                                      table="user")
         response = self.testapp.get(name)
         form = response.form
-        response.showbrowser()
-
+        form['name'] = "Karlson"
+        form['fullname'] = "Karlson the Third"
+        form['password'] = 123
+        response = form.submit()
+        self.failUnlessEqual(response.status, '200 OK')
+        
     def test_update_view(self):
         pass
 
