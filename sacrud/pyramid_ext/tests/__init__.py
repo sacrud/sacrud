@@ -57,14 +57,14 @@ class SacrudTests(unittest.TestCase):
         self.session.remove()
         testing.tearDown()
 
-    def add_user(self):
+    def user_add(self):
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
         transaction.commit()
         user = self.session.query(User).get(1)
         return user
 
-    def test_add_profiule(self, user):
+    def profile_add(self, user):
         profile = Profile(user=user)
         self.session.add(profile)
         transaction.commit()
@@ -72,7 +72,7 @@ class SacrudTests(unittest.TestCase):
         return profile
 
     def test_home_view(self):
-        self.add_user()
+        self.user_add()
         request = testing.DummyRequest()
         name = route_url('sa_home', request)
         response = self.testapp.get(name)
@@ -82,8 +82,8 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual("profile" in response, True)
 
     def test_list_view(self):
-        user = self.add_user()
-        self.add_profile(user)
+        user = self.user_add()
+        self.profile_add(user)
         
         request = testing.DummyRequest()
         name = route_url('sa_list', request, table="user")
@@ -94,8 +94,8 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual(response.status, '200 OK')
 
     def test_read_view(self):
-        user = self.add_user()
-        self.add_profile(user)
+        user = self.user_add()
+        self.profile_add(user)
         request = testing.DummyRequest()
         name = route_url('sa_read', request,
                                     table="user",
