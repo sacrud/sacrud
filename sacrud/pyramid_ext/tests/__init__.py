@@ -71,7 +71,7 @@ class SacrudTests(unittest.TestCase):
         request = testing.DummyRequest()
         introspector = request.registry.introspector
         name = introspector.get('routes', "sa_home")
-        result = self.testapp.get('/')
+        result = self.testapp.get(name)
 
     def test_list_view(self):
         pass
