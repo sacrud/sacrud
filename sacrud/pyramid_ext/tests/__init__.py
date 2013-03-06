@@ -111,7 +111,7 @@ class SacrudTests(unittest.TestCase):
 
     def test_add_view(self):
         request = testing.DummyRequest()
-        name = route_url('sa_delete', request,
+        name = route_url('sa_create', request,
                                       table="profile")
         response = self.testapp.get(name)
         form = response.form
@@ -127,11 +127,11 @@ class SacrudTests(unittest.TestCase):
         name = route_url('sa_delete', request,
                                       table="profile",
                                       id=1)
-        response = self.testapp.get(name)
+        response = self.testapp.get(name).follow()
         self.failUnlessEqual(response.status, '200 OK')
 
         name = route_url('sa_delete', request,
                                       table="user",
                                       id=1)
-        response = self.testapp.get(name)
+        response = self.testapp.get(name).follow()
         self.failUnlessEqual(response.status, '200 OK')
