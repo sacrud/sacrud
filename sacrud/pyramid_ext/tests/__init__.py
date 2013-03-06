@@ -73,18 +73,22 @@ class SacrudTests(unittest.TestCase):
         request = testing.DummyRequest()
         name = route_url('sa_home', request)
         response = self.testapp.get(name)
-        response.showbrowser()
         self.failUnlessEqual(response.status, '200 OK')
-        
-        self.failUnlessEqual("Tables" in response, False)
+        self.failUnlessEqual("Tables" in response, True)
+        self.failUnlessEqual("user" in response, True)
+        self.failUnlessEqual("profile" in response, True)
+        response = response.click(linkid="id_user").follow()
+        self.failUnlessEqual(response.status, '200 OK')
+        response = self.testapp.get(name)
+        response = response.click(linkid="id_profile").follow()
+        self.failUnlessEqual(response.status, '200 OK')
 
     def test_list_view(self):
         pass
 
-
     def test_add_view(self):
         pass
-    
+
     def test_update_view(self):
         pass
     
