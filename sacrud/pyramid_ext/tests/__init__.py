@@ -131,9 +131,12 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(user.fullname,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
 
-        response = self.testapp.get(name)
+        name = route_url('sa_create', request,
+                                      table="profile")
 
+        response = self.testapp.get(name)
         form = response.form
+        form['user_id'] = "1"
         form['phone'] = "123"
         form['cv'] = "Karlson live on the roof"
         form['married'] = False
@@ -147,6 +150,7 @@ class SacrudTests(unittest.TestCase):
         profile = self.session.query(Profile).get(1)
 
         self.assertFalse(profile is None)
+        self.assertEqual(profile.user.id, 1)
         self.assertEqual(profile.phone,  "123")
         self.assertEqual(profile.cv, "Karlson live on the roof")
         self.assertEqual(profile.married,  False)
