@@ -96,15 +96,16 @@ class SacrudTests(unittest.TestCase):
     def test_read_view(self):
         user = self.user_add()
         self.profile_add(user)
+
         request = testing.DummyRequest()
         name = route_url('sa_read', request,
                                     table="user",
-                                    id=1)
+                                    id="1")
         response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
         name = route_url('sa_read', request,
                                     table="profile", 
-                                    id=1)
+                                    id="1")
         response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
 
@@ -120,8 +121,8 @@ class SacrudTests(unittest.TestCase):
         pass
 
     def test_delete_view(self):
-        user = self.add_user()
-        self.add_profile(user)
+        user = self.user_add()
+        self.profile_add(user)
         request = testing.DummyRequest()
         name = route_url('sa_delete', request,
                                       table="profile",
