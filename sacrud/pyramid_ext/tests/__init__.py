@@ -80,7 +80,8 @@ class SacrudTests(unittest.TestCase):
 
     def test_list_view(self):
         request = testing.DummyRequest()
-        response = route_url('sa_list', request, table="user")
+        name = route_url('sa_list', request, table="user")
+        response = self.testapp.get(name)
         self.failUnlessEqual(response.status, '200 OK')
 
     def test_add_view(self):
