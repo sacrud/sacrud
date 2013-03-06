@@ -16,8 +16,6 @@ from pyramid import testing
 from pyramid.config import Configurator
 from webtest.app import TestApp
 from pyramid.url import route_url
-from sacrud import pyramid_ext
-from sacrud.pyramid_ext import DBSession
 
 
 class MockCGIFieldStorage(object):
@@ -37,14 +35,12 @@ class SacrudTests(unittest.TestCase):
         settings['sacrud_models'] = (User, Profile)
         config.scan()
 
+        from sacrud.pyramid_ext import DBSession
         engine = create_engine('sqlite:///:memory:')
-
-        DBSession.remove()
         DBSession.configure(bind=engine)
 
         session = DBSession
         self.session = session
-        pyramid_ext.DBSession = self.session
 
         # To create tables, you typically do:
         #User.metadata.create_all(engine)
