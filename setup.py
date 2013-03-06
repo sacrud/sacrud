@@ -54,13 +54,16 @@ setup(
     data_files=files,
     include_package_data=True,
     zip_safe=False,
-
+    test_suite="pyramid_ext.tests",
     license="GPL",
     package_dir={'sacrud': 'sacrud'},
     package_data={
         'sacrud': ['static/*',
                     'templates/*.jinja2', 'templates/forms/*.jinja2',
-                    'templates/types/*.jinja2']
+                    'templates/types/*.jinja2',
+                    'tests/*.py',
+                    ],
+        'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
     long_description=open('README.md').read(),
@@ -69,6 +72,7 @@ setup(
         "pyramid",
         "transaction",
         'zope.sqlalchemy',
+        'pyramid_jinja2'
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

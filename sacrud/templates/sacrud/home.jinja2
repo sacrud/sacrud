@@ -5,7 +5,7 @@
   <h1>Tables</h1>
   {% for table in tables %}
   {% set tname = table.__tablename__ %}
-  <a href="/sacrud/{{ tname }}">{{ tname }}</a><br /><hr />
+  <a id="id_{{ tname }}" href="/sacrud/{{ tname }}">{{ tname }}</a><br /><hr />
   {% endfor %}
 </div>
 {% endblock %}

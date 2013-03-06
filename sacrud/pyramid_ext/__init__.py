@@ -2,8 +2,10 @@
 import sqlalchemy
 import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
+from sqlalchemy.engine import create_engine
 
 pkg_name = 'sacrud'
+
 DBSession = None
 
 
