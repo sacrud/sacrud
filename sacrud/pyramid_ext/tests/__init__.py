@@ -15,6 +15,7 @@ import transaction
 from pyramid import testing
 from sacrud.pyramid_ext.views import sa_home
 from pyramid.config import Configurator
+from webtest.app import TestApp
 
 
 class MockCGIFieldStorage(object):
@@ -49,6 +50,9 @@ class SacrudTests(unittest.TestCase):
         User.metadata.create_all(engine)
         Profile.metadata.create_all(engine)
 
+        self.app = config.make_wsgi_app()
+        self.testapp = TestApp(self.app)
+
     def tearDown(self):
         def clear_files():
             for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
@@ -68,6 +72,7 @@ class SacrudTests(unittest.TestCase):
         user = self.add_user()
         request = testing.DummyRequest()
         result = sa_home(request)
+        self.assertEqual(result.status, '200 OK')
 
     def test_list_view(self):
         pass
