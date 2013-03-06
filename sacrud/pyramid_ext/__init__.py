@@ -7,10 +7,8 @@ from sqlalchemy.engine import create_engine
 pkg_name = 'sacrud'
 
 
-engine = create_engine('sqlite:///:memory:')
 DBSession = orm.scoped_session(orm.sessionmaker(extension=ZopeTransactionExtension()))
 DBSession.remove()
-DBSession.configure(bind=engine)
 
 
 def add_routes(config):
