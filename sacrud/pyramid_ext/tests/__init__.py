@@ -3,7 +3,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, orm
 import unittest
-from sacrud.tests.test_models import User, Profile, PHOTO_PATH
+from sacrud.tests.test_models import User, Profile, PHOTO_PATH, Base
 from sacrud.action import get_relations, delete_fileobj, read, update, delete
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
@@ -14,6 +14,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 import transaction
 from pyramid import testing
 from sacrud.pyramid_ext.views import sa_home
+from pyramid.config import Configurator
 
 
 class MockCGIFieldStorage(object):
@@ -38,6 +39,17 @@ class SacrudTests(unittest.TestCase):
         #User.metadata.create_all(engine)
         User.metadata.create_all(engine)
         Profile.metadata.create_all(engine)
+
+        Base.metadata.bind = engine
+        config = Configurator()
+        config.include('sacrud.pyramid_ext')
+        settings = config.registry.settings
+        settings['sacrud_models'] = (User, Profile)
+        config.scan()
+
+        app = config.make_wsgi_app()
+        self.app = app
+
 
     def tearDown(self):
         def clear_files():
