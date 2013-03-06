@@ -69,6 +69,7 @@ class SacrudTests(unittest.TestCase):
         return user
 
     def test_home_view(self):
+        self.add_user()
         request = testing.DummyRequest()
         name = route_url('sa_home', request)
         result = self.testapp.get(name)
