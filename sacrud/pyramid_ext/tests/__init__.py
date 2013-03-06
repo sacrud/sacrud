@@ -15,7 +15,6 @@ import transaction
 from pyramid import testing
 from sacrud.pyramid_ext.views import sa_home
 from pyramid.config import Configurator
-from paste.deploy.loadwsgi import appconfig
 
 
 class MockCGIFieldStorage(object):
@@ -35,11 +34,11 @@ class SacrudTests(unittest.TestCase):
 
         session = DBSession
         self.session = session
-        
+    
         request = testing.DummyRequest()
         config = testing.setUp(request=request)
 
-        config['sqlalchemy.url'] = "sqlite:///:memory:"
+        config.registry.settings['sqlalchemy.url'] = "sqlite:///:memory:"
         config.include('sacrud.pyramid_ext')
         settings = config.registry.settings
         settings['sacrud_models'] = (User, Profile)
