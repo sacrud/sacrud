@@ -114,12 +114,15 @@ class SacrudTests(unittest.TestCase):
         name = route_url('sa_create', request,
                                       table="user")
         response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
 
-        form = response.form
-        form['name'] = "Karlson"
-        form['fullname'] = "Karlson the Third"
-        form['password'] = 123
-        response = form.submit()
+        params = {'form.submitted': True}
+        params['name'] = "Karlson"
+        params['fullname'] = "Karlson the Third"
+        params['password'] = 123
+        request = testing.DummyRequest(params=params)
+
+        response = self.testapp.post(name)
 
         self.failUnlessEqual(response.status, '200 OK')
         user = self.session.query(User).get(1)
