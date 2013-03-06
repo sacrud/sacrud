@@ -22,10 +22,6 @@ class MockCGIFieldStorage(object):
     pass
 
 
-here = os.path.dirname(__file__)
-settings = appconfig('config:' + os.path.join(here, 'test.ini'))
-
-
 class SacrudTests(unittest.TestCase):
 
     def setUp(self):
