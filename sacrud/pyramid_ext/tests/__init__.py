@@ -36,7 +36,8 @@ class SacrudTests(unittest.TestCase):
         session = DBSession
         self.session = session
 
-        config = Configurator({})
+        request = testing.DummyRequest()
+        config = testing.setUp(request=request)
         config.include('sacrud.pyramid_ext')
         settings = config.registry.settings
         settings['sacrud_models'] = (User, Profile)
@@ -47,16 +48,13 @@ class SacrudTests(unittest.TestCase):
         User.metadata.create_all(engine)
         Profile.metadata.create_all(engine)
 
-        app = config.make_wsgi_app()
-        self.app = app
-
-
     def tearDown(self):
         def clear_files():
             for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
                 os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
         self.session.remove()
+        testing.tearDown()
 
     def add_user(self):
         user = User(u'Vasya', u'Pupkin', u"123")
