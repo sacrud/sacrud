@@ -201,7 +201,7 @@ class SacrudTests(unittest.TestCase):
 
         response = form.submit("form.submitted").follow()
         self.failUnlessEqual(response.status, '200 OK')
-        response.showbrowser()
+        
         profile = self.session.query(Profile).get(1)
 
         self.assertFalse(profile is None)
