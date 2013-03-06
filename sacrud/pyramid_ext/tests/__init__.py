@@ -15,6 +15,7 @@ import transaction
 from pyramid import testing
 from pyramid.config import Configurator
 from webtest.app import TestApp
+from pyramid.url import route_url
 
 
 class MockCGIFieldStorage(object):
@@ -69,8 +70,7 @@ class SacrudTests(unittest.TestCase):
 
     def test_home_view(self):
         request = testing.DummyRequest()
-        introspector = request.registry.introspector
-        name = introspector.get('routes', "sa_home")
+        name = route_url('sa_home', request)
         result = self.testapp.get(name)
 
     def test_list_view(self):
