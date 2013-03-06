@@ -77,14 +77,11 @@ class SacrudTests(unittest.TestCase):
         self.failUnlessEqual("Tables" in response, True)
         self.failUnlessEqual("user" in response, True)
         self.failUnlessEqual("profile" in response, True)
-        response = response.click(linkid="id_user").follow()
-        self.failUnlessEqual(response.status, '200 OK')
-        response = self.testapp.get(name)
-        response = response.click(linkid="id_profile").follow()
-        self.failUnlessEqual(response.status, '200 OK')
 
     def test_list_view(self):
-        pass
+        request = testing.DummyRequest()
+        response = route_url('sa_list', request, table="user")
+        self.failUnlessEqual(response.status, '200 OK')
 
     def test_add_view(self):
         pass
