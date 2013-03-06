@@ -16,6 +16,7 @@ from pyramid import testing
 from pyramid.config import Configurator
 from webtest.app import TestApp
 from pyramid.url import route_url
+from webtest.forms import Upload
 
 
 class MockCGIFieldStorage(object):
