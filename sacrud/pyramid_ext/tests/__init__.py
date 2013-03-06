@@ -26,6 +26,15 @@ class SacrudTests(unittest.TestCase):
 
     def setUp(self):
 
+        request = testing.DummyRequest()
+        config = testing.setUp(request=request)
+
+        config.registry.settings['sqlalchemy.url'] = "sqlite:///:memory:"
+        config.include('sacrud.pyramid_ext')
+        settings = config.registry.settings
+        settings['sacrud_models'] = (User, Profile)
+        config.scan()
+
         engine = create_engine('sqlite:///:memory:')
         DBSession = orm.scoped_session(
                                        orm.sessionmaker(extension=ZopeTransactionExtension()))
@@ -35,15 +44,6 @@ class SacrudTests(unittest.TestCase):
 
         session = DBSession
         self.session = session
-    
-        request = testing.DummyRequest()
-        config = testing.setUp(request=request)
-
-        config.registry.settings['sqlalchemy.url'] = "sqlite:///:memory:"
-        config.include('sacrud.pyramid_ext')
-        settings = config.registry.settings
-        settings['sacrud_models'] = (User, Profile)
-        config.scan()
 
         # To create tables, you typically do:
         #User.metadata.create_all(engine)
