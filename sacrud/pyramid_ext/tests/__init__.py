@@ -72,10 +72,15 @@ class SacrudTests(unittest.TestCase):
         self.add_user()
         request = testing.DummyRequest()
         name = route_url('sa_home', request)
-        result = self.testapp.get(name)
+        response = self.testapp.get(name)
+        self.failUnlessEqual(response.status, '200 OK')
+        self.failUnlessEqual("Tables" in response, False)
+        self.failUnlessEqual("models" in response, False)
+
 
     def test_list_view(self):
         pass
+
 
     def test_add_view(self):
         pass
