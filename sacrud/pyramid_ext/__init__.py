@@ -2,9 +2,15 @@
 import sqlalchemy
 import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
+from sqlalchemy.engine import create_engine
 
 pkg_name = 'sacrud'
-DBSession = None
+
+engine = create_engine('sqlite:///:memory:')
+DBSession = orm.scoped_session(
+            orm.sessionmaker(extension=ZopeTransactionExtension()))
+DBSession.remove()
+DBSession.configure(bind=engine)
 
 
 def add_routes(config):
