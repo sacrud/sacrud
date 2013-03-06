@@ -7,8 +7,8 @@ from sacrud import (
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-from models import DBSession
-#DBSession = pyramid_ext.DBSession
+
+DBSession = pyramid_ext.DBSession
 
 
 def breadcrumbs(tname,  view, id=None):

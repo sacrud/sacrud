@@ -17,6 +17,7 @@ from pyramid.config import Configurator
 from webtest.app import TestApp
 from pyramid.url import route_url
 from sacrud import pyramid_ext
+from sacrud.pyramid_ext import DBSession
 
 
 class MockCGIFieldStorage(object):
@@ -37,8 +38,6 @@ class SacrudTests(unittest.TestCase):
         config.scan()
 
         engine = create_engine('sqlite:///:memory:')
-        DBSession = orm.scoped_session(
-                                       orm.sessionmaker(extension=ZopeTransactionExtension()))
 
         DBSession.remove()
         DBSession.configure(bind=engine)

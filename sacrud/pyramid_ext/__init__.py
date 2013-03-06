@@ -6,7 +6,11 @@ from sqlalchemy.engine import create_engine
 
 pkg_name = 'sacrud'
 
-DBSession = None
+
+engine = create_engine('sqlite:///:memory:')
+DBSession = orm.scoped_session(orm.sessionmaker(extension=ZopeTransactionExtension()))
+DBSession.remove()
+DBSession.configure(bind=engine)
 
 
 def add_routes(config):
@@ -19,13 +23,6 @@ def add_routes(config):
 
 
 def includeme(config):
-    global DBSession
-    engine = sqlalchemy.engine_from_config(config.registry.settings)
-    if DBSession is None:
-        DBSession = orm.scoped_session(
-            orm.sessionmaker(extension=ZopeTransactionExtension()))
-    DBSession.remove()
-    DBSession.configure(bind=engine)
 
     config.include('pyramid_jinja2')
     config.add_static_view('sa_static', 'sacrud:static')
