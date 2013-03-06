@@ -139,12 +139,15 @@ class SacrudTests(unittest.TestCase):
         form['user_id'] = "1"
         form['phone'] = "123"
         form['cv'] = "Karlson live on the roof"
-        form['married'] = False
-        form['salary'] = 200.23
+        field = form.get('married', index=0)
+        field.checked = False
+
+        form['salary'] = "200.23"
         upload = Upload('filename.txt', 'data')
         form['photo'] = upload
 
-        response = form.submit('form.sumbitted').follow()
+        response = form.submit("form.submitted").follow()
+
         self.failUnlessEqual(response.status, '200 OK')
 
         profile = self.session.query(Profile).get(1)
