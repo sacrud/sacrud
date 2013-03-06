@@ -7,7 +7,8 @@ from sacrud import (
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
-DBSession = pyramid_ext.DBSession
+from models import DBSession
+#DBSession = pyramid_ext.DBSession
 
 
 def breadcrumbs(tname,  view, id=None):
@@ -66,7 +67,7 @@ def sa_home(request):
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
 def sa_list(request):
     tname = request.matchdict['table']
-    resp = action.index(request.session, get_table(tname, request))
+    resp = action.index(DBSession, get_table(tname, request))
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
