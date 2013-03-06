@@ -60,7 +60,10 @@ setup(
     package_data={
         'sacrud': ['static/*',
                     'templates/*.jinja2', 'templates/forms/*.jinja2',
-                    'templates/types/*.jinja2']
+                    'templates/types/*.jinja2',
+                    'tests/*.py',
+                    ],
+        'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
     long_description=open('README.md').read(),
