@@ -119,8 +119,32 @@ class SacrudTests(unittest.TestCase):
         form['fullname'] = "Karlson the Third"
         form['password'] = 123
         response = form.submit()
+
         self.failUnlessEqual(response.status, '200 OK')
-        
+        user = self.session.query(User).get(1)
+        self.assertFalse(user is None)
+        self.assertEqual(user.username,  "Karlson")
+        self.assertEqual(user.fullnamename,  "Karlson the Third")
+        self.assertEqual(user.password,  "123")
+
+        request = testing.DummyRequest()
+        name = route_url('sa_create', request,
+                                      table="profile")
+        response = self.testapp.get(name)
+        form = response.form
+        form['phone'] = "123"
+        form['cv'] = "Karlson live on the roof"
+        form['married'] = Fasle
+        form['salary'] = 200.23
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+
+        form['photo'] = upload
+
+        response = form.submit()
+        self.failUnlessEqual(response.status, '200 OK')
+
     def test_update_view(self):
         pass
 
