@@ -16,6 +16,8 @@ from pyramid import testing
 from pyramid.config import Configurator
 from webtest.app import TestApp
 from pyramid.url import route_url
+from sacrud.pyramid_ext import DBSession
+from sqlalchemy.engine import engine_from_config
 
 
 class MockCGIFieldStorage(object):
@@ -35,16 +37,8 @@ class SacrudTests(unittest.TestCase):
         settings['sacrud_models'] = (User, Profile)
         config.scan()
 
-        engine = create_engine('sqlite:///:memory:')
-        DBSession = orm.scoped_session(
-                                       orm.sessionmaker(extension=ZopeTransactionExtension()))
-
-        DBSession.remove()
-        DBSession.configure(bind=engine)
-
-        session = DBSession
-        self.session = session
-
+        self.session = DBSession
+        engine = engine_from_config(config.registry.settings)
         # To create tables, you typically do:
         #User.metadata.create_all(engine)
         User.metadata.create_all(engine)
