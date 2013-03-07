@@ -29,10 +29,11 @@ class User(Base):
     password = Column(String)
     position = Column(Integer, default=0)
 
-    def __init__(self, name, fullname, password):
+    def __init__(self, name, fullname, password, position=0):
         self.name = name
         self.fullname = fullname
         self.password = password
+        self.position = position
 
     def __repr__(self):
         return "<User('%s','%s', '%s')>" % (self.name,

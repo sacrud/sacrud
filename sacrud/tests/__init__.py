@@ -238,5 +238,20 @@ class PositionTest(BaseSacrudTest):
         self.assertEqual(self.session.query(User).get(2).position, 2)
         self.assertEqual(self.session.query(User).get(3).position, 1)
 
-        
-        
+        request = DummyRequest()
+        request["position"] = ["4",]
+        update(self.session, User, 1, request)
+
+        self.assertEqual(self.session.query(User).get(1).position, 4)
+        self.assertEqual(self.session.query(User).get(2).position, 2)
+        self.assertEqual(self.session.query(User).get(3).position, 1)
+
+        user = User(u'Vasya', u'Pupkin', u"123", '3')
+        self.session.add(user)
+        transaction.commit()
+
+        self.assertEqual(self.session.query(User).get(1).position, 5)
+        self.assertEqual(self.session.query(User).get(2).position, 2)
+        self.assertEqual(self.session.query(User).get(3).position, 1)
+        self.assertEqual(self.session.query(User).get(4).position, 3)
+
