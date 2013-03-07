@@ -4,11 +4,19 @@ from sqlalchemy.types import Integer, String, Text, Boolean, Float
 from sqlalchemy.orm import relationship, backref
 from sacrud.exttype import FileStore
 import os
+from sqlalchemy.event import listen
+from sqlalchemy import orm
+from zope.sqlalchemy import ZopeTransactionExtension
+from sacrud.position import before_insert
+
 
 Base = declarative_base()
 
 DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
+
+DBSession = orm.scoped_session(
+            orm.sessionmaker(extension=ZopeTransactionExtension()))
 
 
 class User(Base):
@@ -19,16 +27,22 @@ class User(Base):
     name = Column(String)
     fullname = Column(String)
     password = Column(String)
+    position = Column(Integer, default=0)
 
-    def __init__(self, name, fullname, password):
+    def __init__(self, name, fullname, password, position=0):
         self.name = name
         self.fullname = fullname
         self.password = password
+        self.position = position
 
     def __repr__(self):
         return "<User('%s','%s', '%s')>" % (self.name,
                                             self.fullname,
                                             self.password)
+
+
+listen(User, "before_insert", before_insert)
+listen(User, "before_update", before_insert)
 
 
 class Profile(Base):
@@ -56,3 +70,4 @@ class Profile(Base):
 
     def set_photo(self, value):
         self.photo = value
+

@@ -3,7 +3,7 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, orm
 import unittest
-from sacrud.tests.test_models import User, Profile, PHOTO_PATH
+from sacrud.tests.test_models import User, Profile, PHOTO_PATH, DBSession
 from sacrud.action import get_relations, delete_fileobj, read, update, delete
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
@@ -18,14 +18,24 @@ class MockCGIFieldStorage(object):
     pass
 
 
-class SacrudTests(unittest.TestCase):
+class BaseSacrudTest(unittest.TestCase):
+    def user_add(self):
+        user = User(u'Vasya', u'Pupkin', u"123")
+        self.session.add(user)
+        transaction.commit()
+        user = self.session.query(User).first()
+        return user
+
+    def profile_add(self, user):
+        profile = Profile(user=user)
+        self.session.add(profile)
+        transaction.commit()
+        profile = self.session.query(Profile).first()
+        return profile
 
     def setUp(self):
 
         engine = create_engine('sqlite:///:memory:')
-        DBSession = orm.scoped_session(
-                                       orm.sessionmaker(extension=ZopeTransactionExtension()))
-
         DBSession.remove()
         DBSession.configure(bind=engine)
 
@@ -43,6 +53,9 @@ class SacrudTests(unittest.TestCase):
                 os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
         self.session.remove()
+
+
+class SacrudTest(BaseSacrudTest):
 
     def test_relations(self):
         user = User(u'Vasya', u'Pupkin', u"123")
@@ -203,4 +216,42 @@ class SacrudTests(unittest.TestCase):
         self.assertEqual(profile, None)
         # check file also deleted
         self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
+
+
+class PositionTest(BaseSacrudTest):
+
+    def test_insert(self):
+
+        self.user_add()
+        self.user_add()
+        self.user_add()
+
+        self.assertEqual(self.session.query(User).get(1).position, 2)
+        self.assertEqual(self.session.query(User).get(2).position, 1)
+        self.assertEqual(self.session.query(User).get(3).position, 0)
+
+        request = DummyRequest()
+        request["position"] = ["0",]
+        update(self.session, User, 1, request)
+
+        self.assertEqual(self.session.query(User).get(1).position, 0)
+        self.assertEqual(self.session.query(User).get(2).position, 2)
+        self.assertEqual(self.session.query(User).get(3).position, 1)
+
+        request = DummyRequest()
+        request["position"] = ["4",]
+        update(self.session, User, 1, request)
+
+        self.assertEqual(self.session.query(User).get(1).position, 4)
+        self.assertEqual(self.session.query(User).get(2).position, 2)
+        self.assertEqual(self.session.query(User).get(3).position, 1)
+
+        user = User(u'Vasya', u'Pupkin', u"123", '3')
+        self.session.add(user)
+        transaction.commit()
+
+        self.assertEqual(self.session.query(User).get(1).position, 5)
+        self.assertEqual(self.session.query(User).get(2).position, 2)
+        self.assertEqual(self.session.query(User).get(3).position, 1)
+        self.assertEqual(self.session.query(User).get(4).position, 3)
 
