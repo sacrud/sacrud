@@ -7,7 +7,6 @@ import os
 from sqlalchemy.event import listen
 from sqlalchemy import orm
 from zope.sqlalchemy import ZopeTransactionExtension
-from sqlalchemy.orm.attributes import set_committed_value
 
 
 Base = declarative_base()
@@ -47,8 +46,8 @@ def before_insert(mapper, connection, target):
 
     connection.execute(cls.__table__.update().
                        values(position=cls.position + 1).
-                       where(cls.id != target.id)
-                       .where(cls.position >= position)
+                       where(cls.id != target.id).
+                       where(cls.position >= position)
                        )
 
 listen(User, "before_insert", before_insert)
