@@ -17,13 +17,14 @@ from pyramid.config import Configurator
 from webtest.app import TestApp
 from pyramid.url import route_url
 from webtest.forms import Upload
+from sacrud.tests import BaseSacrudTest
 
 
 class MockCGIFieldStorage(object):
     pass
 
 
-class SacrudTests(unittest.TestCase):
+class SacrudTests(BaseSacrudTest):
 
     def setUp(self):
 
@@ -57,20 +58,6 @@ class SacrudTests(unittest.TestCase):
         clear_files()
         self.session.remove()
         testing.tearDown()
-
-    def user_add(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-        user = self.session.query(User).get(1)
-        return user
-
-    def profile_add(self, user):
-        profile = Profile(user=user)
-        self.session.add(profile)
-        transaction.commit()
-        profile = self.session.query(Profile).get(1)
-        return profile
 
     def test_home_view(self):
         self.user_add()
