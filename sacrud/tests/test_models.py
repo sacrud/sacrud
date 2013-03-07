@@ -7,6 +7,7 @@ import os
 from sqlalchemy.event import listen
 from sqlalchemy import orm
 from zope.sqlalchemy import ZopeTransactionExtension
+from sacrud.position import before_insert
 
 
 Base = declarative_base()
@@ -38,17 +39,6 @@ class User(Base):
                                             self.fullname,
                                             self.password)
 
-
-def before_insert(mapper, connection, target):
-
-    cls = target.__class__
-    position = target.position and target.position or 0
-
-    connection.execute(cls.__table__.update().
-                       values(position=cls.position + 1).
-                       where(cls.id != target.id).
-                       where(cls.position >= position)
-                       )
 
 listen(User, "before_insert", before_insert)
 listen(User, "before_update", before_insert)
