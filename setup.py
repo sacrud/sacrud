@@ -45,7 +45,7 @@ print 'files', files
 
 setup(
     name='sacrud',
-    version='0.0.1b3',
+    version='0.0.2b',
     url='http://github.com/uralbash/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
@@ -73,6 +73,7 @@ setup(
         "transaction",
         'zope.sqlalchemy',
         'pyramid_jinja2'
+        'webtest',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
