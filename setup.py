@@ -72,7 +72,7 @@ setup(
         "pyramid",
         "transaction",
         'zope.sqlalchemy',
-        'pyramid_jinja2'
+        'pyramid_jinja2',
         'webtest',
     ],
     classifiers=[
