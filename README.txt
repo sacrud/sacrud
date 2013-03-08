@@ -2,7 +2,7 @@ CRUD interface for SQLAlchemy with Pyramid gateway.
 DOCS WITH NEXT RELEASE!
 
 INSTALL
-===
+=======
 
 PyPi
 ---
