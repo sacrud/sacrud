@@ -66,7 +66,7 @@ setup(
         'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
-    long_description=open('README.md').read(),
+    long_description=open('README.txt').read(),
     install_requires=[
         "sqlalchemy",
         "pyramid",

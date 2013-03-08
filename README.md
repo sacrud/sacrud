@@ -33,12 +33,12 @@ SCREENSHOTS
 ===========
 list of tables
 --------------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/sacrud/doc/tables.png)
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/edit.png)
 
 list of rows
 --------------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/sacrud/doc/row_list.png)
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/row_list.png)
 
 edit row
 --------------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/sacrud/doc/edit.png)
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/edit.png)
