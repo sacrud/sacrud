@@ -33,7 +33,7 @@ SCREENSHOTS
 ===========
 list of tables
 --------------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/edit.png)
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/tables.png)
 
 list of rows
 --------------
