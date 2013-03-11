@@ -117,6 +117,7 @@ class SacrudTests(BaseSacrudTest):
         self.assertEqual(user.name,  "Karlson")
         self.assertEqual(user.fullname,  "Karlson the Third")
         self.assertEqual(user.password,  "123")
+        self.assertEqual(user.position,  0)
 
         name = route_url('sa_create', request,
                                       table="profile")
