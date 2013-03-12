@@ -22,7 +22,9 @@
     {% endfor %}
     <td>
     {% block actions %}
+    {% with row=row %}
     	{% include 'sacrud/forms/actions.jinja2' %}
+    {% endwith %}
     {% endblock %}
     </td>
   </tr>
