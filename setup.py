@@ -58,9 +58,9 @@ setup(
     license="GPL",
     package_dir={'sacrud': 'sacrud'},
     package_data={
-        'sacrud': ['static/style/*',
-                   'static/js/*',
-                   'static/js/jquery/*',
+        'sacrud': ['static/style/*.css',
+                   'static/js/*.js',
+                   'static/js/jquery/*.js',
                    'templates/*.jinja2', 'templates/forms/*.jinja2',
                    'templates/types/*.jinja2',
                    'tests/*.py',
