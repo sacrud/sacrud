@@ -62,6 +62,7 @@ setup(
                    'static/js/*.js',
                    'static/js/jquery/*.js',
                    'templates/*.jinja2', 'templates/forms/*.jinja2',
+                   'templates/forms/actions/*.jinja2',
                    'templates/types/*.jinja2',
                    'tests/*.py',
                     ],

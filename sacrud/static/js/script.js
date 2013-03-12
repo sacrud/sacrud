@@ -1,3 +1,5 @@
 $(document).ready(function() {
-   alert(123)
+   $("id_cut").click(function({
+   	
+   }))
  });
