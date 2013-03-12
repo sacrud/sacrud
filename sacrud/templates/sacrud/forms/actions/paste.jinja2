@@ -1,6 +1,8 @@
 <!--cut-->
 <div class="inline" >
-  <form action="#" method='GET'>
-    <input type="submit" value="paste" id="id_paste">
+    <form action="{{ request.route_url('sa_paste', table=sa_crud['table'].__tablename__,
+        id=row[sa_crud['pk']]) }}" 
+        method='POST'>
+    <input type="submit" value="paste" class="paste" disabled="disabled">
   </form>
 </div>

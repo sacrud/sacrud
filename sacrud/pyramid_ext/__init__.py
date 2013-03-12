@@ -16,6 +16,7 @@ def add_routes(config):
     config.add_route('sa_read',     '/' + pkg_name + '/{table}/read/{id}')
     config.add_route('sa_update',   '/' + pkg_name + '/{table}/update/{id}')
     config.add_route('sa_delete',   '/' + pkg_name + '/{table}/delete/{id}')
+    config.add_route('sa_paste',    '/' + pkg_name + '/{table}/paste/{id}')
 
 
 def includeme(config):

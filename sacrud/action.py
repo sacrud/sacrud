@@ -26,13 +26,13 @@ def get_relations(obj):
             sqlalchemy.orm.collections.InstrumentedList)]
 
 
-def index(session, table):
+def index(session, table, order_by="id"):
     """
     Return row list of table
     """
     col = [c for c in table.__table__.columns]
     pk_name = get_pk(table)
-    row = session.query(table).all()
+    row = session.query(table).order_by(order_by).all()
     return {'row': row,
             'pk': pk_name,
             'col': col,
