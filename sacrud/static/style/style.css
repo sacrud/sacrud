@@ -61,3 +61,7 @@ div.inline { float:left; }
   border-bottom: 2px solid #fbc2c4;
   padding: 0 20px 30px 20px;
 }
+
+.hidden {
+	display: none
+}

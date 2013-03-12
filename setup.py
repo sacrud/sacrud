@@ -61,6 +61,7 @@ setup(
         'sacrud': ['static/style/*.css',
                    'static/js/*.js',
                    'static/js/jquery/*.js',
+                   'static/images/*',
                    'templates/*.jinja2', 'templates/forms/*.jinja2',
                    'templates/forms/actions/*.jinja2',
                    'templates/types/*.jinja2',

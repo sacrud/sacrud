@@ -1,5 +1,5 @@
 $(document).ready(function() {
-   $("id_cut").click(function({
-   	
-   }))
+   $(".cut").click(function() {
+   	$(".paste").show()
+   })
  });
