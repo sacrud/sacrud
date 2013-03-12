@@ -21,9 +21,7 @@
     </td>
     {% endfor %}
     <td>
-    {% with row=row %}
-    	{% include 'sacrud/forms/actions.jinja2' %}
-    {% endwith %}
+    	{% include 'sacrud/forms/actions.jinja2' with context %}
     </td>
   </tr>
   {% endfor %}
