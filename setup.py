@@ -60,6 +60,7 @@ setup(
     package_data={
         'sacrud': ['static/style/*',
                    'static/js/*',
+                   'static/js/jquery/*',
                    'templates/*.jinja2', 'templates/forms/*.jinja2',
                    'templates/types/*.jinja2',
                    'tests/*.py',
