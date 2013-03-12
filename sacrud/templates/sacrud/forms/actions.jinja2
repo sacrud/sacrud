@@ -1,6 +1,6 @@
 {% with row=row %}
-	{% include 'sacrud/forms/actions/delete.jinja2' %}
-	{% include 'sacrud/forms/actions/edit.jinja2' %}
-	{% include 'sacrud/forms/actions/view.jinja2' %}
-	{% include 'sacrud/forms/actions/cut.jinja2' %}
+	{% include 'sacrud/forms/actions/delete.jinja2' with copntext %}
+	{% include 'sacrud/forms/actions/edit.jinja2' with copntext %}
+	{% include 'sacrud/forms/actions/view.jinja2' with copntext %}
+	{% include 'sacrud/forms/actions/cut.jinja2' with copntext %}
 {% endwith %}
