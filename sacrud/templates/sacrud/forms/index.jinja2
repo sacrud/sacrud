@@ -1,3 +1,8 @@
+{% block extrascript %}
+  <script src="/sa_static/js/jquery/jquery-1.9.1.min.js">
+  <script src="/sa_static/js/script.js">
+{% endblock %}
+
 <div class="sa_table">
 <!--create-->
 <a href="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
@@ -43,6 +48,10 @@
             id=row[sa_crud['pk']]) }}" 
             method='GET'>
         <input type="submit" value="view">
+      </form>
+      <!--view-->
+      <div class="inline">
+	    <input type="submit" value="cut" id="id_cut">
       </form>
       </div>
     </td>

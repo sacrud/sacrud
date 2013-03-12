@@ -107,6 +107,21 @@ def sa_update(request):
             'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
 
 
+@view_config(route_name='sa_update', renderer='json')
+def sa_cut(request):
+    from sacrud.pyramid_ext import DBSession
+    tname = request.matchdict['table']
+    id = request.matchdict['id']
+    if 'form.submitted' in request.params:
+        action.update(DBSession, get_table(tname, request), id,
+                request.params.dict_of_lists())
+        return HTTPFound(location=request.route_url('sa_list', table=tname))
+    resp = action.update(DBSession, get_table(tname, request), id)
+    rel = get_relationship(tname, request)
+    return {'sa_crud': resp, 'rel': rel,
+            'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
+
+
 @view_config(route_name='sa_delete')
 def sa_delete(request):
     from sacrud.pyramid_ext import DBSession
