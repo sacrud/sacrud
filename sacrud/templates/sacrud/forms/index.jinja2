@@ -14,7 +14,7 @@
   <th>actions</th>
   </tr>
   {% for row in sa_crud['row'] %}
-  <tr valign="top">
+  <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{row[sa_crud['pk']] }}">
     {% for col in sa_crud['col'] %}
     <td>
       {{ row.__getattribute__(col.name)|string|truncate(200) }}

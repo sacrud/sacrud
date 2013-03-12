@@ -111,19 +111,18 @@ def sa_update(request):
             'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
 
 
-@view_config(route_name='sa_paste', renderer='json')
+@view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')
 def sa_paste(request):
     from sacrud.pyramid_ext import DBSession
     tname = request.matchdict['table']
     id = request.matchdict['id']
-    if 'form.submitted' in request.params:
-        action.update(DBSession, get_table(tname, request), id,
-                request.params.dict_of_lists())
-        return HTTPFound(location=request.route_url('sa_list', table=tname))
-    resp = action.update(DBSession, get_table(tname, request), id)
-    rel = get_relationship(tname, request)
-    return {'sa_crud': resp, 'rel': rel,
-            'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
+    target_id = request.matchdict['target_id']
+
+    source_obj = action.read(DBSession, get_table(tname, request), id)['obj']
+    action.update(DBSession, get_table(tname, request), target_id,
+                  {"position": [source_obj.position-1]})
+
+    return HTTPFound(location=request.route_url('sa_list', table=tname))
 
 
 @view_config(route_name='sa_delete')
