@@ -213,4 +213,28 @@ class SacrudTests(BaseSacrudTest):
                                       table="user",
                                       id=1)
         response = self.testapp.get(name).follow()
+
         self.failUnlessEqual(response.status, '200 OK')
+
+    def test_paste_view(self):
+
+        self.user_add()
+        self.user_add()
+        request = testing.DummyRequest()
+
+        user1 = self.session.query(User).get(1)
+        user2 = self.session.query(User).get(2)
+        self.assertGreater(user1.position, user2.position)
+
+        name = route_url('sa_paste', request,
+                                     table="user",
+                                     id=2,
+                                     target_id=1)
+
+        response = self.testapp.post(name).follow()
+        self.failUnlessEqual(response.status, '200 OK')
+
+        user1 = self.session.query(User).get(1)
+        user2 = self.session.query(User).get(2)
+        self.assertGreater(user2.position, user1.position)
+        
