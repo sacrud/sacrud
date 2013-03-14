@@ -8,7 +8,8 @@
 
 {% block sa_body %}
 <h1>{{ sa_crud['table'].__tablename__ }} list</h1>
-
+<div id="cutelement" class="hidden sa_table">
+</div>
 {% include 'sacrud/forms/index.jinja2' %}
 
 {% endblock %}

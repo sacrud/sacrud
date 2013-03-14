@@ -15,9 +15,17 @@ $(document).ready(function() {
    	
    $(".cut").click(function() {
    	
-   	target_id = $(this).closest('tr').attr('id').split('_')
+   	row = $(this).closest('tr')
+   	target_id = row.attr('id').split('_')
    	target_id =  target_id[1]
    	
+   	new_row = row.clone()
+   	new_row.find('td').last().hide()
+   	table = "<table>" + new_row.html() + "</table>"
+   	message = "You choose element to move" + table 
+   	$("#cutelement").html(message)
+   	$("#cutelement").show()
+	
 	$(".paste").each(function(){
 		action = $.data(this, 'action')
 		form  = $(this).parent().find(".form_paste")

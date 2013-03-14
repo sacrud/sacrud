@@ -65,3 +65,11 @@ div.inline { float:left; }
 .hidden {
 	display: none
 }
+
+#cutelement {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  width: 8em;
+  margin-top: -2.5em;
+}
