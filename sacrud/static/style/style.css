@@ -75,5 +75,5 @@ div.inline { float:left; }
 }
 
 .selected {
-	background-color: #FF0000;
+	background-color: highlight;
 }
