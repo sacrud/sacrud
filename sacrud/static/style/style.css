@@ -73,3 +73,7 @@ div.inline { float:left; }
   width: 8em;
   margin-top: -2.5em;
 }
+
+.selected {
+	background-color: #FF0000;
+}

@@ -15,7 +15,9 @@ $(document).ready(function() {
    	
    $(".cut").click(function() {
    	
+   	$('.selected').removeClass("selected")
    	row = $(this).closest('tr')
+   	
    	target_id = row.attr('id').split('_')
    	target_id =  target_id[1]
    	
@@ -25,6 +27,7 @@ $(document).ready(function() {
    	message = "You choose element to move" + table 
    	$("#cutelement").html(message)
    	$("#cutelement").show()
+   	row.addClass("selected")
 	
 	$(".paste").each(function(){
 		action = $.data(this, 'action')
