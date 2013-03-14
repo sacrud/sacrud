@@ -120,7 +120,7 @@ def sa_paste(request):
 
     source_obj = action.read(DBSession, get_table(tname, request), id)['obj']
     action.update(DBSession, get_table(tname, request), target_id,
-                  {"position": [source_obj.position-1]})
+                  {"position": [source_obj.position]})
 
     return HTTPFound(location=request.route_url('sa_list', table=tname))
 
