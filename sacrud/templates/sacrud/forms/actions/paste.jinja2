@@ -1,0 +1,8 @@
+<!--paste-->
+<div class="inline hidden paste" >
+  <img src="/sa_static/images/paste.jpg" alt=cut object" height="18" width="18">
+  <form action="{{ request.route_url('sa_paste_tmp', table=sa_crud['table'].__tablename__,
+        id=row[sa_crud['pk']]) }}" 
+        method='POST'" class="form_paste hidden">
+  </form>
+</div>

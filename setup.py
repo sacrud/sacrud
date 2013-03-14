@@ -58,10 +58,14 @@ setup(
     license="GPL",
     package_dir={'sacrud': 'sacrud'},
     package_data={
-        'sacrud': ['static/*',
-                    'templates/*.jinja2', 'templates/forms/*.jinja2',
-                    'templates/types/*.jinja2',
-                    'tests/*.py',
+        'sacrud': ['static/style/*.css',
+                   'static/js/*.js',
+                   'static/js/jquery/*.js',
+                   'static/images/*',
+                   'templates/*.jinja2', 'templates/forms/*.jinja2',
+                   'templates/forms/actions/*.jinja2',
+                   'templates/types/*.jinja2',
+                   'tests/*.py',
                     ],
         'sacrud.pyramid_ext': ['tests/*.py']
     },

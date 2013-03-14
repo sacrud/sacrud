@@ -14,37 +14,14 @@
   <th>actions</th>
   </tr>
   {% for row in sa_crud['row'] %}
-  <tr valign="top">
+  <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{row[sa_crud['pk']] }}">
     {% for col in sa_crud['col'] %}
     <td>
       {{ row.__getattribute__(col.name)|string|truncate(200) }}
     </td>
     {% endfor %}
     <td>
-      <!--delete-->
-      <div class="inline">
-      <form action="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
-            id=row[sa_crud['pk']]) }}" 
-            method='POST'>
-        <input type="submit" value="delete">
-      </form>
-      </div>
-      <!--edit-->
-      <div class="inline">
-      <form action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
-            id=row[sa_crud['pk']]) }}" 
-            method='POST'>
-        <input type="submit" value="edit">
-      </form>
-      </div>
-      <!--view-->
-      <div class="inline">
-      <form action="{{ request.route_url('sa_read', table=sa_crud['table'].__tablename__,
-            id=row[sa_crud['pk']]) }}" 
-            method='GET'>
-        <input type="submit" value="view">
-      </form>
-      </div>
+    	{% include 'sacrud/forms/actions.jinja2' with context %}
     </td>
   </tr>
   {% endfor %}

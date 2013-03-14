@@ -1,8 +1,15 @@
 {% extends "sacrud/base.jinja2" %}
 
+{% block extrascript %}
+  <script src="/sa_static/js/jquery/jquery-1.9.1.min.js"></script>
+  <script src="/sa_static/js/script.js"></script>
+  <script src="/sa_static/js/URI.js"></script>
+{% endblock %}
+
 {% block sa_body %}
 <h1>{{ sa_crud['table'].__tablename__ }} list</h1>
-
+<div id="cutelement" class="hidden sa_table selected">
+</div>
 {% include 'sacrud/forms/index.jinja2' %}
 
 {% endblock %}

@@ -64,7 +64,11 @@ def sa_home(request):
 def sa_list(request):
     from sacrud.pyramid_ext import DBSession
     tname = request.matchdict['table']
-    resp = action.index(DBSession, get_table(tname, request))
+    order_by = request.params.get('order_by', False)
+    args = [DBSession, get_table(tname, request)]
+    if order_by:
+        args.append(order_by)
+    resp = action.index(*args)
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
@@ -105,6 +109,20 @@ def sa_update(request):
     rel = get_relationship(tname, request)
     return {'sa_crud': resp, 'rel': rel,
             'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
+
+
+@view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')
+def sa_paste(request):
+    from sacrud.pyramid_ext import DBSession
+    tname = request.matchdict['table']
+    id = request.matchdict['id']
+    target_id = request.matchdict['target_id']
+
+    source_obj = action.read(DBSession, get_table(tname, request), id)['obj']
+    action.update(DBSession, get_table(tname, request), target_id,
+                  {"position": [source_obj.position]})
+
+    return HTTPFound(location=request.route_url('sa_list', table=tname))
 
 
 @view_config(route_name='sa_delete')

@@ -1,0 +1,8 @@
+<!--view-->
+  <div class="inline">
+  <form action="{{ request.route_url('sa_read', table=sa_crud['table'].__tablename__,
+        id=row[sa_crud['pk']]) }}" 
+        method='GET'>
+    <input type="submit" value="view">
+  </form>
+</div>
