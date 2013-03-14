@@ -28,7 +28,7 @@ $(document).ready(function() {
    	$("#cutelement").html(message)
    	$("#cutelement").show()
    	row.addClass("selected")
-	
+	$("#cutelement").addClass("selected")
 	$(".paste").each(function(){
 		action = $.data(this, 'action')
 		form  = $(this).parent().find(".form_paste")
