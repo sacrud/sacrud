@@ -72,7 +72,7 @@ class SacrudTests(BaseSacrudTest):
     def test_list_view(self):
         user = self.user_add()
         self.profile_add(user)
-        
+
         request = testing.DummyRequest()
         name = route_url('sa_list', request, table="user")
         response = self.testapp.get(name)
