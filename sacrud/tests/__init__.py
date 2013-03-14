@@ -51,8 +51,9 @@ class BaseSacrudTest(unittest.TestCase):
         def clear_files():
             for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
                 os.remove(os.path.join(PHOTO_PATH, filename))
+            for filename in glob.glob("%s/*.txt" % (PHOTO_PATH, )):
+                os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
-        self.session.remove()
 
 
 class SacrudTest(BaseSacrudTest):
