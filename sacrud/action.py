@@ -160,7 +160,7 @@ def check_type(request, table, key=None, obj=None):
     elif column_type == 'HSTORE':
         value[0] = ast.literal_eval(value[0])
     elif column_type in ('Date', 'DateTime'):
-        value[0] = datetime.datetime.strptime(value[0], "%d%m%Y").date()
+        value[0] = datetime.datetime.strptime(value[0], "%Y-%m-%d").date()
 
     return value[0]
 

@@ -73,10 +73,8 @@ setup(
     long_description=open('README.txt').read(),
     install_requires=[
         "sqlalchemy",
-        "pyramid",
         "transaction",
         'zope.sqlalchemy',
-        'pyramid_jinja2',
         'webtest',
     ],
     classifiers=[
