@@ -3,3 +3,4 @@ pyramid
 zope.sqlalchemy
 transaction
 pyramid_jinja2
+webtest
