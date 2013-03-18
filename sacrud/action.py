@@ -159,10 +159,6 @@ def check_type(request, table, key=None, obj=None):
         value[0] = request[key][0].filename
     elif column_type == 'HSTORE':
         value[0] = ast.literal_eval(value[0])
-    elif column_type in ('Date', 'DateTime'):
-        if value[0]:
-            value[0] = datetime.datetime.strptime(value[0], "%Y-%m-%d").date()
-
     return value[0]
 
 
