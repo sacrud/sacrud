@@ -150,7 +150,7 @@ def check_type(request, table, key=None, obj=None):
             return None
         request[key][0].filename = str(calendar.timegm(datetime.
                                        datetime.now().utctimetuple())) +\
-                                   request[key][0].filename
+            request[key][0].filename
         abspath = table.__table__.columns[key].type.abspath
         store_file(request, key, abspath)
         if obj:
@@ -160,7 +160,8 @@ def check_type(request, table, key=None, obj=None):
     elif column_type == 'HSTORE':
         value[0] = ast.literal_eval(value[0])
     elif column_type in ('Date', 'DateTime'):
-        value[0] = datetime.datetime.strptime(value[0], "%Y-%m-%d").date()
+        if value[0]:
+            value[0] = datetime.datetime.strptime(value[0], "%Y-%m-%d").date()
 
     return value[0]
 
