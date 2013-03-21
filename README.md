@@ -28,3 +28,17 @@ Add to your project config:
     settings['sacrud_models'] = (Model1, Model2, Model3)
 
 go to http://localhost:6543/sacrud 
+
+SCREENSHOTS
+===========
+list of tables
+--------------
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/tables.png)
+
+list of rows
+--------------
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/row_list.png)
+
+edit row
+--------------
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/edit.png)

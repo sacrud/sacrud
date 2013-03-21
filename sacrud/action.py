@@ -136,10 +136,9 @@ def check_type(request, table, key=None, obj=None):
                 if getattr(obj, col.name):
                     delete_fileobj(table, obj, col.name)
         return
-    column_type = table.__table__.columns[key].\
-                        type.__class__.__name__
-    # for Update or Create
+    column_type = table.__table__.columns[key].type.__class__.__name__
 
+    # for Update or Create
     value = request[key]
     # Заменяет пустые строки на None
     if value[0] == '':
@@ -150,8 +149,8 @@ def check_type(request, table, key=None, obj=None):
         if request[key][0] is None:
             return None
         request[key][0].filename = str(calendar.timegm(datetime.
-                datetime.now().utctimetuple())) +\
-                request[key][0].filename
+                                       datetime.now().utctimetuple())) +\
+            request[key][0].filename
         abspath = table.__table__.columns[key].type.abspath
         store_file(request, key, abspath)
         if obj:
@@ -160,7 +159,6 @@ def check_type(request, table, key=None, obj=None):
         value[0] = request[key][0].filename
     elif column_type == 'HSTORE':
         value[0] = ast.literal_eval(value[0])
-
     return value[0]
 
 

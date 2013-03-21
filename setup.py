@@ -45,7 +45,7 @@ print 'files', files
 
 setup(
     name='sacrud',
-    version='0.0.1b',
+    version='0.0.3b',
     url='http://github.com/uralbash/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
@@ -70,13 +70,12 @@ setup(
         'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
-    long_description=open('README.md').read(),
+    long_description=open('README.txt').read(),
     install_requires=[
         "sqlalchemy",
-        "pyramid",
         "transaction",
         'zope.sqlalchemy',
-        'pyramid_jinja2'
+        'webtest',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',
