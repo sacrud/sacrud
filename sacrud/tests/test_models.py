@@ -1,6 +1,6 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, String, Text, Boolean, Float
+from sqlalchemy.types import Integer, String, Text, Boolean, Float, Enum
 from sqlalchemy.orm import relationship, backref
 from sacrud.exttype import FileStore
 import os
@@ -28,12 +28,19 @@ class User(Base):
     fullname = Column(String)
     password = Column(String)
     position = Column(Integer, default=0)
+    sex = Column(Enum('male',
+                      'female',
+                      'alien',
+                      'unknown',
+                       name="sex"))
 
-    def __init__(self, name, fullname, password, position=0):
+    def __init__(self, name, fullname, password, position=0,
+                       sex='unknown'):
         self.name = name
         self.fullname = fullname
         self.password = password
         self.position = position
+        self.sex = sex
 
     def __repr__(self):
         return "<User('%s','%s', '%s')>" % (self.name,

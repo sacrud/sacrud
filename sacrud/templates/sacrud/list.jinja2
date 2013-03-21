@@ -10,6 +10,6 @@
 <h1>{{ sa_crud['table'].__tablename__ }} list</h1>
 <div id="cutelement" class="hidden sa_table selected">
 </div>
-{% include 'sacrud/forms/index.jinja2' %}
+{% include 'sacrud/forms/index.jinja2' with context %}
 
 {% endblock %}

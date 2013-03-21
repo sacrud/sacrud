@@ -1,0 +1,10 @@
+<select class="sacrud_select" name="{{ col.name }}">
+  {% for x in col.type.enums %}
+  <option value='{{ x }}'
+  {% if obj %}{% if getattr(obj, col.name)== x %}
+    selected
+  {% endif%}{% endif %}>
+    {{ x.__repr__() }}
+  </option>
+  {% endfor %}
+</select>

@@ -54,7 +54,7 @@ setup(
     data_files=files,
     include_package_data=True,
     zip_safe=False,
-    test_suite="pyramid_ext.tests",
+    test_suite="sacrud.tests",
     license="GPL",
     package_dir={'sacrud': 'sacrud'},
     package_data={
