@@ -4,6 +4,6 @@
 sacrud/.coverage
 *.pyc
 sacrud/cover
-
 cover
 .coverage
+sacrud.egg-info
