@@ -11,7 +11,5 @@ run:
      
 shell:
 	. ../../env/bin/activate; pshell development.ini
-	
-init_db:
-	. ../../env/bin/activate; initialize_platon_kp_db development.ini
+
 	
