@@ -8,7 +8,6 @@
   <tr>
   {% set dnd = [] %}
   {% for col in sa_crud['col'] %}
-    {{ col.name }}
     {% if "position" == col.name %}
         {% do dnd.append(1) %}
     {% endif %}
