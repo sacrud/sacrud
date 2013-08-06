@@ -1,7 +1,4 @@
 import os
-        port = 22
-        port = 22
-        port = 22
 import glob
 import fnmatch
 from setuptools import setup
@@ -48,7 +45,7 @@ print 'files', files
 
 setup(
     name='sacrud',
-    version='0.0.3b',
+    version='0.0.3',
     url='http://github.com/uralbash/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
