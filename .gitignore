@@ -1,3 +1,4 @@
+*.swp
 .settings
 .project
 .pydevproject
@@ -10,4 +11,4 @@ cover
 build
 dist
 *.egg-info
-
+example
