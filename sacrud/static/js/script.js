@@ -18,8 +18,7 @@ $(document).ready(function() {
    	$('.selected').removeClass("selected")
    	row = $(this).closest('tr')
    	
-   	target_id = row.attr('id').split('_')
-   	target_id =  target_id[1]
+   	target_id = row.attr('id').split('_').pop()
    	
    	new_row = row.clone()
    	new_row.find('td').last().hide()

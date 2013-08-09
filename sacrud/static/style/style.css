@@ -69,8 +69,7 @@ div.inline { float:left; }
 #cutelement {
   position: fixed;
   right: 0;
-  top: 50%;
-  margin-top: -2.5em;
+  top: 0;
 }
 
 .selected {
