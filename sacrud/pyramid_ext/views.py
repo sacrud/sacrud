@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlalchemy as sa
-from sacrud import (
-        action,
-        )
+from sacrud import action
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
 
@@ -10,21 +8,21 @@ from pyramid.view import view_config
 def breadcrumbs(tname,  view, id=None):
     bc = {}
     bc['sa_list'] = [{'name': 'Home', 'visible': True,
-                'view': 'sa_home',
-                'param': {'table': tname}},
-               {'name': tname, 'visible': True,
-                'view': 'sa_list',
-                'param': {'table': tname}}]
+                      'view': 'sa_home',
+                      'param': {'table': tname}},
+                     {'name': tname, 'visible': True,
+                      'view': 'sa_list',
+                      'param': {'table': tname}}]
     bc['sa_create'] = bc['sa_list'][:]
     bc['sa_create'].append({'name': 'create',
-                    'visible': False,
-                    'view': 'sa_list',
-                    'param': {'table': tname}})
+                            'visible': False,
+                            'view': 'sa_list',
+                            'param': {'table': tname}})
     bc['sa_read'] = bc['sa_list'][:]
     bc['sa_read'].append({'name': id,
-                    'visible': False,
-                    'view': 'sa_list',
-                    'param': {'table': tname}})
+                          'visible': False,
+                          'view': 'sa_list',
+                          'param': {'table': tname}})
     bc['sa_update'] = bc['sa_read']
 
     return bc[view]
@@ -37,8 +35,8 @@ def get_models(request):
 
 def get_table(tname, request):
     tables = get_models(request)
-    return filter(
-      lambda table: (table.__tablename__).lower() == tname.lower(), tables)[0]
+    return filter(lambda table: (table.__tablename__).
+                  lower() == tname.lower(), tables)[0]
 
 
 def get_relationship(tname, request):
@@ -51,7 +49,7 @@ def get_relationship(tname, request):
     #related_tables = [prop.target for prop in relation_properties]
     related_classes = [{'cls': prop.mapper.class_,
                         'col': list(prop.local_columns)[0]}
-            for prop in relation_properties]
+                       for prop in relation_properties]
     return related_classes
 
 
@@ -78,7 +76,7 @@ def sa_create(request):
     tname = request.matchdict['table']
     if 'form.submitted' in request.params:
         action.create(DBSession, get_table(tname, request),
-                request.params.dict_of_lists())
+                      request.params.dict_of_lists())
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.create(DBSession, get_table(tname, request))
     rel = get_relationship(tname, request)
@@ -103,7 +101,7 @@ def sa_update(request):
     id = request.matchdict['id']
     if 'form.submitted' in request.params:
         action.update(DBSession, get_table(tname, request), id,
-                request.params.dict_of_lists())
+                      request.params.dict_of_lists())
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.update(DBSession, get_table(tname, request), id)
     rel = get_relationship(tname, request)
@@ -119,6 +117,7 @@ def sa_paste(request):
     target_id = request.matchdict['target_id']
 
     source_obj = action.read(DBSession, get_table(tname, request), id)['obj']
+    # FIXME: поправить position на mapper_args
     action.update(DBSession, get_table(tname, request), target_id,
                   {"position": [source_obj.position]})
 

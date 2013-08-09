@@ -3,13 +3,10 @@ $(document).ready(function() {
    		form  = $(this).parent().find(".form_paste");
    		form.submit();
    		}
-  		
   	)
    $(".paste").each(function() {
    		form  = $(this).parent().find(".form_paste")
-		$.data(this, 'action', form.attr("action")
-			)
-			
+		$.data(this, 'action', form.attr("action"))
    		}
    	)
    	
@@ -17,7 +14,6 @@ $(document).ready(function() {
    	
    	$('.selected').removeClass("selected")
    	row = $(this).closest('tr')
-   	
    	target_id = row.attr('id').split('_').pop()
    	
    	new_row = row.clone()

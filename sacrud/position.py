@@ -1,5 +1,3 @@
-
-
 def before_insert(mapper, connection, target):
 
     cls = target.__class__
@@ -10,4 +8,3 @@ def before_insert(mapper, connection, target):
                        where(cls.id != target.id).
                        where(cls.position >= position)
                        )
-
