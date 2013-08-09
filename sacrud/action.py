@@ -36,11 +36,17 @@ def index(session, table, order_by=None):
     if order_by:
         query = query.order_by(order_by)
     row = query.all()
+    if hasattr(table, '__mapper_args__'):
+        mapper_args = table.__mapper_args__
+    else:
+        mapper_args = {}
+
     return {'row': row,
             'pk': pk_name,
             'col': col,
             'table': table,
-            'prefix': prefix}
+            'prefix': prefix,
+            'mapper_args': mapper_args, }
 
 
 def create(session, table, request=''):
