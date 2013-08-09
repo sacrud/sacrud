@@ -27,7 +27,7 @@ div.inline { float:left; }
 .clearBoth { clear:both; }
 
 .sa_head {
-  background: #eee;
+  background: #CCC;
 }
 
 #sa_head_menu {
@@ -74,7 +74,7 @@ div.inline { float:left; }
 }
 
 .selected {
-  background-color: highlight;
+  background-color: #CCC;
 }
 
 .sa_actions li {
