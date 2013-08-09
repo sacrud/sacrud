@@ -14,7 +14,6 @@ input {
   width: auto;
   border: 1px solid #bbbbbb;
   padding: 5px;
-  background: #FFA;
 }
 
 .sa_table table { 
@@ -71,6 +70,18 @@ div.inline { float:left; }
   position: fixed;
   right: 0;
   top: 0;
+}
+
+#button_save {
+  background: #EEE;
+}
+
+#button_delete {
+  background: #FAA;
+}
+
+#button_other {
+  background: #FFA;
 }
 
 .selected {
