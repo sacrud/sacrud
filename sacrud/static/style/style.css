@@ -63,7 +63,7 @@ div.inline { float:left; }
 }
 
 .hidden {
-	display: none
+  display: none
 }
 
 #cutelement {
@@ -74,5 +74,18 @@ div.inline { float:left; }
 }
 
 .selected {
-	background-color: highlight;
+  background-color: highlight;
+}
+
+.sa_actions li {
+  list-style-type: none;
+  float: left;
+  padding-right: 8px;
+}
+
+ul {
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 0;
+  padding-left: 0;
 }
