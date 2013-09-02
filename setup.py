@@ -1,6 +1,7 @@
 import os
 import glob
 import fnmatch
+from sacrud import version
 from setuptools import setup
 
 
@@ -45,7 +46,7 @@ print 'files', files
 
 setup(
     name='sacrud',
-    version='0.0.3',
+    version=version.__version__,
     url='http://github.com/uralbash/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
@@ -65,8 +66,7 @@ setup(
                    'templates/*.jinja2', 'templates/forms/*.jinja2',
                    'templates/forms/actions/*.jinja2',
                    'templates/types/*.jinja2',
-                   'tests/*.py',
-                    ],
+                   'tests/*.py', ],
         'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
@@ -78,15 +78,14 @@ setup(
         'webtest',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Environment :: Console',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
-        'Natural Language :: English',
-        'Natural Language :: Russian',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Database',
-        ],
+            'Development Status :: 3 - Alpha',
+            'Environment :: Console',
+            'Environment :: Web Environment',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: GNU General Public License (GPL)',
+            'Natural Language :: English',
+            'Natural Language :: Russian',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
+            'Topic :: Database', ],
 )

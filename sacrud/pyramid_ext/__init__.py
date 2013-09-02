@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import sqlalchemy
 import sqlalchemy.orm as orm
+from ..version import __version__
 from zope.sqlalchemy import ZopeTransactionExtension
 
 pkg_name = 'sacrud'
@@ -47,4 +48,5 @@ def includeme(config):
     env.globals['isinstance'] = isinstance
     env.globals['sqlalchemy'] = sqlalchemy
     env.globals['session'] = DBSession
+    env.globals['sacrud_ver'] = __version__
     config.scan()
