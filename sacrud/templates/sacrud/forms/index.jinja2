@@ -1,27 +1,34 @@
-<div class="sa_table">
+<div class="sa_table checkboxFilter">
 <!--create-->
 <a href="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
   Add a new {{ sa_crud['table'].__tablename__ }}
-</a>
+  </a> | <a href="#" id="sa_union">Union of the fields</a>
 {% set isdnd = False %}
 {% if sa_crud['mapper_args']['order_by'] %}
     {% set isdnd = True %}
 {% endif %}
-<table id="index">
+<table id="sa_index">
   {% if sa_crud %}
-  <tr>
-  {% for col in sa_crud['col'] %}
+  <thead><tr>
+    <td>
+      <input type="checkbox">
+    </td>
+    {% for col in sa_crud['col'] %}
     <th>
       {{ col.name }}
     </th>
-  {% endfor %}
+    {% endfor %}
   <th>actions</th>
-  </tr>
+  </tr></thead>
+  <tbody>
   {% for row in sa_crud['row'] %}
-
-  <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{row[sa_crud['pk']] }}">
+  {% set row_id = row[sa_crud['pk']] %}
+  <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
+    <td>
+        <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
+    </td>
     {% for col in sa_crud['col'] %}
-          <td>
+        <td>
         {{ row.__getattribute__(col.name)|string|truncate(200) }}
         </td>
     {% endfor %}
@@ -33,5 +40,6 @@
   {% else %}
   <tr><td>There are no open objects</td></tr>
   {% endif %}
+  </tbody>
 </table>
 </div>

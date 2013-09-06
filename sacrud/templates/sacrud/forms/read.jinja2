@@ -22,7 +22,7 @@
       <form action="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
             id=obj[sa_crud['pk']]) }}" 
             method='POST'>
-        <input type="submit" value="delete">
+        <input id="button_delete" type="submit" value="delete">
       </form>
       </div>
       <!--edit-->
@@ -30,7 +30,7 @@
       <form action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
             id=obj[sa_crud['pk']]) }}" 
             method='POST'>
-        <input type="submit" value="edit">
+        <input id="button_other" type="submit" value="edit">
       </form>
       </div>
     </td>
@@ -61,7 +61,7 @@
       <form action="{{ request.route_url('sa_delete', table=obj.__tablename__,
             id=obj.__getattribute__(obj.__mapper__.primary_key[0].name)) }}" 
             method='POST'>
-        <input type="submit" value="delete">
+        <input id="button_delete" type="submit" value="delete">
       </form>
       </div>
       <!--edit-->
@@ -69,7 +69,7 @@
       <form action="{{ request.route_url('sa_update', table=obj.__tablename__,
             id=obj.__getattribute__(obj.__mapper__.primary_key[0].name)) }}" 
             method='POST'>
-        <input type="submit" value="edit">
+        <input id="button_other" type="submit" value="edit">
       </form>
       </div>
     </td>

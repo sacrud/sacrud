@@ -1,10 +1,12 @@
 def before_insert(mapper, connection, target):
 
     cls = target.__class__
-    position = target.position and target.position or 0
+    pos_name = target.__mapper_args__['order_by']
+    pos_field = target.__getattribute__(pos_name)
+    position = pos_field and pos_field or 0
 
-    connection.execute(cls.__table__.update().
-                       values(position=cls.position + 1).
+    connection.execute(cls.__table__.
+                       update(values={pos_name: getattr(cls, pos_name) + 1}).
                        where(cls.id != target.id).
-                       where(cls.position >= position)
+                       where(getattr(cls, pos_name) >= position)
                        )

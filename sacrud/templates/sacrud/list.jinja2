@@ -4,6 +4,35 @@
   <script src="/sa_static/js/jquery/jquery-1.9.1.min.js"></script>
   <script src="/sa_static/js/script.js"></script>
   <script src="/sa_static/js/URI.js"></script>
+  <script src="/sa_static/js/jquery.tablesorter.min.js"></script>
+  <script>
+    <!-- Sortable table -->
+    $(document).ready(function(){ 
+        $("#sa_index").tablesorter(); 
+    }); 
+
+    <!-- Function for get all checked box -->
+    $(function(){
+        function get_all_checkedbox()
+        {
+            var val = [];
+            $('.sa_row_chk_box:checkbox:checked').each(function(i){
+                val[i] = $(this).val();
+            });
+            return val
+        }
+        $("#sa_union").click(function () {
+            $('<form action="{{ request.route_url('sa_union_fields', table=sa_crud['table'].__tablename__) }}" method="POST"/>')
+                .append($('<input type="hidden" name="sa_checked_row" value="' + get_all_checkedbox() + '">'))
+                .appendTo($(document.body)) //it has to be added somewhere into the <body>
+                .submit();
+        });
+        $(".checkboxFilter input:checkbox:first").change(function () {
+            $(".checkboxFilter").find(':checkbox').prop("checked", this.checked);
+        });
+    });
+
+  </script>    
 {% endblock %}
 
 {% block sa_body %}
@@ -11,5 +40,4 @@
 <div id="cutelement" class="hidden sa_table selected">
 </div>
 {% include 'sacrud/forms/index.jinja2' with context %}
-
 {% endblock %}

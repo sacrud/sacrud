@@ -18,7 +18,8 @@ def add_routes(config):
     config.add_route('sa_delete',   '/' + pkg_name + '/{table}/delete/{id}')
     config.add_route('sa_paste',    '/' + pkg_name + '/{table}/paste/{id}/' +
                                                      '{target_id}')
-    config.add_route('sa_paste_tmp',    '/' + pkg_name + '/{table}/paste/{id}')
+    config.add_route('sa_paste_tmp', '/' + pkg_name + '/{table}/paste/{id}')
+    config.add_route('sa_union_fields', '/' + pkg_name + '/{table}/union')
 
 
 def includeme(config):

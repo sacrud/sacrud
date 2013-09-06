@@ -15,7 +15,7 @@ def get_pk(table):
     try:
         pk = table.__mapper__.primary_key[0].name
     except:
-        pk = 'all'
+        pk = ''
 
     return pk
 

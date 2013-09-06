@@ -1,0 +1,30 @@
+<form method="POST"
+  accept-charset="utf-8"
+  enctype="multipart/form-data"
+  action="{{ request.route_url('sa_union_fields', table=sa_crud['table'].__tablename__) }}">
+<div class="sa_table">
+<!--union-->
+{% if sa_crud and compare_objs|length > 1 %}
+<table id="sa_index">
+    {% for col in sa_crud['col'] %}
+    <tr>
+      <td><b>{{ col.name }}</b></td>
+      {% for row in sa_crud['row'] %}
+        {% set row_id = row[sa_crud['pk']] %}
+        {% if row_id in compare_objs %}
+        <td>
+            <input type="radio" id="sa_col_{{ col.name }}" name="sa_col_{{ col.name }}" value="{{ row_id }}" checked>
+            {{ row.__getattribute__(col.name)|string|truncate(200) }}
+        </td>
+        {% endif %}
+      {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</div>
+<input type="submit" id="button_save" name="form.submitted" value="Union" />
+{% else %}
+    Insufficient number of selected objects for union
+{% endif %}
+<input type="hidden" name="sa_comp_objs" value="{{ compare_objs }}">
+</form>
