@@ -4,22 +4,25 @@ import sqlalchemy.orm as orm
 from ..version import __version__
 from zope.sqlalchemy import ZopeTransactionExtension
 
-pkg_name = 'sacrud'
-
 DBSession = None
 
 
+def pkg_prefix(config):
+    return '' if config.route_prefix else '/sacrud/'
+
+
 def add_routes(config):
-    config.add_route('sa_home',     '/' + pkg_name)
-    config.add_route('sa_list',     '/' + pkg_name + '/{table}')
-    config.add_route('sa_create',   '/' + pkg_name + '/{table}/create')
-    config.add_route('sa_read',     '/' + pkg_name + '/{table}/read/{id}')
-    config.add_route('sa_update',   '/' + pkg_name + '/{table}/update/{id}')
-    config.add_route('sa_delete',   '/' + pkg_name + '/{table}/delete/{id}')
-    config.add_route('sa_paste',    '/' + pkg_name + '/{table}/paste/{id}/' +
-                                                     '{target_id}')
-    config.add_route('sa_paste_tmp', '/' + pkg_name + '/{table}/paste/{id}')
-    config.add_route('sa_union_fields', '/' + pkg_name + '/{table}/union')
+    prefix = pkg_prefix(config)
+    config.add_route('sa_home',     prefix)
+    config.add_route('sa_list',     prefix + '{table}')
+    config.add_route('sa_create',   prefix + '{table}/create')
+    config.add_route('sa_read',     prefix + '{table}/read/{id}')
+    config.add_route('sa_update',   prefix + '{table}/update/{id}')
+    config.add_route('sa_delete',   prefix + '{table}/delete/{id}')
+    config.add_route('sa_paste',    prefix + '{table}/paste/{id}/' +
+                                             '{target_id}')
+    config.add_route('sa_paste_tmp', prefix + '{table}/paste/{id}')
+    config.add_route('sa_union_fields', prefix + '{table}/union')
 
 
 def includeme(config):
@@ -32,7 +35,7 @@ def includeme(config):
     DBSession.configure(bind=engine)
 
     config.include('pyramid_jinja2')
-    config.add_static_view('sa_static', 'sacrud:static')
+    config.add_static_view('/sa_static', 'sacrud:static')
     config.include(add_routes)
     config.add_jinja2_search_path("sacrud:templates")
     env = config.get_jinja2_environment()

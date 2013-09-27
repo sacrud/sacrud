@@ -5,8 +5,8 @@
   <meta charset="utf-8"/>
   <title>SACRUD</title>
   <meta name="author" content="Uralbash"/>
-  <link rel="shortcut icon" href="/sa_static/favicon.ico"/>
-  <link rel="stylesheet" href="/sa_static/style/style.css"/>
+  <link rel="shortcut icon" href="{{ request.static_url('sacrud:static/favicon.ico') }}"/>
+  <link rel="stylesheet" href="{{ request.static_url('sacrud:static/style/style.css') }}"/>
   {% block extrascript %}
   {% endblock %}
 </head>
