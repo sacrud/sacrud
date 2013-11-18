@@ -1,15 +1,18 @@
 all: test
 
-test: 
-	. ../../env/bin/activate; python setup.py test
+setup_test: 
+	python setup.py test
 
 coverage:
-	. ../../env/bin/activate; nosetests --cover-package=sacrud --cover-erase --with-coverage
+	nosetests --cover-package=sacrud --cover-erase --with-coverage  --with-doctest
+
+test:
+	nosetests --cover-package=sacrud  --with-doctest
 
 run:
-	. ../../env/bin/activate; pserve development.ini
+	pserve development.ini
      
 shell:
-	. ../../env/bin/activate; pshell development.ini
+	pshell development.ini
 
 	

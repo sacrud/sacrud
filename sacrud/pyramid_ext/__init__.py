@@ -8,6 +8,24 @@ DBSession = None
 
 
 def pkg_prefix(config):
+    '''
+    Function for return pkg prefix.
+
+    >>> from pyramid.config import Configurator
+    >>> settings = {'foo': 'foo', 'bar': 'bar'}
+
+    # Create config
+    >>> config = Configurator(settings=settings)
+
+    # w/o route_prefix
+    >>> pkg_prefix(config)
+    '/sacrud/'
+
+    # with route_prefix
+    >>> config.route_prefix = "/admin"
+    >>> pkg_prefix(config)
+    ''
+    '''
     return '' if config.route_prefix else '/sacrud/'
 
 

@@ -94,6 +94,10 @@ div.inline { float:left; }
   padding-right: 8px;
 }
 
+.sa_actions ul {
+  width: 180px;
+}
+
 ul {
   margin-top: 0;
   padding-top: 0;

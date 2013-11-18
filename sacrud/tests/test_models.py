@@ -22,6 +22,7 @@ DBSession = orm.scoped_session(
 class User(Base):
 
     __tablename__ = 'user'
+    __mapper_args__ = {'order_by': 'position'}
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
@@ -77,4 +78,3 @@ class Profile(Base):
 
     def set_photo(self, value):
         self.photo = value
-

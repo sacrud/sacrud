@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
 import ast
+import uuid
 import inspect
-import datetime
-import calendar
 import sqlalchemy
 import transaction
 
@@ -12,6 +11,23 @@ prefix = 'crud'
 
 def get_pk(table):
     # FIXME: кривое исключение
+    """ Return primary key name of table.
+
+    :Parameters:
+        - `table`: SQLAlchemy table.
+
+    :Examples:
+
+    >>> from sqlalchemy import Column, Integer
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> Base = declarative_base()
+    >>> class User(Base):
+    ...     __tablename__ = 'users'
+    ...     id = Column(Integer, primary_key=True)
+    >>> get_pk(User())
+    'id'
+
+    """
     try:
         pk = table.__mapper__.primary_key[0].name
     except:
@@ -21,14 +37,40 @@ def get_pk(table):
 
 
 def get_relations(obj):
+    """
+    :Examples:
+
+    >>> from sqlalchemy import Column, Integer, ForeignKey
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> from sqlalchemy.orm import relationship, backref
+    >>> Base = declarative_base()
+    >>> class User(Base):
+    ...    __tablename__ = 'users'
+    ...    id = Column(Integer, primary_key=True)
+    ...
+    >>> class Address(Base):
+    ...    __tablename__ = 'addresses'
+    ...    id = Column(Integer, primary_key=True)
+    ...    user_id = Column(Integer, ForeignKey('users.id'))
+    ...    user = relationship("User", backref=backref('addresses', order_by=id))
+    >>> get_relations(User())
+    [('addresses', [])]
+
+    """
     return [(n, getattr(obj, n)) for n in dir(obj)
             if isinstance(getattr(obj, n),
-            sqlalchemy.orm.collections.InstrumentedList)]
+                          sqlalchemy.orm.collections.InstrumentedList)]
 
 
 def index(session, table, order_by=None):
     """
-    Return row list of table
+    Return a list of table rows.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `order_by`: name ordered row.
     """
     col = [c for c in table.__table__.columns]
     pk_name = get_pk(table)
@@ -50,7 +92,15 @@ def index(session, table, order_by=None):
 
 
 def create(session, table, request=''):
-    """docstring for create"""
+    """
+    Insert row to table.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `request`: webob format request.
+    """
     if request:
         args = {}
         # FIXME: я чувствую здесь диссонанс
@@ -76,7 +126,15 @@ def create(session, table, request=''):
 
 
 def read(session, table, pk):
-    """docstring for red"""
+    """
+    Select row by pk.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `pk`: primary key value.
+    """
     pk_name = get_pk(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col = [c for c in table.__table__.columns]
@@ -89,7 +147,16 @@ def read(session, table, pk):
 
 
 def update(session, table, pk, request=''):
-    """docstring for read"""
+    """
+    Update row of table.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `request`: webob format request.
+    """
+
     pk_name = get_pk(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col_list = [c for c in table.__table__.columns]
@@ -117,7 +184,16 @@ def update(session, table, pk, request=''):
 
 
 def delete(session, table, pk):
-    """docstring for delete"""
+    """
+    Delete row by pk.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `pk`: primary key value.
+    """
+
     pk_name = get_pk(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     check_type('', table, obj=obj)
@@ -126,14 +202,18 @@ def delete(session, table, pk):
 
 
 def delete_fileobj(table, obj, key):
+    """ Delete atached file.
+    """
     abspath = table.__table__.columns[key].type.abspath
-    if not obj:
+    path = os.path.join(abspath, os.path.basename(getattr(obj, key)))
+    if not obj or not os.path.isfile(path):
         return
-    os.remove(os.path.join(abspath, os.path.basename(getattr(obj, key))))
+    os.remove(path)
 
 
 def check_type(request, table, key=None, obj=None):
-    # chek type when Create, Update or Delete
+    """ Chek type when Create, Update or Delete.
+    """
 
     # for Delete
     if not key:
@@ -146,35 +226,37 @@ def check_type(request, table, key=None, obj=None):
 
     # for Update or Create
     value = request[key]
-    # Заменяет пустые строки на None
-    if value[0] == '':
-        value[0] = None
+    if type(value) in (list, tuple):
+        value = value[0]
     if column_type == 'Boolean':
-        value[0] = False if value[0] == '0' else True
+        value = False if value == '0' else True
+        value = True if value else False
     elif column_type == 'FileStore':
-        if request[key][0] is None:
+        if request[key] is None:
             return None
-        request[key][0].filename = str(calendar.timegm(datetime.
-                                       datetime.now().utctimetuple())) +\
-            request[key][0].filename
-        abspath = table.__table__.columns[key].type.abspath
-        store_file(request, key, abspath)
-        if obj:
-            if getattr(obj, key):
-                delete_fileobj(table, obj, key)
-        value[0] = request[key][0].filename
+        fileobj = request[key][0]
+        if hasattr(fileobj, 'filename'):
+            extension = fileobj.filename.split(".")[-1]
+            fileobj.filename = str(uuid.uuid4()) + "." + extension
+            abspath = table.__table__.columns[key].type.abspath
+            store_file(request, key, abspath)
+            if obj:
+                if getattr(obj, key):
+                    delete_fileobj(table, obj, key)
+            value = fileobj.filename
     elif column_type == 'HSTORE':
-        value[0] = ast.literal_eval(value[0])
-    return value[0]
+        value = ast.literal_eval(value)
+    return value
 
 
 def store_file(request, key, path):
+    """ Load atached file.
+    """
     # ``filename`` contains the name of the file in string format.
     #
     # WARNING: this example does not deal with the fact that IE sends an
     # absolute file *path* as the filename.  This example is naive; it
     # trusts user input.
-
     filename = request[key][0].filename
 
     # ``input_file`` contains the actual file data which needs to be

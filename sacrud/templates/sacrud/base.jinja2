@@ -1,54 +1,56 @@
 <!DOCTYPE html>  
 <html>
 <head>
-	
-  <meta charset="utf-8"/>
-  <title>SACRUD</title>
-  <meta name="author" content="Uralbash"/>
-  <link rel="shortcut icon" href="{{ request.static_url('sacrud:static/favicon.ico') }}"/>
-  <link rel="stylesheet" href="{{ request.static_url('sacrud:static/style/style.css') }}"/>
-  {% block extrascript %}
-  {% endblock %}
+
+<meta charset="utf-8"/>
+<title>SACRUD</title>
+<meta name="author" content="Uralbash"/>
+<link rel="shortcut icon" href="{{ request.static_url('sacrud:static/favicon.ico') }}"/>
+<link rel="stylesheet" href="{{ request.static_url('sacrud:static/style/style.css') }}"/>
+{% block userspace %}
+{% endblock %}
+{% block extrascript %}
+{% endblock %}
 </head>
 
 <body>
-  <div class="sa_head">
-    <ul id="sa_head_menu">
-      <a href="{{ request.route_url('sa_home') }}"><li>sacrud</li></a>
-      <a href="https://github.com/uralbash/sacrud"><li style="width:90px">ver: {{ sacrud_ver }}</li></a>
-    </ul>
-  </div>
+<div class="sa_head">
+  <ul id="sa_head_menu">
+    <a href="{{ request.route_url('sa_home') }}"><li>sacrud</li></a>
+    <a href="https://github.com/uralbash/sacrud"><li style="width:90px">ver: {{ sacrud_ver }}</li></a>
+  </ul>
+</div>
 
-  <div class="sa_breadcrumbs">
-    {% if breadcrumbs %}
-    <div class="sa_breadcrumbs_row">
-     {% for crumb in breadcrumbs %}
-     {% if not loop.last %}
-     <a {% if crumb.visible %}href=
-       "{{ request.route_path(crumb.view, **crumb.param) }}"
-       {% endif %}>
-       {{ crumb.name }}</a>
-     &rarr; 
-     {% else %}{{ crumb.name }}{% endif %}
-     {% endfor %}
-    </div>
-    {% endif %}
-  </div>
-
-  {#% if request.session.peek_flash() %}
-  <div id="flash">
-    {% set flash = request.session.pop_flash() %}
-    {% for message in flash %}
-    {{ message }}<br>
+<div class="sa_breadcrumbs">
+  {% if breadcrumbs %}
+  <div class="sa_breadcrumbs_row">
+    {% for crumb in breadcrumbs %}
+    {% if not loop.last %}
+    <a {% if crumb.visible %}href=
+      "{{ request.route_path(crumb.view, **crumb.param) }}"
+      {% endif %}>
+      {{ crumb.name }}</a>
+    &rarr; 
+    {% else %}{{ crumb.name }}{% endif %}
     {% endfor %}
   </div>
-  {% endif %#}
+  {% endif %}
+</div>
 
-  <div id="page">
-    
-    {% block sa_body %}{% endblock %}
+{#% if request.session.peek_flash() %}
+<div id="flash">
+  {% set flash = request.session.pop_flash() %}
+  {% for message in flash %}
+  {{ message }}<br>
+  {% endfor %}
+</div>
+{% endif %#}
 
-  </div>
-  
+<div id="page">
+
+  {% block sa_body %}{% endblock %}
+
+</div>
+
 </body>
 </html>

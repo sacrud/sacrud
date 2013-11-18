@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import create_engine, orm
+import os
+import glob
 import unittest
+import transaction
+from sqlalchemy import create_engine
 from sacrud.tests.test_models import User, Profile, PHOTO_PATH, DBSession
 from sacrud.action import get_relations, delete_fileobj, read, update, delete
 from sacrud.action import get_pk, index, create
 from pyramid.testing import DummyRequest
 from StringIO import StringIO
-import glob
-import os
-from zope.sqlalchemy import ZopeTransactionExtension
-import transaction
 
 
 class MockCGIFieldStorage(object):
@@ -23,7 +21,7 @@ class BaseSacrudTest(unittest.TestCase):
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
         transaction.commit()
-        user = self.session.query(User).first()
+        user = self.session.query(User).get(1)
         return user
 
     def profile_add(self, user):
@@ -43,7 +41,6 @@ class BaseSacrudTest(unittest.TestCase):
         self.session = session
 
         # To create tables, you typically do:
-        #User.metadata.create_all(engine)
         User.metadata.create_all(engine)
         Profile.metadata.create_all(engine)
 
@@ -255,4 +252,3 @@ class PositionTest(BaseSacrudTest):
         self.assertEqual(self.session.query(User).get(2).position, 2)
         self.assertEqual(self.session.query(User).get(3).position, 1)
         self.assertEqual(self.session.query(User).get(4).position, 3)
-

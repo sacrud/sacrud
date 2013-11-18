@@ -1,9 +1,11 @@
-<ul class='sa_actions'>
-        <li>{% include 'sacrud/forms/actions/delete.jinja2' with context %}</li>
-        <li>{% include 'sacrud/forms/actions/edit.jinja2' with context %}</li>
-        <li>{% include 'sacrud/forms/actions/view.jinja2' with context %}</li>
-        {% if isdnd %}
-        <li>{% include 'sacrud/forms/actions/cut.jinja2' with context %}</li>
-        <li>{% include 'sacrud/forms/actions/paste.jinja2' with context %}</li>
-        {% endif %}
+<div class='sa_actions'>
+<ul>
+  <li>{% include 'sacrud/forms/actions/delete.jinja2' with context %}</li>
+  <li>{% include 'sacrud/forms/actions/edit.jinja2' with context %}</li>
+  <li>{% include 'sacrud/forms/actions/view.jinja2' with context %}</li>
+  {% if isdnd %}
+  <li>{% include 'sacrud/forms/actions/cut.jinja2' with context %}</li>
+  <li>{% include 'sacrud/forms/actions/paste.jinja2' with context %}</li>
+  {% endif %}
 </ul>
+</div>
