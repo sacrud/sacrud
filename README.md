@@ -29,7 +29,7 @@ Features
 - Create and update row
 ![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/edit.png)
 - Delete row
-- Use sortable table with poition field
+- Use sortable table with position field
 - Upload file with FileField
 - Union row (testing)
 - Custom style
