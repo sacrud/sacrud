@@ -31,7 +31,7 @@ Features
 - Delete row
 - Use sortable table with position field
 - Upload file with FileField
-- Union row (testing)
+- Union rows (testing)
 - Custom style
 
 Installation
@@ -52,9 +52,9 @@ Source:
 Contribute
 ----------
 
-- Issue Tracker: github.com/uralbash/sacrud/issues
-- Source Code: github.com/uralbash/sacrud
-- Docs: sacrud.readthedocs.org (in process)
+- Issue Tracker: http://github.com/uralbash/sacrud/issues
+- Source Code: http://github.com/uralbash/sacrud
+- Docs: http://sacrud.readthedocs.org (in process)
 
 Support
 -------
