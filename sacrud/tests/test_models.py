@@ -16,7 +16,7 @@ DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
 
 DBSession = orm.scoped_session(
-            orm.sessionmaker(extension=ZopeTransactionExtension()))
+    orm.sessionmaker(extension=ZopeTransactionExtension()))
 
 
 class User(Base):
@@ -32,11 +32,9 @@ class User(Base):
     sex = Column(Enum('male',
                       'female',
                       'alien',
-                      'unknown',
-                       name="sex"))
+                      'unknown', name="sex"))
 
-    def __init__(self, name, fullname, password, position=0,
-                       sex='unknown'):
+    def __init__(self, name, fullname, password, position=0, sex='unknown'):
         self.name = name
         self.fullname = fullname
         self.password = password
