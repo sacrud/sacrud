@@ -55,6 +55,7 @@ Contribute
 - Issue Tracker: http://github.com/uralbash/sacrud/issues
 - Source Code: http://github.com/uralbash/sacrud
 - Docs: http://sacrud.readthedocs.org (in process)
+- Demo: http://github.com/uralbash/pyramid_sacrud_example
 
 Support
 -------
