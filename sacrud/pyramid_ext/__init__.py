@@ -2,6 +2,7 @@
 import sqlalchemy
 import sqlalchemy.orm as orm
 from ..version import __version__
+from utils import get_field_template
 from zope.sqlalchemy import ZopeTransactionExtension
 
 DBSession = None
@@ -71,4 +72,5 @@ def includeme(config):
     env.globals['sqlalchemy'] = sqlalchemy
     env.globals['session'] = DBSession
     env.globals['sacrud_ver'] = __version__
+    env.globals['get_field_template'] = get_field_template
     config.scan()
