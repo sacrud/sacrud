@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import ast
+import itertools
 import sqlalchemy as sa
-from sacrud import action
-from pyramid.httpexceptions import HTTPFound
+
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPFound
+
+from sacrud import action
 from sacrud.pyramid_ext import DBSession
 
 
@@ -79,13 +82,18 @@ def sa_list(request):
 @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
 def sa_create(request):
     tname = request.matchdict['table']
+    table = get_table(tname, request)
+    fk_list = sa.inspect(DBSession.bind).get_foreign_keys(tname)
+    fk_list = map(lambda x: x['constrained_columns'], fk_list)  # only col name
+    fk_list = list(itertools.chain(*fk_list))  # list of lists to flat list
+
     if 'form.submitted' in request.params:
-        action.create(DBSession, get_table(tname, request),
+        action.create(DBSession, table,
                       request.params.dict_of_lists())
         return HTTPFound(location=request.route_url('sa_list', table=tname))
-    resp = action.create(DBSession, get_table(tname, request))
+    resp = action.create(DBSession, table)
     rel = get_relationship(tname, request)
-    return {'sa_crud': resp, 'rel': rel,
+    return {'sa_crud': resp, 'rel': rel, 'fk_list': fk_list,
             'breadcrumbs': breadcrumbs(tname, 'sa_create')}
 
 
@@ -100,15 +108,19 @@ def sa_read(request):
 
 @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
 def sa_update(request):
-    tname = request.matchdict['table']
     id = request.matchdict['id']
+    tname = request.matchdict['table']
+    table = get_table(tname, request)
+    fk_list = sa.inspect(DBSession.bind).get_foreign_keys(tname)
+    fk_list = map(lambda x: x['constrained_columns'], fk_list)  # only col name
+    fk_list = list(itertools.chain(*fk_list))  # list of lists to flat list
+
     if 'form.submitted' in request.params:
-        action.update(DBSession, get_table(tname, request), id,
-                      request.params.dict_of_lists())
+        action.update(DBSession, table, id, request.params.dict_of_lists())
         return HTTPFound(location=request.route_url('sa_list', table=tname))
-    resp = action.update(DBSession, get_table(tname, request), id)
+    resp = action.update(DBSession, table, id)
     rel = get_relationship(tname, request)
-    return {'sa_crud': resp, 'rel': rel,
+    return {'sa_crud': resp, 'rel': rel, 'fk_list': fk_list,
             'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
 
 

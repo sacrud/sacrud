@@ -1,10 +1,18 @@
-<select class="sacrud_select" name="{{ col.name }}">
-  {% for x in session.query(cls) %}
-  <option value='{{ x.id }}'
-  {% if obj %}{% if getattr(obj, col.name)==x.id %}
-    selected
-  {% endif%}{% endif %}>
-    {{ x.__repr__() }}
-  </option>
-  {% endfor %}
-</select>  
+{% for exp in rel %}
+  {% if exp['col'].name == col.name %}
+    {% set cls=exp['cls'] %}
+
+    <select class="sacrud_select" name="{{ col.name }}">
+      {% for x in session.query(cls) %}
+        <option value='{{ x.id }}'
+          {% if obj %}
+            {% if getattr(obj, col.name)==x.id %}
+              selected
+            {% endif %}
+          {% endif %}>
+          {{ x.__repr__() }}
+        </option>
+      {% endfor %}
+    </select>
+  {% endif %}
+{% endfor %}

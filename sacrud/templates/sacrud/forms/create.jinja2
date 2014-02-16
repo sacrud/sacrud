@@ -19,24 +19,18 @@
         {% set obj=sa_crud['obj'] %}
         {% for col in sa_crud['col'] %}
           {% if not col.name==sa_crud['pk'] %}
-          <tr>
-            <td>
-              {{ col.name }}
-            </td>
-            <td>
-              {% set is_fk = [] %}
-              {% for exp in rel %}
-                {% if exp['col'].name == col.name %}
-                  {% set cls=exp['cls'] %}
-                  {% do is_fk.append(1) %}
+            <tr>
+              <td>
+                {{ col.name }}
+              </td>
+              <td>
+                {% if col.name in fk_list %}
                   {% include "sacrud/types/ForeignKey.jinja2" %}
+                {% else %}
+                  {% include get_field_template(col.type.__class__.__name__) %}
                 {% endif %}
-              {% endfor %}
-              {% if not is_fk %}
-                {% include get_field_template(col.type.__class__.__name__) %}
-              {% endif %}
-            </td>
-          </tr>
+              </td>
+            </tr>
           {% endif %}
         {% endfor %}
       {% endif %}
