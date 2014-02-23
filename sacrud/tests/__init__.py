@@ -97,7 +97,7 @@ class SacrudTest(BaseSacrudTest):
 
     def test_create(self):
 
-        request = DummyRequest()
+        request = DummyRequest().environ
         request['name'] = ["Vasya", ]
         request['fullname'] = ["Vasya Pupkin", ]
         request['password'] = ["123", ]
@@ -109,7 +109,7 @@ class SacrudTest(BaseSacrudTest):
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, "123")
 
-        request = DummyRequest()
+        request = DummyRequest().environ
         request['phone'] = ["213123123", ]
         request['cv'] = ["Vasya Pupkin was born in Moscow", ]
         request['married'] = ["true", ]
@@ -168,7 +168,7 @@ class SacrudTest(BaseSacrudTest):
         user = self.session.query(User).get(2)
 
         profile = self.session.query(Profile).get(1)
-        request = DummyRequest()
+        request = DummyRequest().environ
         request['phone'] = ["213123123", ]
         request['cv'] = ["Vasya Pupkin was born in Moscow", ]
         request['married'] = ["true", ]
@@ -195,7 +195,7 @@ class SacrudTest(BaseSacrudTest):
         self.session.add(user)
         transaction.commit()
 
-        request = DummyRequest()
+        request = DummyRequest().environ
         request['phone'] = ["213123123", ]
         request['cv'] = ["Vasya Pupkin was born in Moscow", ]
         request['married'] = ["true", ]
@@ -228,16 +228,16 @@ class PositionTest(BaseSacrudTest):
         self.assertEqual(self.session.query(User).get(2).position, 1)
         self.assertEqual(self.session.query(User).get(3).position, 0)
 
-        request = DummyRequest()
-        request["position"] = ["0",]
+        request = DummyRequest().environ
+        request["position"] = ["0", ]
         update(self.session, User, 1, request)
 
         self.assertEqual(self.session.query(User).get(1).position, 0)
         self.assertEqual(self.session.query(User).get(2).position, 2)
         self.assertEqual(self.session.query(User).get(3).position, 1)
 
-        request = DummyRequest()
-        request["position"] = ["4",]
+        request = DummyRequest().environ
+        request["position"] = ["4", ]
         update(self.session, User, 1, request)
 
         self.assertEqual(self.session.query(User).get(1).position, 4)

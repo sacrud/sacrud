@@ -3,10 +3,13 @@
 {% block sa_body %}
 <div class="sa_body">
   <h1>Tables</h1>
-  {% for table in tables %}
-  {% set tname = table.__tablename__ %}
-    <a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ tname }}</a>
-    <br /><hr />
+  {% for group, table_list in tables.iteritems() %}
+    <h2>{{ group }}</h2>
+    {% for table in table_list %}
+      {% set tname = table.__tablename__ %}
+      <a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ tname }}</a>
+      <br /><hr />
+    {% endfor %}
   {% endfor %}
 </div>
 {% endblock %}

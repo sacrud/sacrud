@@ -38,13 +38,21 @@ def breadcrumbs(tname,  view, id=None):
     return bc[view]
 
 
-def get_models(request):
+def get_config(request, name):
     settings = request.registry.settings
-    return settings['sacrud_models']
+    if 'sacrud_models' in settings:
+        message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
+                  ' This new requirements for sacrud >= 0.1.1 version"'
+        print '\033[93m' + message + '\033[0m'
+        raise Exception(message)
+    return settings[name]
 
 
 def get_table(tname, request):
-    tables = get_models(request)
+    """ Return table by table name.
+    """
+    # convert values of models dict to flat list
+    tables = itertools.chain(*get_config(request, 'sacrud.models').values())
     return filter(lambda table: (table.__tablename__).
                   lower() == tname.lower(), tables)[0]
 
@@ -65,7 +73,7 @@ def get_relationship(tname, request):
 
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
-    return {'tables': get_models(request)}
+    return {'tables': get_config(request, 'sacrud.models')}
 
 
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
