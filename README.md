@@ -13,7 +13,7 @@ Look how easy it is to use with Pyramid:
     # add sacrud and project models
     config.include('sacrud.pyramid_ext')
     settings = config.registry.settings
-    settings['sacrud_models'] = (Model1, Model2, Model3)
+    settings['sacrud.models'] = {'Group1': [Model1, Model2], '': [Model3])
 
 go to http://localhost:6543/sacrud/
 
