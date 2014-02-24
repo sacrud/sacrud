@@ -2,7 +2,7 @@
 import sqlalchemy
 import sqlalchemy.orm as orm
 from ..version import __version__
-from utils import get_field_template
+from sacrud.utils import get_field_template
 from zope.sqlalchemy import ZopeTransactionExtension
 
 DBSession = None

@@ -15,4 +15,5 @@ dist
 *.egg-info
 example
 TODO
+TODO.txt
 nohup.out

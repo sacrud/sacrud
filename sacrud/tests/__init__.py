@@ -4,10 +4,26 @@ import os
 import glob
 import unittest
 import transaction
+
 from sqlalchemy import create_engine
-from sacrud.tests.test_models import User, Profile, PHOTO_PATH, DBSession
-from sacrud.action import get_relations, delete_fileobj, read, update, delete
-from sacrud.action import get_pk, index, create
+from sacrud.tests.test_models import (
+    User,
+    Profile,
+    PHOTO_PATH,
+    DBSession,
+)
+from sacrud.action import (
+    read,
+    update,
+    delete,
+    index,
+    create,
+)
+from sacrud.utils import (
+    get_pk,
+    get_relations,
+    delete_fileobj,
+)
 from pyramid.testing import DummyRequest
 from StringIO import StringIO
 
