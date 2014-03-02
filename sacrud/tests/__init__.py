@@ -197,7 +197,6 @@ class SacrudTest(BaseSacrudTest):
         request["photo"] = [upload, ]
 
         update(self.session, Profile, 1, request)
-        self.session.commit()
         profile = self.session.query(Profile).get(1)
 
         self.assertEqual(profile.phone, "213123123")
@@ -210,7 +209,7 @@ class SacrudTest(BaseSacrudTest):
 
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
         request = DummyRequest().environ
         request['phone'] = ["213123123", ]
@@ -226,7 +225,6 @@ class SacrudTest(BaseSacrudTest):
 
         create(self.session, Profile, request)
         delete(self.session, Profile, 1)
-        self.session.commit()
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)
@@ -249,7 +247,6 @@ class PositionTest(BaseSacrudTest):
         request = DummyRequest().environ
         request["position"] = ["0", ]
         update(self.session, User, 1, request)
-        self.session.commit()
 
         self.assertEqual(self.session.query(User).get(1).position, 0)
         self.assertEqual(self.session.query(User).get(2).position, 2)
@@ -258,7 +255,6 @@ class PositionTest(BaseSacrudTest):
         request = DummyRequest().environ
         request["position"] = ["4", ]
         update(self.session, User, 1, request)
-        self.session.commit()
 
         self.assertEqual(self.session.query(User).get(1).position, 4)
         self.assertEqual(self.session.query(User).get(2).position, 2)
@@ -266,7 +262,7 @@ class PositionTest(BaseSacrudTest):
 
         user = User(u'Vasya', u'Pupkin', u"123", '3')
         self.session.add(user)
-        self.session.commit()
+        transaction.commit()
 
         self.assertEqual(self.session.query(User).get(1).position, 5)
         self.assertEqual(self.session.query(User).get(2).position, 2)

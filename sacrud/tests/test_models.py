@@ -23,7 +23,8 @@ Base = declarative_base()
 DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
 
-DBSession = orm.scoped_session(orm.sessionmaker())
+DBSession = orm.scoped_session(
+    orm.sessionmaker(extension=ZopeTransactionExtension()))
 
 
 class User(Base):

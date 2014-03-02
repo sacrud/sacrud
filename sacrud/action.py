@@ -161,3 +161,4 @@ def delete(session, table, pk):
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     check_type('', table, obj=obj)
     session.delete(obj)
+    transaction.commit()
