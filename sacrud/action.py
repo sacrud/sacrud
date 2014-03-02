@@ -10,7 +10,7 @@ from sacrud.utils import (
 prefix = 'crud'
 
 
-def index(session, table, order_by=None):
+def list(session, table, order_by=None):
     """
     Return a list of table rows.
 

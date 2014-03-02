@@ -23,17 +23,15 @@
 
 <div class="sa_breadcrumbs">
   {% if breadcrumbs %}
-  <div class="sa_breadcrumbs_row">
-    {% for crumb in breadcrumbs %}
-    {% if not loop.last %}
-    <a {% if crumb.visible %}href=
-      "{{ request.route_path(crumb.view, **crumb.param) }}"
-      {% endif %}>
-      {{ crumb.name }}</a>
-    &rarr; 
-    {% else %}{{ crumb.name }}{% endif %}
-    {% endfor %}
-  </div>
+    <div class="sa_breadcrumbs_row">
+      {% for crumb in breadcrumbs %}
+        {% if not loop.last %}
+          <a {% if crumb.visible %}href=
+               "{{ request.route_path(crumb.view, **crumb.param) }}"
+             {% endif %}>{{ crumb.name }}</a>&rarr; 
+        {% else %}{{ crumb.name }}{% endif %}
+      {% endfor %}
+    </div>
   {% endif %}
 </div>
 
@@ -47,9 +45,7 @@
 {% endif %#}
 
 <div id="page">
-
   {% block sa_body %}{% endblock %}
-
 </div>
 
 </body>

@@ -16,7 +16,7 @@ from sacrud.action import (
     read,
     update,
     delete,
-    index,
+    list,
     create,
 )
 from sacrud.utils import (
@@ -95,13 +95,13 @@ class SacrudTest(BaseSacrudTest):
         pk = get_pk(User)
         self.assertEqual("id", pk)
 
-    def test_index(self):
+    def test_list(self):
         user = User(u'Vasya', u'Pupkin', u"123")
 
         self.session.add(user)
         transaction.commit()
 
-        result = index(self.session, User)
+        result = list(self.session, User)
         user = self.session.query(User).get(1)
 
         self.assertEqual(result['pk'], 'id')

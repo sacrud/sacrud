@@ -1,33 +1,27 @@
 # -*- coding: utf-8 -*-
+import os
 import sqlalchemy
 import sqlalchemy.orm as orm
-from ..version import __version__
-from sacrud.utils import get_field_template
+
 from zope.sqlalchemy import ZopeTransactionExtension
+from pyramid.path import AssetResolver
+
+from sacrud.version import __version__
+from sacrud.pyramid_ext.common import (
+    pkg_prefix,
+    set_jinja2_silent_none,
+    set_jinja2_globals,
+)
 
 DBSession = None
 
 
-def pkg_prefix(config):
-    '''
-    Function for return pkg prefix.
-
-    >>> from pyramid.config import Configurator
-    >>> settings = {'foo': 'foo', 'bar': 'bar'}
-
-    # Create config
-    >>> config = Configurator(settings=settings)
-
-    # w/o route_prefix
-    >>> pkg_prefix(config)
-    '/sacrud/'
-
-    # with route_prefix
-    >>> config.route_prefix = "/admin"
-    >>> pkg_prefix(config)
-    ''
-    '''
-    return '' if config.route_prefix else '/sacrud/'
+def get_field_template(field):
+    ar = AssetResolver()
+    path = ar.resolve('sacrud:templates/sacrud/types/%s.jinja2' % field).abspath()
+    if os.path.exists(path):
+        return path
+    return 'sacrud/types/String.jinja2'
 
 
 def add_routes(config):
@@ -53,24 +47,17 @@ def includeme(config):
     DBSession.remove()
     DBSession.configure(bind=engine)
 
+    config.include(add_routes)
     config.include('pyramid_jinja2')
     config.add_static_view('/sa_static', 'sacrud:static')
-    config.include(add_routes)
     config.add_jinja2_search_path("sacrud:templates")
-    env = config.get_jinja2_environment()
 
-    # if variable is None print '' instead of 'None'
-    def _silent_none(value):
-        if value is None:
-            return ''
-        return value
-    env.finalize = _silent_none
-    config.add_jinja2_extension('jinja2.ext.do')
-    env.globals['str'] = str
-    env.globals['getattr'] = getattr
-    env.globals['isinstance'] = isinstance
-    env.globals['sqlalchemy'] = sqlalchemy
-    env.globals['session'] = DBSession
-    env.globals['sacrud_ver'] = __version__
-    env.globals['get_field_template'] = get_field_template
+    set_jinja2_silent_none(config)
+
+    jinja2_globals = {'str': str, 'getattr': getattr, 'isinstance': isinstance,
+                      'session': DBSession,
+                      'sqlalchemy': sqlalchemy,
+                      'sacrud_ver': __version__,
+                      'get_field_template': get_field_template}
+    set_jinja2_globals(config, jinja2_globals)
     config.scan()

@@ -1,0 +1,47 @@
+<div class="sa_table checkboxFilter">
+  <!--create-->
+  <a href="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
+    Add a new {{ sa_crud['table'].__tablename__ }}
+  </a> | <a href="#" id="sa_union">Union of the fields</a>
+  {% set isdnd = False %}
+  {% if sa_crud['mapper_args']['order_by'] %}
+    {% set isdnd = True %}
+  {% endif %}
+  <table id="sa_index">
+    {% if sa_crud %}
+      <thead>
+        <tr>
+          <td>
+            <input type="checkbox">
+          </td>
+          {% for col in sa_crud['col'] %}
+            <th>
+              {{ col.name }}
+            </th>
+          {% endfor %}
+          <th>actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in sa_crud['row'] %}
+        {% set row_id = row[sa_crud['pk']] %}
+        <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
+          <td>
+            <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
+          </td>
+          {% for col in sa_crud['col'] %}
+            <td>
+              {{ row.__getattribute__(col.name)|string|truncate(200) }}
+            </td>
+          {% endfor %}
+          <td>
+            {% include 'sacrud/forms/actions.jinja2' with context %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td>There are no open objects</td></tr>
+    {% endif %}
+    </tbody>
+  </table>
+</div>

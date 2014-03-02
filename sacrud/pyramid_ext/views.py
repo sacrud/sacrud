@@ -18,17 +18,21 @@ def breadcrumbs(tname,  view, id=None):
                      {'name': tname, 'visible': True,
                       'view': 'sa_list',
                       'param': {'table': tname}}]
+
     bc['sa_create'] = bc['sa_list'][:]
     bc['sa_create'].append({'name': 'create',
                             'visible': False,
                             'view': 'sa_list',
                             'param': {'table': tname}})
+
     bc['sa_read'] = bc['sa_list'][:]
     bc['sa_read'].append({'name': id,
                           'visible': False,
                           'view': 'sa_list',
                           'param': {'table': tname}})
+
     bc['sa_update'] = bc['sa_read']
+
     bc['sa_union'] = bc['sa_list'][:]
     bc['sa_union'].append({'name': 'union',
                            'visible': False,
@@ -83,7 +87,7 @@ def sa_list(request):
     args = [DBSession, get_table(tname, request)]
     if order_by:
         args.append(order_by)
-    resp = action.index(*args)
+    resp = action.list(*args)
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
@@ -183,7 +187,7 @@ def sa_union_fields(request):
     args = [DBSession, table]
     if order_by:
         args.append(order_by)
-    resp = action.index(*args)
+    resp = action.list(*args)
 
     sa_checked_row = request.POST.get('sa_checked_row', None).split(",")
     if '' not in sa_checked_row:
