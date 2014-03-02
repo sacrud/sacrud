@@ -12,16 +12,24 @@ Action
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: sacrud.action
-.. autofunction:: sacrud.action.get_pk
-.. autofunction:: sacrud.action.get_relations
-.. autofunction:: sacrud.action.index
+.. autofunction:: sacrud.action.list
 .. autofunction:: sacrud.action.create
 .. autofunction:: sacrud.action.read
 .. autofunction:: sacrud.action.update
 .. autofunction:: sacrud.action.delete
-.. autofunction:: sacrud.action.delete_fileobj
-.. autofunction:: sacrud.action.check_type
-.. autofunction:: sacrud.action.store_file
+
+:mod:`sacrud.common`
+--------------------------------
+
+Common
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: sacrud.common
+.. autofunction:: sacrud.common.sa_helpers.get_pk
+.. autofunction:: sacrud.common.sa_helpers.get_relations
+.. autofunction:: sacrud.common.sa_helpers.delete_fileobj
+.. autofunction:: sacrud.common.sa_helpers.check_type
+.. autofunction:: sacrud.common.sa_helper.store_file
 
 :mod:`sacrud.exttype`
 --------------------------------
