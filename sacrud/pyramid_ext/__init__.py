@@ -7,7 +7,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 from pyramid.path import AssetResolver
 
 from sacrud.version import __version__
-from sacrud.pyramid_ext.common import (
+from sacrud.common.pyramid_helpers import (
     pkg_prefix,
     set_jinja2_silent_none,
     set_jinja2_globals,

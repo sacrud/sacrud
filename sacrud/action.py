@@ -1,7 +1,19 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
+"""
 import inspect
 import transaction
-from sacrud.utils import (
+
+from webhelpers.paginate import Page
+from sacrud.common.sa_helpers import (
     check_type,
     get_pk,
     get_relations,
@@ -10,7 +22,7 @@ from sacrud.utils import (
 prefix = 'crud'
 
 
-def list(session, table, order_by=None):
+def list(session, table, paginator=None, order_by=None):
     """
     Return a list of table rows.
 
@@ -19,6 +31,7 @@ def list(session, table, order_by=None):
         - `session`: DBSession.
         - `table`: table instance.
         - `order_by`: name ordered row.
+        - `paginator`: see sacrud.common.paginator.get_paginator.
     """
     col = [c for c in table.__table__.columns]
     pk_name = get_pk(table)
@@ -26,6 +39,8 @@ def list(session, table, order_by=None):
     if order_by:
         query = query.order_by(order_by)
     row = query.all()
+    if paginator:
+        row = Page(row, **paginator)
     if hasattr(table, '__mapper_args__'):
         mapper_args = table.__mapper_args__
     else:
@@ -146,4 +161,3 @@ def delete(session, table, pk):
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     check_type('', table, obj=obj)
     session.delete(obj)
-    transaction.commit()

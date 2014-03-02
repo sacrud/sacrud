@@ -1,22 +1,29 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Integer, String, Text, Boolean, Float, Enum
-from sqlalchemy.orm import relationship, backref
-from sacrud.exttype import FileStore
 import os
-from sqlalchemy.event import listen
-from sqlalchemy import orm
-from zope.sqlalchemy import ZopeTransactionExtension
-from sacrud.position import before_insert
 
+from sqlalchemy import orm
+from sqlalchemy.event import listen
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy.schema import Column, ForeignKey
+from zope.sqlalchemy import ZopeTransactionExtension
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.types import (
+    Integer,
+    String,
+    Text,
+    Boolean,
+    Float,
+    Enum,
+)
+
+from sacrud.exttype import FileStore
+from sacrud.position import before_insert
 
 Base = declarative_base()
 
 DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
 
-DBSession = orm.scoped_session(
-    orm.sessionmaker(extension=ZopeTransactionExtension()))
+DBSession = orm.scoped_session(orm.sessionmaker())
 
 
 class User(Base):

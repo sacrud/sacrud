@@ -8,6 +8,7 @@ from pyramid.httpexceptions import HTTPFound
 
 from sacrud import action
 from sacrud.pyramid_ext import DBSession
+from sacrud.common.paginator import get_paginator
 
 
 def breadcrumbs(tname,  view, id=None):
@@ -42,7 +43,7 @@ def breadcrumbs(tname,  view, id=None):
     return bc[view]
 
 
-def get_config(request, name):
+def get_settings_param(request, name):
     settings = request.registry.settings
     if 'sacrud_models' in settings:
         message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
@@ -56,7 +57,7 @@ def get_table(tname, request):
     """ Return table by table name.
     """
     # convert values of models dict to flat list
-    tables = itertools.chain(*get_config(request, 'sacrud.models').values())
+    tables = itertools.chain(*get_settings_param(request, 'sacrud.models').values())
     return filter(lambda table: (table.__tablename__).
                   lower() == tname.lower(), tables)[0]
 
@@ -77,7 +78,7 @@ def get_relationship(tname, request):
 
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
-    return {'tables': get_config(request, 'sacrud.models')}
+    return {'tables': get_settings_param(request, 'sacrud.models')}
 
 
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
@@ -85,9 +86,10 @@ def sa_list(request):
     tname = request.matchdict['table']
     order_by = request.params.get('order_by', False)
     args = [DBSession, get_table(tname, request)]
+
     if order_by:
         args.append(order_by)
-    resp = action.list(*args)
+    resp = action.list(*args, paginator=get_paginator(request))
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
@@ -102,6 +104,7 @@ def sa_create(request):
     if 'form.submitted' in request.params:
         action.create(DBSession, table,
                       request.params.dict_of_lists())
+        request.session.flash("You created new object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.create(DBSession, table)
     rel = get_relationship(tname, request)
@@ -129,6 +132,7 @@ def sa_update(request):
 
     if 'form.submitted' in request.params:
         action.update(DBSession, table, id, request.params.dict_of_lists())
+        request.session.flash("You updated object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.update(DBSession, table, id)
     rel = get_relationship(tname, request)
@@ -155,11 +159,13 @@ def sa_delete(request):
     tname = request.matchdict['table']
     id = request.matchdict['id']
     action.delete(DBSession, get_table(tname, request), id)
+    request.session.flash("You have removed object of %s" % tname)
     return HTTPFound(location=request.route_url('sa_list', table=tname))
 
 
 @view_config(route_name='sa_union_fields', renderer='/sacrud/compare.jinja2')
 def sa_union_fields(request):
+    # XXX: experimental future
     tname = request.matchdict['table']
     table = get_table(tname, request)
     pk = action.get_pk(table)

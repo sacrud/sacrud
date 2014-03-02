@@ -1,4 +1,4 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -28,24 +28,32 @@
         {% if not loop.last %}
           <a {% if crumb.visible %}href=
                "{{ request.route_path(crumb.view, **crumb.param) }}"
-             {% endif %}>{{ crumb.name }}</a>&rarr; 
+             {% endif %}>{{ crumb.name }}</a>&rarr;
         {% else %}{{ crumb.name }}{% endif %}
       {% endfor %}
     </div>
   {% endif %}
 </div>
 
-{#% if request.session.peek_flash() %}
-<div id="flash">
-  {% set flash = request.session.pop_flash() %}
-  {% for message in flash %}
-  {{ message }}<br>
-  {% endfor %}
-</div>
-{% endif %#}
+{% if request.session.peek_flash() %}
+  <div id="flash">
+    {% set flash = request.session.pop_flash() %}
+    {% for message in flash %}
+      {{ message }}<br>
+    {% endfor %}
+  </div>
+{% endif %}
 
 <div id="page">
   {% block sa_body %}{% endblock %}
+  {% if 'row' in sa_crud %}
+    {% set paginator = sa_crud['row'] %}
+    {% if paginator.items %}
+      <div class="paginator">
+        {{ paginator.pager() }}
+      </div>
+    {% endif %}
+  {% endif %}
 </div>
 
 </body>

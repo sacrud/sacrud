@@ -16,11 +16,11 @@ input {
     padding: 5px;
 }
 
-.sa_table table { 
-    margin: 1em; 
+.sa_table table {
+    margin: 1em;
     border-collapse: collapse;
 }
-.sa_table td, th { padding: .3em; border: 1px #000 solid; } 
+.sa_table td, th { padding: .3em; border: 1px #000 solid; }
 
 div.inline { float:left; }
 .clearBoth { clear:both; }
@@ -30,19 +30,19 @@ div.inline { float:left; }
 }
 
 #sa_head_menu {
-    display: table; 
-    width: 100%; 
-    table-layout: fixed; 
+    display: table;
+    width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
 }
 
-#sa_head_menu li { 
-    display: table-cell; 
+#sa_head_menu li {
+    display: table-cell;
     width: auto;
-    background: #eee; 
-    padding: .5em; 
-    text-align: center; 
-    border: 1px solid silver; 
+    background: #eee;
+    padding: .5em;
+    text-align: center;
+    border: 1px solid silver;
 }
 
 #flash, #notfound {
@@ -53,6 +53,7 @@ div.inline { float:left; }
     border-top: 2px solid #7a9eec;
     border-bottom: 2px solid #7a9eec;
     padding: 10px 20px 10px 20px;
+    margin-top: 10px;
 }
 
 #notfound {
