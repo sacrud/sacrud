@@ -75,6 +75,7 @@ setup(
         "sqlalchemy",
         "transaction",
         'zope.sqlalchemy',
+        'webhelpers',
         'webtest',
     ],
     classifiers=[
