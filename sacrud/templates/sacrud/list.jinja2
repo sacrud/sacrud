@@ -1,4 +1,4 @@
-{% extends "sacrud/base.jinja2" %}
+{% extends "sacrud/redefineme.jinja2" %}
 
 {% block extrascript %}
   <script src="{{ request.static_url('sacrud:static/js/jquery/jquery-1.9.1.min.js') }}"></script>
@@ -28,6 +28,6 @@
 {% endblock %}
 
 {% block sa_body %}
-<h1>{{ sa_crud['table'].__tablename__ }} list</h1>
-{% include 'sacrud/forms/list.jinja2' with context %}
+  <h1>{{ sa_crud['table'].__tablename__ }} list</h1>
+  {% include 'sacrud/forms/list.jinja2' with context %}
 {% endblock %}
