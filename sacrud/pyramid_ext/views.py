@@ -104,7 +104,8 @@ def sa_create(request):
     if 'form.submitted' in request.params:
         action.create(DBSession, table,
                       request.params.dict_of_lists())
-        request.session.flash("You created new object of %s" % tname)
+        if hasattr(request, 'session'):
+            request.session.flash("You created new object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.create(DBSession, table)
     rel = get_relationship(tname, request)
@@ -132,7 +133,8 @@ def sa_update(request):
 
     if 'form.submitted' in request.params:
         action.update(DBSession, table, id, request.params.dict_of_lists())
-        request.session.flash("You updated object of %s" % tname)
+        if hasattr(request, 'session'):
+            request.session.flash("You updated object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.update(DBSession, table, id)
     rel = get_relationship(tname, request)
@@ -159,7 +161,9 @@ def sa_delete(request):
     tname = request.matchdict['table']
     id = request.matchdict['id']
     action.delete(DBSession, get_table(tname, request), id)
-    request.session.flash("You have removed object of %s" % tname)
+    # TODO: write test for session
+    if hasattr(request, 'session'):
+        request.session.flash("You have removed object of %s" % tname)
     return HTTPFound(location=request.route_url('sa_list', table=tname))
 
 

@@ -35,14 +35,16 @@
   {% endif %}
 </div>
 
-{% if request.session.peek_flash() %}
-  <div id="flash">
-    {% set flash = request.session.pop_flash() %}
-    {% for message in flash %}
-      {{ message }}<br>
-    {% endfor %}
-  </div>
-{% endif %}
+  {% if request.session %}
+    {% if request.session.peek_flash() %}
+      <div id="flash">
+        {% set flash = request.session.pop_flash() %}
+        {% for message in flash %}
+          {{ message }}<br>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
 
 <div id="page">
   {% block sa_body %}{% endblock %}
