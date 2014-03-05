@@ -1,3 +1,14 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+SQLAlchemy helpers
+"""
 import os
 import ast
 import uuid
@@ -131,4 +142,7 @@ def check_type(request, table, key=None, obj=None):
             value = fileobj.filename
     elif column_type == 'HSTORE':
         value = ast.literal_eval(value)
+    elif column_type == 'Date':
+        from datetime import datetime
+        value = datetime.strptime(value,'%Y-%m-%d')
     return value
