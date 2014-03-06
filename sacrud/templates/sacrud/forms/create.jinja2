@@ -1,12 +1,19 @@
+{% set obj=sa_crud['obj'] %}
+{% if hasattr(obj, 'sacrud_detail_col') %}
+  {% set visible_columns=obj.sacrud_detail_col %}
+{% else %}
+  {% set visible_columns=sa_crud['col'] %}
+{% endif %}
+
 <form method="POST"
   accept-charset="utf-8"
   enctype="multipart/form-data"
   {% if sa_crud %}
-    {% if not sa_crud['obj'] %}
+    {% if not obj %}
       action="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
     {% else %}
       action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
-      id=getattr(sa_crud['obj'], sa_crud['pk'])) }}">
+      id=getattr(obj, sa_crud['pk'])) }}">
     {% endif %}
   {% endif %}
   <div class="sa_table">
@@ -16,9 +23,18 @@
         <th>Value</th>
       </tr>
       {% if sa_crud %}
-        {% set obj=sa_crud['obj'] %}
-        {% for col in sa_crud['col'] %}
+        {% for col in visible_columns %}
           {% if not col.name==sa_crud['pk'] %}
+            {% set css_class=[] %}
+            {# TODO: выделить в отдельный include "set_css_style.jinja2" #}
+            {% if hasattr(obj, 'sacrud_css_class') %}
+              {% for key, value in obj.sacrud_css_class.items() %}
+                {% if col in value %}
+                  {{ css_class.append(key) }}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+            {# ============== #}
             <tr>
               <td>
                 {{ col.name }}

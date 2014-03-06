@@ -1,7 +1,14 @@
+{% set table=sa_crud['table'] %}
+{% if hasattr(table, 'sacrud_list_col') %}
+  {% set visible_columns=table.sacrud_list_col %}
+{% else %}
+  {% set visible_columns=sa_crud['col'] %}
+{% endif %}
+
 <div class="sa_table checkboxFilter">
   <!--create-->
-  <a href="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
-    Add a new {{ sa_crud['table'].__tablename__ }}
+  <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}">
+    Add a new {{ table.__tablename__ }}
   </a> | <a href="#" id="sa_union">Union of the fields</a>
   {% set isdnd = False %}
   {% if sa_crud['mapper_args']['order_by'] %}
@@ -14,7 +21,7 @@
           <td>
             <input type="checkbox">
           </td>
-          {% for col in sa_crud['col'] %}
+          {% for col in visible_columns %}
             <th>
               {{ col.name }}
             </th>
@@ -29,7 +36,8 @@
           <td>
             <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
           </td>
-          {% for col in sa_crud['col'] %}
+
+          {% for col in visible_columns %}
             <td>
               {{ row.__getattribute__(col.name)|string|truncate(200) }}
             </td>

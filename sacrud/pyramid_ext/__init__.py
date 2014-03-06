@@ -55,6 +55,7 @@ def includeme(config):
     set_jinja2_silent_none(config)
 
     jinja2_globals = {'str': str, 'getattr': getattr, 'isinstance': isinstance,
+                      'hasattr': hasattr,
                       'session': DBSession,
                       'sqlalchemy': sqlalchemy,
                       'sacrud_ver': __version__,
