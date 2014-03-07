@@ -26,7 +26,7 @@
         {% for col in visible_columns %}
           {% if not col.name==sa_crud['pk'] %}
             {% set css_class=[] %}
-            {# TODO: выделить в отдельный include "set_css_style.jinja2" #}
+            {# TODO: move to include "set_css_style.jinja2" #}
             {% if hasattr(obj, 'sacrud_css_class') %}
               {% for key, value in obj.sacrud_css_class.items() %}
                 {% if col in value %}
@@ -37,7 +37,7 @@
             {# ============== #}
             <tr>
               <td>
-                {{ col.name }}
+                {{ col.info['verbose_name'] or col.name }}
               </td>
               <td>
                 {% if col.name in fk_list %}

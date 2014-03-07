@@ -81,7 +81,8 @@ def create(session, table, request=''):
         return
 
     pk_name = get_pk(table)
-    col = [c for c in table.__table__.columns]
+    # TODO: переделать на sacrud_detailed_col or __table__.columns
+    col = [c for c in table.sacrud_detail_col or table.__table__.columns]
     return {'pk': pk_name,
             'col': col,
             'table': table,

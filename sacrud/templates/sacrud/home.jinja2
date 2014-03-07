@@ -7,7 +7,7 @@
     <h2>{{ group }}</h2>
     {% for table in table_list %}
       {% set tname = table.__tablename__ %}
-      <a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ tname }}</a>
+      <a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ table.verbose_name or tname }}</a>
       <br /><hr />
     {% endfor %}
   {% endfor %}
