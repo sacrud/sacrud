@@ -9,8 +9,7 @@
 language: python
 
 notifications:
-  email:
-    - sacrud@uralbash.ru
+  email: "sacrud@uralbash.ru"
 
 python:
   - "2.7"
