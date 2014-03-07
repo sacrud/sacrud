@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/uralbash/sacrud.png?branch=master)](https://travis-ci.org/uralbash/sacrud)
-
 sacrud
 ======
 

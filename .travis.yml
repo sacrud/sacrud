@@ -10,13 +10,16 @@ language: python
 
 notifications:
   email: "sacrud@uralbash.ru"
-  on_success: "always" # test travis
 
 python:
   - "2.7"
   - "2.6"
 
-install: pip install nose;pip install pyramid;pip install -r requirements.txt
+install:
+  - pip install nose
+  - pip install pyramid
+  - pip install -r requirements.txt
+  - pip install coverage
 
 script:
   - "nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest"
