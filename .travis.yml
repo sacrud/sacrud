@@ -10,6 +10,7 @@ language: python
 
 notifications:
   email: "sacrud@uralbash.ru"
+  on_success: "always" # test travis
 
 python:
   - "2.7"
