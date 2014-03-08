@@ -4,7 +4,7 @@
     <tr>
     {% for col in sa_crud['col'] %}
       <th>
-        {{ col.name }}
+        {{ col.info.verbose_name or col.name }}
       </th>
     {% endfor %}
     <th>actions</th>
