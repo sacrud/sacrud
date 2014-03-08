@@ -33,7 +33,7 @@ def list(session, table, paginator=None, order_by=None):
         - `order_by`: name ordered row.
         - `paginator`: see sacrud.common.paginator.get_paginator.
     """
-    col = [c for c in table.__table__.columns]
+    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
     pk_name = get_pk(table)
     query = session.query(table)
     if order_by:
@@ -81,7 +81,7 @@ def create(session, table, request=''):
         return
 
     pk_name = get_pk(table)
-    col = [c for c in table.sacrud_detail_col or table.__table__.columns]
+    col = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
     return {'pk': pk_name,
             'col': col,
             'table': table,
@@ -100,7 +100,7 @@ def read(session, table, pk):
     """
     pk_name = get_pk(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in table.__table__.columns]
+    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
     return {'obj': obj,
             'pk': pk_name,
             'col': col,
@@ -138,7 +138,7 @@ def update(session, table, pk, request=''):
         session.add(obj)
         transaction.commit()
         return
-
+    col_list = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
     return {'obj': obj,
             'pk': pk_name,
             'col': col_list,

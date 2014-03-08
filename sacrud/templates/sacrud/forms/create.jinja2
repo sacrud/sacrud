@@ -1,10 +1,6 @@
 {% set obj=sa_crud['obj'] %}
-{% if hasattr(obj, 'sacrud_detail_col') %}
-  {% set visible_columns=obj.sacrud_detail_col %}
-{% else %}
-  {% set visible_columns=sa_crud['col'] %}
-{% endif %}
-
+{% set obj_cls=sa_crud['table'] %}
+{% set visible_columns=sa_crud['col'] %}
 {% set fk_template = "sacrud/types/ForeignKey.jinja2" %}
 
 <form method="POST"
@@ -12,9 +8,9 @@
   enctype="multipart/form-data"
   {% if sa_crud %}
     {% if not obj %}
-      action="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}"
+      action="{{ request.route_url('sa_create', table=obj_cls.__tablename__) }}"
     {% else %}
-      action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
+      action="{{ request.route_url('sa_update', table=obj_cls.__tablename__,
       id=getattr(obj, sa_crud['pk'])) }}"
     {% endif %}>
   {% endif %}
@@ -28,8 +24,8 @@
         {% for col in visible_columns %}
             {% set css_class=[] %}
             {# TODO: move to include "set_css_style.jinja2" #}
-            {% if hasattr(obj, 'sacrud_css_class') %}
-              {% for key, value in obj.sacrud_css_class.items() %}
+            {% if hasattr(obj_cls, 'sacrud_css_class') %}
+              {% for key, value in obj_cls.sacrud_css_class.items() %}
                 {% if col in value %}
                   {{ css_class.append(key) }}
                 {% endif %}
