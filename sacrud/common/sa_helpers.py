@@ -153,7 +153,7 @@ def check_type(request, table, key=None, obj=None):
             value = ast.literal_eval(value)
         except:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
-                            (value, 'Valid example: {"foo": "bar", u"Лев": u"Толстой"}'))
+                            (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
     elif column_type == 'Date':
         from datetime import datetime
         value = datetime.strptime(value, '%Y-%m-%d')
