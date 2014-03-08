@@ -5,16 +5,18 @@
   {% set visible_columns=sa_crud['col'] %}
 {% endif %}
 
+{% set fk_template = "sacrud/types/ForeignKey.jinja2" %}
+
 <form method="POST"
   accept-charset="utf-8"
   enctype="multipart/form-data"
   {% if sa_crud %}
     {% if not obj %}
-      action="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}">
+      action="{{ request.route_url('sa_create', table=sa_crud['table'].__tablename__) }}"
     {% else %}
       action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
-      id=getattr(obj, sa_crud['pk'])) }}">
-    {% endif %}
+      id=getattr(obj, sa_crud['pk'])) }}"
+    {% endif %}>
   {% endif %}
   <div class="sa_table">
     <table id="index">
@@ -24,7 +26,6 @@
       </tr>
       {% if sa_crud %}
         {% for col in visible_columns %}
-          {% if not col.name==sa_crud['pk'] %}
             {% set css_class=[] %}
             {# TODO: move to include "set_css_style.jinja2" #}
             {% if hasattr(obj, 'sacrud_css_class') %}
@@ -33,21 +34,29 @@
                   {{ css_class.append(key) }}
                 {% endif %}
               {% endfor %}
+              {% set css_styles=' '.join(css_class) %}
             {% endif %}
             {# ============== #}
+
             <tr>
-              <td>
-                {{ col.info['verbose_name'] or col.name }}
-              </td>
-              <td>
-                {% if col.name in fk_list %}
-                  {% include "sacrud/types/ForeignKey.jinja2" %}
+              {% if col.info['sacrud_position']=='inline' %}
+                <td colspan="2">
+                  <h3>{{ col.info['verbose_name'] or col.sacrud_name }}</h3>
+              {% else %}
+                <td>
+                  {{ col.info['verbose_name'] or col.name }}
+                </td>
+                <td>
+              {% endif %}
+                {% if col.info['sacrud_template'] %}
+                  {% include col.info['sacrud_template'] %}
+                {% elif col.name in fk_list %}
+                  {% include fk_template %}
                 {% else %}
                   {% include get_field_template(col.type.__class__.__name__) %}
                 {% endif %}
               </td>
             </tr>
-          {% endif %}
         {% endfor %}
       {% endif %}
     </table>

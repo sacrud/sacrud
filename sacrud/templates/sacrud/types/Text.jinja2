@@ -1,3 +1,6 @@
-<textarea class="sacrud_text {% for style in css_class %} {{style}}{% endfor %}"
+{% set value=getattr(obj, col.name) %}
+<textarea class="sacrud_text {{ css_styles }}"
           id="sacrud_textarea_{{ col.name }}"
-          name="{{ col.name }}">{% if obj %}{{ getattr(obj, col.name) }}{% endif %}</textarea>
+          name="{{ col.name }}">
+  {{ value }}
+</textarea>

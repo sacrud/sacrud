@@ -2,7 +2,8 @@
   {% if exp['col'].name == col.name %}
     {% set cls=exp['cls'] %}
 
-    <select class="sacrud_select" name="{{ col.name }}">
+    <select class="sacrud_select sacrud_fk {{ css_styles }}"
+            id="sacrud_select_{{ col.name }}" name="{{ col.name }}">
       {% for x in session.query(cls) %}
         <option value='{{ x.id }}'
           {% if obj %}

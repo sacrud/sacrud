@@ -1,6 +1,7 @@
-<input type="number" 
-       class="sacrud_float" 
-       id="Float"
+{% set value=getattr(obj, col.name) %}
+<input type="number"
+       class="sacrud_float {{ css_styles }}"
+       id="sacrud_float_{{ col.name }}"
        name="{{ col.name }}"
-       value="{% if obj %}{{ getattr(obj, col.name) }}{% endif %}"
+       value="{{ value }}"
        />

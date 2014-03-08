@@ -1,0 +1,10 @@
+{% for hcol in col.horizontal_columns %}
+  {% set col=hcol %}
+  {{ col.info.verbose_name or col.name }}
+  {% if col.name in fk_list %}
+    {% include fk_template %}
+  {% else %}
+    {% include get_field_template(col.type.__class__.__name__) %}
+  {% endif %}
+{% endfor %}
+

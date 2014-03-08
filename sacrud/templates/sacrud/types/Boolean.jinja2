@@ -1,13 +1,14 @@
-<input type="checkbox" 
-       class="sacrud_boolean" 
-       id="Boolean"
+{% set value=getattr(obj, col.name) %}
+<input type="checkbox"
+       class="sacrud_boolean"
+       id="sacrud_boolean_{{ col.name }}"
        name="{{ col.name }}"
        value="1"
        {% if obj %}
-       {% if getattr(obj, col.name) %}checked{% endif %}
+        {% if value %}checked{% endif %}
        {% endif %}
        />
-<input type="hidden" 
+<input type="hidden"
        name="{{ col.name }}"
        value="0"
        />
