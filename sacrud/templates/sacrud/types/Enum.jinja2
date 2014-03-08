@@ -1,11 +1,15 @@
-<select class="sacrud_enum {{ css_styles }}"
-        id="sacrud_enum_{{ col.name }}" name="{{ col.name }}">
-  {% for x in col.type.enums %}
-    <option value='{{ x }}'
-    {% if obj %}
-      {% if getattr(obj, col.name)==x %}selected{% endif %}
-    {% endif %}>
-      {{ x.__repr__() }}
-    </option>
-  {% endfor %}
-</select>
+{% extends "sacrud/types/SacrudBase.jinja2" %}
+
+{% block sacrud_column %}
+  <select class="sacrud_enum {{ css_styles }}"
+          id="sacrud_enum_{{ col.name }}" name="{{ col.name }}">
+    {% for x in col.type.enums %}
+      <option value='{{ x }}'
+      {% if obj %}
+        {% if value==x %}selected{% endif %}
+      {% endif %}>
+        {{ x.__repr__() }}
+      </option>
+    {% endfor %}
+  </select>
+{% endblock %}

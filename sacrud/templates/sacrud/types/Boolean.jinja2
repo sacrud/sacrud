@@ -1,14 +1,17 @@
-{% set value=getattr(obj, col.name) %}
-<input type="checkbox"
-       class="sacrud_boolean"
-       id="sacrud_boolean_{{ col.name }}"
-       name="{{ col.name }}"
-       value="1"
-       {% if obj %}
-        {% if value %}checked{% endif %}
-       {% endif %}
-       />
-<input type="hidden"
-       name="{{ col.name }}"
-       value="0"
-       />
+{% extends "sacrud/types/SacrudBase.jinja2" %}
+
+{% block sacrud_column %}
+  <input type="checkbox"
+        class="sacrud_boolean"
+        id="sacrud_boolean_{{ col.name }}"
+        name="{{ col.name }}"
+        value="1"
+        {% if obj %}
+          {% if value %}checked{% endif %}
+        {% endif %}
+        />
+  <input type="hidden"
+        name="{{ col.name }}"
+        value="0"
+        />
+{% endblock %}

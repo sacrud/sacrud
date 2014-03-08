@@ -1,11 +1,14 @@
-{% set value=getattr(obj, col.name) %}
-<input type="file"
-       class="sacrud_filestore {{ css_styles }}"
-       id="sacrud_filestore_{{ col.name }}"
-       name="{{ col.name }}"
-       value="{{ value }}"
-       />
+{% extends "sacrud/types/SacrudBase.jinja2" %}
 
-{% if obj and value %}
-  <a href="{{ value }}">file</a>
-{% endif %}
+{% block sacrud_column %}
+  <input type="file"
+        class="sacrud_filestore {{ css_styles }}"
+        id="sacrud_filestore_{{ col.name }}"
+        name="{{ col.name }}"
+        value="{{ value }}"
+        />
+
+  {% if obj and value %}
+    <a href="{{ value }}">file</a>
+  {% endif %}
+{% endblock %}

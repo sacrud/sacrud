@@ -1,19 +1,23 @@
-{% for exp in rel %}
-  {% if exp['col'].name == col.name %}
-    {% set cls=exp['cls'] %}
+{% extends "sacrud/types/SacrudBase.jinja2" %}
 
-    <select class="sacrud_fk {{ css_styles }}"
-            id="sacrud_fk_{{ col.name }}" name="{{ col.name }}">
-      {% for x in session.query(cls) %}
-        <option value='{{ x.id }}'
-          {% if obj %}
-            {% if getattr(obj, col.name)==x.id %}
-              selected
-            {% endif %}
-          {% endif %}>
-          {{ x.__repr__() }}
-        </option>
-      {% endfor %}
-    </select>
-  {% endif %}
-{% endfor %}
+{% block sacrud_column %}
+  {% for exp in rel %}
+    {% if exp['col'].name == col.name %}
+      {% set cls=exp['cls'] %}
+
+      <select class="sacrud_fk {{ css_styles }}"
+              id="sacrud_fk_{{ col.name }}" name="{{ col.name }}">
+        {% for x in session.query(cls) %}
+          <option value='{{ x.id }}'
+            {% if obj %}
+              {% if value==x.id %}
+                selected
+              {% endif %}
+            {% endif %}>
+            {{ x.__repr__() }}
+          </option>
+        {% endfor %}
+      </select>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
