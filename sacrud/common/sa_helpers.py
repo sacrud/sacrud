@@ -12,14 +12,15 @@ SQLAlchemy helpers
 import os
 import ast
 import uuid
+import inspect
 import sqlalchemy
 
 
 def get_pk(obj):
-    """ Return primary key name of table.
+    """ Return primary key name by model class or instance.
 
     :Parameters:
-        - `table`: SQLAlchemy table.
+        - `obj`: SQLAlchemy model instance or class.
 
     :Examples:
 
@@ -31,9 +32,14 @@ def get_pk(obj):
     ...     id = Column(Integer, primary_key=True)
     >>> get_pk(User())
     'id'
+    >>> get_pk(User)
+    'id'
 
     """
-    pk_list = obj.__mapper__.primary_key
+    if inspect.isclass(obj):
+        pk_list = sqlalchemy.inspect(obj).primary_key
+    else:
+        pk_list = obj.__mapper__.primary_key
     if pk_list:
         return pk_list[0].name
 
@@ -118,12 +124,14 @@ def check_type(request, table, key=None, obj=None):
                 if getattr(obj, col.name):
                     delete_fileobj(table, obj, col.name)
         return
-    column_type = table.__table__.columns[key].type.__class__.__name__
+    column = table.__table__.columns[key]
+    column_type = column.type.__class__.__name__
 
     # for Update or Create
     value = request[key]
     if type(value) in (list, tuple):
         value = value[0]
+
     if column_type == 'Boolean':
         value = False if value == '0' else True
         value = True if value else False
@@ -141,8 +149,12 @@ def check_type(request, table, key=None, obj=None):
                     delete_fileobj(table, obj, key)
             value = fileobj.filename
     elif column_type == 'HSTORE':
-        value = ast.literal_eval(value)
+        try:
+            value = ast.literal_eval(value)
+        except:
+            raise TypeError("HSTORE: does't suppot '%s' format. %s" %
+                            (value, 'Valid example: {"foo": "bar", u"Лев": u"Толстой"}'))
     elif column_type == 'Date':
         from datetime import datetime
-        value = datetime.strptime(value,'%Y-%m-%d')
+        value = datetime.strptime(value, '%Y-%m-%d')
     return value
