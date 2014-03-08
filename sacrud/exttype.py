@@ -1,5 +1,22 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+Extension type for SQLAlchemy
+"""
 import os
-from sqlalchemy.types import TypeDecorator, VARCHAR
+import uuid
+from sqlalchemy.dialects.postgresql.base import UUID
+from sqlalchemy.types import (
+    CHAR,
+    VARCHAR,
+    TypeDecorator,
+)
 
 
 class FileStore(TypeDecorator):
@@ -22,3 +39,37 @@ class FileStore(TypeDecorator):
         if value is not None:
             value = value
         return value
+
+
+class GUID(TypeDecorator):
+    """Platform-independent GUID type.
+
+    Uses Postgresql's UUID type, otherwise uses
+    CHAR(32), storing as stringified hex values.
+
+    """
+    impl = CHAR
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            return dialect.type_descriptor(UUID())
+        else:
+            return dialect.type_descriptor(CHAR(32))
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        elif dialect.name == 'postgresql':
+            return str(value)
+        else:
+            if not isinstance(value, uuid.UUID):
+                return "%.32x" % uuid.UUID(value)
+            else:
+                # hexstring
+                return "%.32x" % value
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            return uuid.UUID(value)
