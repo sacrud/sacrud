@@ -1,5 +1,5 @@
-<select class="sacrud_select {{ css_styles }}"
-        id="sacrud_select_{{ col.name }}" name="{{ col.name }}">
+<select class="sacrud_enum {{ css_styles }}"
+        id="sacrud_enum_{{ col.name }}" name="{{ col.name }}">
   {% for x in col.type.enums %}
     <option value='{{ x }}'
     {% if obj %}
