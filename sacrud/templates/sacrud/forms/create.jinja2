@@ -35,18 +35,18 @@
             {# ============== #}
 
             <tr>
-              {% if col.info['sacrud_position']=='inline' %}
-                <td colspan="2">
-                  <h3>{{ col.info['verbose_name'] or col.sacrud_name }}</h3>
-              {% else %}
-                <td>
-                  {{ col.info['verbose_name'] or col.name }}
-                </td>
-                <td>
-              {% endif %}
+                {% if col.info['sacrud_position']=='inline' %}
+                  <td colspan="2">
+                    <h3>{{ col.info['verbose_name'] or col.sacrud_name }}</h3>
+                {% else %}
+                  <td>
+                    {{ col.info['verbose_name'] or col.name }}
+                  </td>
+                  <td>
+                {% endif %}
                 {% if col.info['sacrud_template'] %}
                   {% include col.info['sacrud_template'] %}
-                {% elif col.name in fk_list %}
+                {% elif col.foreign_keys %}
                   {% include fk_template %}
                 {% else %}
                   {% include get_field_template(col.type.__class__.__name__) %}

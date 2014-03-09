@@ -8,53 +8,13 @@ from pyramid.httpexceptions import HTTPFound
 
 from sacrud import action
 from sacrud.pyramid_ext import DBSession
+from sacrud.pyramid_ext.breadcrumbs import breadcrumbs
 from sacrud.common.paginator import get_paginator
-
-
-def breadcrumbs(tname,  view, id=None):
-    bc = {}
-    bc['sa_list'] = [{'name': 'Home', 'visible': True,
-                      'view': 'sa_home',
-                      'param': {'table': tname}},
-                     {'name': tname, 'visible': True,
-                      'view': 'sa_list',
-                      'param': {'table': tname}}]
-
-    bc['sa_create'] = bc['sa_list'][:]
-    bc['sa_create'].append({'name': 'create',
-                            'visible': False,
-                            'view': 'sa_list',
-                            'param': {'table': tname}})
-
-    bc['sa_read'] = bc['sa_list'][:]
-    bc['sa_read'].append({'name': id,
-                          'visible': False,
-                          'view': 'sa_list',
-                          'param': {'table': tname}})
-
-    bc['sa_update'] = bc['sa_read']
-
-    bc['sa_union'] = bc['sa_list'][:]
-    bc['sa_union'].append({'name': 'union',
-                           'visible': False,
-                           'view': 'sa_list',
-                           'param': {'table': tname}})
-
-    return bc[view]
-
-
-def get_settings_param(request, name):
-    settings = request.registry.settings
-    if 'sacrud_models' in settings:
-        message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
-                  ' This new requirements for sacrud >= 0.1.1 version"'
-        print '\033[93m' + message + '\033[0m'
-        raise Exception(message)
-    return settings[name]
+from sacrud.common.pyramid_helpers import get_settings_param
 
 
 def get_table(tname, request):
-    """ Return table by table name.
+    """ Return table by table name from sacrud.models in settings.
     """
     # convert values of models dict to flat list
     tables = itertools.chain(*get_settings_param(request, 'sacrud.models').values())
@@ -95,11 +55,9 @@ def sa_list(request):
 
 @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
 def sa_create(request):
+    # TODO: rewrite by class view and union with update
     tname = request.matchdict['table']
     table = get_table(tname, request)
-    fk_list = sa.inspect(DBSession.bind).get_foreign_keys(tname)
-    fk_list = map(lambda x: x['constrained_columns'], fk_list)  # only col name
-    fk_list = list(itertools.chain(*fk_list))  # list of lists to flat list
 
     if 'form.submitted' in request.params:
         action.create(DBSession, table,
@@ -108,9 +66,9 @@ def sa_create(request):
             request.session.flash("You created new object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.create(DBSession, table)
-    rel = get_relationship(tname, request)
-    return {'sa_crud': resp, 'rel': rel, 'fk_list': fk_list,
-            'breadcrumbs': breadcrumbs(tname, 'sa_create')}
+    relationships = get_relationship(tname, request)
+    return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_create'),
+            'relationships': relationships}
 
 
 @view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
@@ -127,9 +85,6 @@ def sa_update(request):
     id = request.matchdict['id']
     tname = request.matchdict['table']
     table = get_table(tname, request)
-    fk_list = sa.inspect(DBSession.bind).get_foreign_keys(tname)
-    fk_list = map(lambda x: x['constrained_columns'], fk_list)  # only col name
-    fk_list = list(itertools.chain(*fk_list))  # list of lists to flat list
 
     if 'form.submitted' in request.params:
         action.update(DBSession, table, id, request.params.dict_of_lists())
@@ -137,9 +92,10 @@ def sa_update(request):
             request.session.flash("You updated object of %s" % tname)
         return HTTPFound(location=request.route_url('sa_list', table=tname))
     resp = action.update(DBSession, table, id)
-    rel = get_relationship(tname, request)
-    return {'sa_crud': resp, 'rel': rel, 'fk_list': fk_list,
-            'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id)}
+    relationships = get_relationship(tname, request)
+    return {'sa_crud': resp,
+            'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id),
+            'relationships': relationships}
 
 
 @view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')

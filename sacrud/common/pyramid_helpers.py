@@ -50,3 +50,13 @@ def set_jinja2_globals(config, hashes):
     """
     env = config.get_jinja2_environment()
     env.globals.update(hashes)
+
+
+def get_settings_param(request, name):
+    settings = request.registry.settings
+    if 'sacrud_models' in settings:
+        message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
+                  ' This new requirements for sacrud >= 0.1.1 version"'
+        print '\033[93m' + message + '\033[0m'
+        raise Exception(message)
+    return settings[name]
