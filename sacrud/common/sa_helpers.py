@@ -132,6 +132,9 @@ def check_type(request, table, key=None, obj=None):
     if type(value) in (list, tuple):
         value = value[0]
 
+    if not value:
+        return None
+
     if column_type == 'Boolean':
         value = False if value == '0' else True
         value = True if value else False
