@@ -16,6 +16,7 @@ from sacrud.common.pyramid_helpers import get_settings_param
 def get_table(tname, request):
     """ Return table by table name from sacrud.models in settings.
     """
+    # TODO: write test
     # convert values of models dict to flat list
     tables = itertools.chain(*get_settings_param(request, 'sacrud.models').values())
     return filter(lambda table: (table.__tablename__).
@@ -23,6 +24,7 @@ def get_table(tname, request):
 
 
 def get_relationship(tname, request):
+    # TODO: write test
     obj = get_table(tname, request)
     # Build a list of only relationship properties
     relation_properties = filter(
@@ -53,49 +55,54 @@ def sa_list(request):
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
-@view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
-def sa_create(request):
-    # TODO: rewrite by class view and union with update
-    tname = request.matchdict['table']
-    table = get_table(tname, request)
+class CRUD(object):
+    def __init__(self, request):
+        self.request = request
+        self.tname = request.matchdict['table']
+        self.table = get_table(self.tname, self.request)
+        self.relationships = get_relationship(self.tname, self.request)
+        self.id = request.matchdict.get('id')
+        self.params = request.params.dict_of_lists()
 
-    if 'form.submitted' in request.params:
-        action.create(DBSession, table,
-                      request.params.dict_of_lists())
-        if hasattr(request, 'session'):
-            request.session.flash("You created new object of %s" % tname)
-        return HTTPFound(location=request.route_url('sa_list', table=tname))
-    resp = action.create(DBSession, table)
-    relationships = get_relationship(tname, request)
-    return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_create'),
-            'relationships': relationships}
+    def flash_message(self, message):
+        if hasattr(self.request, 'session'):
+            self.request.session.flash(message)
 
+    @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
+    def sa_create(self):
+        if 'form.submitted' in self.request.params:
+            action.create(DBSession, self.table,
+                          self.request.params.dict_of_lists())
+            self.flash_message("You created new object of %s" % self.tname)
+            return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+        resp = action.create(DBSession, self.table)
+        return {'sa_crud': resp,
+                'relationships': self.relationships,
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_create')}
 
-@view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
-def sa_read(request):
-    tname = request.matchdict['table']
-    id = request.matchdict['id']
-    resp = action.read(DBSession, get_table(tname, request), id)
-    return {'sa_crud': resp,
-            'breadcrumbs': breadcrumbs(tname, 'sa_read', id=id)}
+    @view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
+    def sa_read(self):
+        resp = action.read(DBSession,
+                           get_table(self.tname, self.request), self.id)
+        return {'sa_crud': resp,
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_read', id=self.id)}
 
+    @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
+    def sa_update(self):
+        if 'form.submitted' in self.request.params:
+            action.update(DBSession, self.table, self.id, self.params)
+            self.flash_message("You updated object of %s" % self.tname)
+            return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+        resp = action.update(DBSession, self.table, self.id)
+        return {'sa_crud': resp,
+                'relationships': self.relationships,
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_update', id=self.id)}
 
-@view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
-def sa_update(request):
-    id = request.matchdict['id']
-    tname = request.matchdict['table']
-    table = get_table(tname, request)
-
-    if 'form.submitted' in request.params:
-        action.update(DBSession, table, id, request.params.dict_of_lists())
-        if hasattr(request, 'session'):
-            request.session.flash("You updated object of %s" % tname)
-        return HTTPFound(location=request.route_url('sa_list', table=tname))
-    resp = action.update(DBSession, table, id)
-    relationships = get_relationship(tname, request)
-    return {'sa_crud': resp,
-            'breadcrumbs': breadcrumbs(tname, 'sa_update', id=id),
-            'relationships': relationships}
+    @view_config(route_name='sa_delete')
+    def sa_delete(self):
+        action.delete(DBSession, self.table, self.id)
+        self.flash_message("You have removed object of %s" % self.tname)
+        return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
 
 
 @view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')
@@ -109,17 +116,6 @@ def sa_paste(request):
     action.update(DBSession, get_table(tname, request), target_id,
                   {pos_name: [getattr(source_obj, pos_name)]})
 
-    return HTTPFound(location=request.route_url('sa_list', table=tname))
-
-
-@view_config(route_name='sa_delete')
-def sa_delete(request):
-    tname = request.matchdict['table']
-    id = request.matchdict['id']
-    action.delete(DBSession, get_table(tname, request), id)
-    # TODO: write test for session
-    if hasattr(request, 'session'):
-        request.session.flash("You have removed object of %s" % tname)
     return HTTPFound(location=request.route_url('sa_list', table=tname))
 
 
