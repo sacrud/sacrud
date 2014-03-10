@@ -39,6 +39,14 @@ def set_jinja2_silent_none(config):
     env = config.get_jinja2_environment()
 
     def _silent_none(value):
+        """
+        >>> _silent_none('foo')
+        'foo'
+        >>> _silent_none(None)
+        ''
+        >>> _silent_none('None')
+        ''
+        """
         if not value or value == 'None':
             return ''
         return value

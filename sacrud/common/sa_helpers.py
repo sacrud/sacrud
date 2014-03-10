@@ -132,16 +132,14 @@ def check_type(request, table, key=None, obj=None):
     if type(value) in (list, tuple):
         value = value[0]
 
-    if not value:
+    if not value and not hasattr(value, 'filename'):
         return None
 
     if column_type == 'Boolean':
         value = False if value == '0' else True
         value = True if value else False
     elif column_type == 'FileStore':
-        if request[key] is None:
-            return None
-        fileobj = request[key][0]
+        fileobj = value
         if hasattr(fileobj, 'filename'):
             extension = fileobj.filename.split(".")[-1]
             fileobj.filename = str(uuid.uuid4()) + "." + extension

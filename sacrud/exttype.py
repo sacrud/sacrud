@@ -40,6 +40,9 @@ class FileStore(TypeDecorator):
             value = value
         return value
 
+    def __repr__(self):
+        return self.path
+
 
 class GUID(TypeDecorator):
     """Platform-independent GUID type.
