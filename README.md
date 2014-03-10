@@ -20,6 +20,7 @@ Look how easy it is to use with Pyramid:
 go to http://localhost:6543/sacrud/
 
 and see...
+
 ![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/index.png)
 
 Features
@@ -27,9 +28,13 @@ Features
 
 - Be awesome
 - Read table rows
+
 ![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/rows.png)
+
 - Create and update row
+
 ![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/edit.png)
+
 - Delete row
 - Use sortable table with position field
 - Upload file with FileField
