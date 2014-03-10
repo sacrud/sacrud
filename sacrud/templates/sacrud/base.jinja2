@@ -17,12 +17,14 @@
 
 <body>
 <div class="sa_head">
-  <ul id="sa_head_menu">
-    <a href="{{ request.route_url('sa_home') }}"><li>Home</li></a>
-    <a href="https://github.com/uralbash/sacrud" target="_blank">
-      <li style="width:90px">ver: {{ sacrud_ver }}</li>
-    </a>
-  </ul>
+  {% block menu %}
+    <ul id="sa_head_menu">
+      <a href="{{ request.route_url('sa_home') }}"><li>Home</li></a>
+      <a href="https://github.com/uralbash/sacrud" target="_blank">
+        <li style="width:90px">ver: {{ sacrud_ver }}</li>
+      </a>
+    </ul>
+  {% endblock %}
 </div>
 
 <div class="sa_breadcrumbs">
@@ -39,27 +41,31 @@
   {% endif %}
 </div>
 
-{% if request.session %}
-  {% if request.session.peek_flash() %}
-    <div id="flash">
-      {% set flash = request.session.pop_flash() %}
-      {% for message in flash %}
-        {{ message }}<br>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endif %}
-
-<div id="page">
-  {% block sa_body %}{% endblock %}
-  {% if 'row' in sa_crud %}
-    {% set paginator = sa_crud['row'] %}
-    {% if paginator.items %}
-      <div class="paginator">
-        {{ paginator.pager() }}
+{% block flash_message %}
+  {% if request.session %}
+    {% if request.session.peek_flash() %}
+      <div id="flash">
+        {% set flash = request.session.pop_flash() %}
+        {% for message in flash %}
+          {{ message }}<br>
+        {% endfor %}
       </div>
     {% endif %}
   {% endif %}
+{% endblock %}
+
+<div id="page">
+  {% block sa_body %}{% endblock %}
+  {% block paginator %}
+    {% if 'row' in sa_crud %}
+      {% set paginator = sa_crud['row'] %}
+      {% if paginator.items %}
+        <div class="paginator">
+          {{ paginator.pager() }}
+        </div>
+      {% endif %}
+    {% endif %}
+  {% endblock %}
 </div>
 
 </body>
