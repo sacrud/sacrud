@@ -93,8 +93,10 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
-        "Framework :: Pyramid :: Flask",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Database",
+        "Framework :: Pyramid ",
+        "Framework :: Flask",
+        "Topic :: Internet",
+        "Topic :: Database",
         "License :: Repoze Public License",
     ],
 )
