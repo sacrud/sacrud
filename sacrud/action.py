@@ -41,17 +41,13 @@ def list(session, table, paginator=None, order_by=None):
     row = query.all()
     if paginator:
         row = Page(row, **paginator)
-    if hasattr(table, '__mapper_args__'):
-        mapper_args = table.__mapper_args__
-    else:
-        mapper_args = {}
 
     return {'row': row,
             'pk': pk_name,
             'col': col,
             'table': table,
             'prefix': prefix,
-            'mapper_args': mapper_args, }
+            }
 
 
 def create(session, table, request=''):

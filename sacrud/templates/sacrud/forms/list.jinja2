@@ -4,23 +4,24 @@
 {% else %}
   {% set visible_columns=sa_crud['col'] %}
 {% endif %}
+{% if hasattr(sa_crud['table'], '__mapper_args__') %}
+{% set dnd=sa_crud['table'].__mapper_args__.order_by %}
+{% endif %}
 
 <div class="sa_table checkboxFilter">
   <!--create-->
   <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}">
     Add a new {{ table.__tablename__ }}
   </a> | <a href="#" id="sa_union">Union of the fields</a>
-  {% set isdnd = False %}
-  {% if sa_crud['mapper_args']['order_by'] %}
-    {% set isdnd = True %}
-  {% endif %}
   <table id="sa_index">
     {% if sa_crud %}
       <thead>
         <tr>
-          <td>
-            <input type="checkbox">
-          </td>
+          {% if dnd %}
+            <th>
+                <input type="checkbox"/>
+            </th>
+          {% endif %}
           {% for col in visible_columns %}
             <th>
               {{ col.info.verbose_name or col.name }}
@@ -33,13 +34,19 @@
       {% for row in sa_crud['row'] %}
         {% set row_id = row[sa_crud['pk']] %}
         <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
-          <td>
-            <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
-          </td>
-
+          {% if dnd %}
+            <td>
+              <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
+            </td>
+          {% endif %}
           {% for col in visible_columns %}
             <td>
-              {{ row.__getattribute__(col.name)|string|truncate(200) }}
+              {% set col_value=row.__getattribute__(col.name) %}
+              {% if col.info['sacrud_list_template'] %}
+                  {% include col.info['sacrud_list_template'] %}
+              {% else %}
+                {{ col_value|string|truncate(200) }}
+              {% endif %}
             </td>
           {% endfor %}
           <td>
