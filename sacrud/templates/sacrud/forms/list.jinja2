@@ -5,7 +5,7 @@
   {% set visible_columns=sa_crud['col'] %}
 {% endif %}
 {% if hasattr(sa_crud['table'], '__mapper_args__') %}
-{% set dnd=sa_crud['table'].__mapper_args__.order_by %}
+{% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
 {% endif %}
 
 <div class="sa_table checkboxFilter">
@@ -17,7 +17,7 @@
     {% if sa_crud %}
       <thead>
         <tr>
-          {% if dnd %}
+          {% if isdnd %}
             <th>
                 <input type="checkbox"/>
             </th>
@@ -34,7 +34,7 @@
       {% for row in sa_crud['row'] %}
         {% set row_id = row[sa_crud['pk']] %}
         <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
-          {% if dnd %}
+          {% if isdnd %}
             <td>
               <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
             </td>
