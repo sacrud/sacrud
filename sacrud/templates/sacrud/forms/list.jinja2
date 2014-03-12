@@ -5,7 +5,7 @@
   {% set visible_columns=sa_crud['col'] %}
 {% endif %}
 {% if hasattr(sa_crud['table'], '__mapper_args__') %}
-{% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
+  {% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
 {% endif %}
 
 <div class="sa_table checkboxFilter">
@@ -24,7 +24,7 @@
           {% endif %}
           {% for col in visible_columns %}
             <th>
-              {{ col.info.verbose_name or col.name }}
+              {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
             </th>
           {% endfor %}
           <th>actions</th>
@@ -41,7 +41,9 @@
           {% endif %}
           {% for col in visible_columns %}
             <td>
-              {% set col_value=row.__getattribute__(col.name) %}
+              {% if col.__class__.__name__ == 'Column' %}
+                {% set col_value=row.__getattribute__(col.name) %}
+              {% endif %}
               {% if col.info['sacrud_list_template'] %}
                   {% include col.info['sacrud_list_template'] %}
               {% else %}

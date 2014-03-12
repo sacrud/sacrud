@@ -33,23 +33,28 @@ def pkg_prefix(config):
     return '' if config.route_prefix else '/sacrud/'
 
 
+def _silent_none(value):
+    """
+    >>> _silent_none('foo')
+    'foo'
+    >>> _silent_none(None)
+    ''
+    >>> _silent_none('None')
+    ''
+    >>> _silent_none(False)
+    ''
+    """
+    if hasattr(value, '__bool__'):
+        return value
+    if not value or value == 'None':
+        return ''
+    return value
+
+
 def set_jinja2_silent_none(config):
     """ if variable is None print '' instead of 'None'
     """
     env = config.get_jinja2_environment()
-
-    def _silent_none(value):
-        """
-        >>> _silent_none('foo')
-        'foo'
-        >>> _silent_none(None)
-        ''
-        >>> _silent_none('None')
-        ''
-        """
-        if not value or value == 'None':
-            return ''
-        return value
     env.finalize = _silent_none
 
 

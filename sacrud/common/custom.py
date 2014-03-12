@@ -16,7 +16,9 @@ def hosrizontal_field(*args, **kwargs):
     if 'sacrud_name' in kwargs:
         sacrud_name = kwargs['sacrud_name']
     return {'info': {'sacrud_position': 'inline',
-                     'sacrud_template': 'sacrud/custom/HorizontalFields.jinja2'},
+                     'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2',
+                     'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                     },
             'horizontal_columns': args,
             'sacrud_name': sacrud_name,
             'name': '',
