@@ -16,30 +16,32 @@
 </head>
 
 <body>
-<div class="sa_head">
-  {% block menu %}
+{% block menu %}
+  <div class="sa_head">
     <ul id="sa_head_menu">
       <a href="{{ request.route_url('sa_home') }}"><li>Home</li></a>
       <a href="https://github.com/uralbash/sacrud" target="_blank">
         <li style="width:90px">ver: {{ sacrud_ver }}</li>
       </a>
     </ul>
-  {% endblock %}
-</div>
+  </div>
+{% endblock %}
 
-<div class="sa_breadcrumbs">
-  {% if breadcrumbs %}
-    <div class="sa_breadcrumbs_row">
-      {% for crumb in breadcrumbs %}
-        {% if not loop.last %}
-          <a {% if crumb.visible %}href=
-               "{{ request.route_path(crumb.view, **crumb.param) }}"
-             {% endif %}>{{ crumb.name }}</a> &rarr;
-        {% else %}{{ crumb.name }}{% endif %}
-      {% endfor %}
-    </div>
-  {% endif %}
-</div>
+{% block breadcrumbs %}
+  <div class="sa_breadcrumbs">
+    {% if breadcrumbs %}
+      <div class="sa_breadcrumbs_row">
+        {% for crumb in breadcrumbs %}
+          {% if not loop.last %}
+            <a {% if crumb.visible %}href=
+                "{{ request.route_path(crumb.view, **crumb.param) }}"
+              {% endif %}>{{ crumb.name }}</a> &rarr;
+          {% else %}{{ crumb.name }}{% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
 
 {% block flash_message %}
   {% if request.session %}

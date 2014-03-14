@@ -11,32 +11,22 @@ Breadcrumbs for sacrud pyramid extension.
 """
 
 
+def get_crumb(name, visible, view, params):
+    return {'name': name, 'visible': visible, 'view': view, 'param': params}
+
+
 def breadcrumbs(tname,  view, id=None):
     bc = {}
-    bc['sa_list'] = [{'name': 'Home', 'visible': True,
-                      'view': 'sa_home',
-                      'param': {'table': tname}},
-                     {'name': tname, 'visible': True,
-                      'view': 'sa_list',
-                      'param': {'table': tname}}]
+    bc['sa_list'] = [get_crumb('Home', True, 'sa_home', {'table': tname}),
+                     get_crumb(tname, True, 'sa_list', {'table': tname})]
 
-    bc['sa_create'] = bc['sa_list'][:]
-    bc['sa_create'].append({'name': 'create',
-                            'visible': False,
-                            'view': 'sa_list',
-                            'param': {'table': tname}})
+    bc['sa_create'] = bc['sa_list'] +\
+        [get_crumb('create', False, 'sa_list', {'table': tname})]
 
-    bc['sa_read'] = bc['sa_list'][:]
-    bc['sa_read'].append({'name': id,
-                          'visible': False,
-                          'view': 'sa_list',
-                          'param': {'table': tname}})
+    bc['sa_read'] = bc['sa_update'] = bc['sa_list'] +\
+        [get_crumb(id, False, 'sa_list', {'table': tname})]
 
-    bc['sa_update'] = bc['sa_read']
+    bc['sa_union'] = bc['sa_list'] +\
+        [get_crumb('union', False, 'sa_list', {'table': tname})]
 
-    bc['sa_union'] = bc['sa_list'][:]
-    bc['sa_union'].append({'name': 'union',
-                           'visible': False,
-                           'view': 'sa_list',
-                           'param': {'table': tname}})
     return bc[view]
