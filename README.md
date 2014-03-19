@@ -19,7 +19,7 @@ Look how easy it is to use with Pyramid:
 
 go to http://localhost:6543/sacrud/
 
-and see... 
+and see...
 
 ![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/index.png)
 
