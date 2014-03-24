@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/uralbash/sacrud.png?branch=master)](https://travis-ci.org/uralbash/sacrud)
+[![Stories in Ready](https://badge.waffle.io/uralbash/sacrud.png?label=ready&title=Ready)](http://waffle.io/uralbash/sacrud)
 
 sacrud
 ======
