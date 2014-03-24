@@ -1,25 +1,6 @@
 {% extends "sacrud/types/SacrudBase.jinja2" %}
 
 {% block sacrud_column %}
-  {% include 'elfinder/elfinderhead.html' %}
-  <script>
-
-$('#select-button').click(function(){
-    var f = $('<div></div>').elfinder({
-        url : '/elfinder/',
-        height: 490,
-        docked: false,
-        dialog: { width: 400, modal: true },
-        closeOnEditorCallback: true,
-        editorCallback: function(url) {
-            $('#fileurl').val(url);
-        }
-  });
-});
-  </script>
-<input type="text" id="fileurl" />
-<div class="button" id="select-button">select file</div>
-
   {% if obj and value %}
     <a href="{{ value }}"><img src="{{ value }}" style="width: 100px"/></a>
   {% endif %}

@@ -7,7 +7,7 @@ coverage:
 	nosetests --cover-package=sacrud --cover-erase --with-coverage  --with-doctest
 
 test:
-	nosetests --cover-package=sacrud  --with-doctest
+	nosetests --cover-package=sacrud --cover-erase --with-coverage  --with-doctest
 
 run:
 	pserve development.ini

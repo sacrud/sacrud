@@ -15,6 +15,7 @@ from sqlalchemy.dialects.postgresql.base import UUID
 from sqlalchemy.types import (
     CHAR,
     VARCHAR,
+    Unicode,
     TypeDecorator,
 )
 
@@ -76,3 +77,19 @@ class GUID(TypeDecorator):
             return value
         else:
             return uuid.UUID(value)
+
+
+class ElfinderString(TypeDecorator):
+    impl = Unicode
+
+    def __init__(self, *arg, **kw):
+        TypeDecorator.__init__(self, *arg, **kw)
+
+    def process_bind_param(self, value, dialect):
+        return value
+
+    def process_result_value(self, value, dialect):
+        return value
+
+    def __repr__(self):
+        return self.path
