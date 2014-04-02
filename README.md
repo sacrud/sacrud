@@ -74,7 +74,7 @@ I have a mailing list located at: sacrud@uralbash.ru
 License
 -------
 
-The project is licensed under the BSD license. 
+The project is licensed under the BSD license.  
 
 Example
 -------
