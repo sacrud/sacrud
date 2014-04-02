@@ -1,4 +1,4 @@
-import o
+import os
 import glob
 import fnmatch
 from sacrud import version
