@@ -3,5 +3,5 @@ env:
   - GOPATH=/var/cache/drone
 script:
   - go build
-  - sleep 12
+  - sleep 13
   - go test -cover -v
