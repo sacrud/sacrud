@@ -5,3 +5,7 @@ script:
   - pip install -r requirements.txt
   - pip install coverage
   - "nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest"
+notify:
+  email:
+    recipients:
+      - sacrud@uralbash.ru
