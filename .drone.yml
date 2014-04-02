@@ -1,7 +1,6 @@
-image: python2.7
+image: mischief/docker-golang
+env:
+  - GOPATH=/var/cache/drone
 script:
-  - pip install nose
-  - pip install pyramid
-  - pip install -r requirements.txt
-  - pip install coverage
-  - "nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest"
+  - go build
+  - go test -cover -v
