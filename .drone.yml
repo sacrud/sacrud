@@ -4,7 +4,7 @@ script:
   - pip install pyramid
   - pip install -r requirements.txt
   - pip install coverage
-  - "nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest"
+  - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
 notify:
   email:
     recipients:
