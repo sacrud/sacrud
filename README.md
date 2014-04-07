@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/uralbash/sacrud.png?branch=master)](https://travis-ci.org/uralbash/sacrud)
-[![Coverage Status](https://coveralls.io/repos/uralbash/sacrud/badge.png)](https://coveralls.io/r/uralbash/sacrud)
+[![Coverage Status](https://coveralls.io/repos/uralbash/sacrud/badge.png?branch=master)](https://coveralls.io/r/uralbash/sacrud?branch=master)
 [![Stories in Ready](https://badge.waffle.io/uralbash/sacrud.png?label=ready&title=Ready)](http://waffle.io/uralbash/sacrud)
-
 sacrud
 ======
 
