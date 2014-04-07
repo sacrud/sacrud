@@ -31,19 +31,15 @@ def get_pk(obj):
     ...     __tablename__ = 'users'
     ...     id = Column(Integer, primary_key=True)
     >>> get_pk(User())
-    'id'
+    (Column('id', Integer(), table=<users>, primary_key=True, nullable=False),)
     >>> get_pk(User)
-    'id'
-
+    (Column('id', Integer(), table=<users>, primary_key=True, nullable=False),)
     """
     if inspect.isclass(obj):
         pk_list = sqlalchemy.inspect(obj).primary_key
     else:
         pk_list = obj.__mapper__.primary_key
-    if pk_list:
-        return pk_list[0].name
-
-    return ''
+    return pk_list
 
 
 def get_relations(obj):

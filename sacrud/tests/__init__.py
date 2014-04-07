@@ -1,31 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import os
 import glob
+import os
 import unittest
-import transaction
-
-from sqlalchemy import create_engine
-from sacrud.tests.test_models import (
-    User,
-    Profile,
-    PHOTO_PATH,
-    DBSession,
-)
-from sacrud.action import (
-    read,
-    update,
-    delete,
-    list as row_list,
-    create,
-)
-from sacrud.common.sa_helpers import (
-    get_pk,
-    get_relations,
-    delete_fileobj,
-)
-from pyramid.testing import DummyRequest
 from StringIO import StringIO
+
+import transaction
+from pyramid.testing import DummyRequest
+from sqlalchemy import Column, create_engine, Integer
+
+from sacrud.action import list as row_list
+from sacrud.action import create, delete, read, update
+from sacrud.common.sa_helpers import delete_fileobj, get_pk, get_relations
+from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
 
 
 class MockCGIFieldStorage(object):
@@ -93,7 +80,7 @@ class SacrudTest(BaseSacrudTest):
 
     def test_get_pk(self):
         pk = get_pk(User)
-        self.assertEqual("id", pk)
+        self.assertEqual('id', pk[0].name)
 
     def test_list(self):
         user = User(u'Vasya', u'Pupkin', u"123")
@@ -268,3 +255,4 @@ class PositionTest(BaseSacrudTest):
         self.assertEqual(self.session.query(User).get(2).position, 2)
         self.assertEqual(self.session.query(User).get(3).position, 1)
         self.assertEqual(self.session.query(User).get(4).position, 3)
+

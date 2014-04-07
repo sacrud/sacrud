@@ -21,6 +21,9 @@ from sacrud.common.sa_helpers import (
 
 prefix = 'crud'
 
+# FIXME: rewrite it
+get_pk_hook = lambda x: get_pk(x)[0].name
+
 
 def list(session, table, paginator=None, order_by=None):
     """
@@ -34,7 +37,7 @@ def list(session, table, paginator=None, order_by=None):
         - `paginator`: see sacrud.common.paginator.get_paginator.
     """
     col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    pk_name = get_pk(table)
+    pk_name = get_pk_hook(table)
     query = session.query(table)
     if order_by:
         query = query.order_by(order_by)
@@ -76,7 +79,7 @@ def create(session, table, request=''):
         transaction.commit()
         return
 
-    pk_name = get_pk(table)
+    pk_name = get_pk_hook(table)
     col = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
     return {'pk': pk_name,
             'col': col,
@@ -94,7 +97,7 @@ def read(session, table, pk):
         - `table`: table instance.
         - `pk`: primary key value.
     """
-    pk_name = get_pk(table)
+    pk_name = get_pk_hook(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
     return {'obj': obj,
@@ -116,7 +119,7 @@ def update(session, table, pk, request=''):
         - `request`: webob format request.
     """
 
-    pk_name = get_pk(table)
+    pk_name = get_pk_hook(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col_list = [c for c in table.__table__.columns]
 
@@ -153,7 +156,7 @@ def delete(session, table, pk):
         - `pk`: primary key value.
     """
 
-    pk_name = get_pk(table)
+    pk_name = get_pk_hook(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     check_type('', table, obj=obj)
     session.delete(obj)
