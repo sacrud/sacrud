@@ -25,6 +25,6 @@ install:
 
 script:
   - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
-  - py.test sacrud/tests/__init__.py --doctest-modules --pep8 -v --cov coveralls --cov-report term-missing
+  - py.test sacrud/tests/ --doctest-modules --pep8 -v --cov sacrud --cov-report term-missing
 after_success:
   coveralls
