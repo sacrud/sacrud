@@ -16,14 +16,12 @@ python:
   - "2.6"
 
 install:
-  - pip install nose
+  - pip install nose coverage coveralls nosexcover
   - pip install pyramid
   - pip install -r requirements.txt
-  - pip install coverage
-  - pip install coveralls
 
 script:
-  - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
-  - coverage run --source=sacrud runtest.py sacrud
+  - python setup.py nosetests --with-coverage --cover-package sacrud --cover-erase --with-doctest
+
 after_success:
   coveralls
