@@ -24,6 +24,6 @@ install:
 
 script:
   - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
-  - coverage run --source=sacrud runtest.py
+  - coverage run runtest.py sacrud
 after_success:
   coveralls

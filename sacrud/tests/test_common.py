@@ -56,7 +56,7 @@ class BaseSacrudTest(unittest.TestCase):
         clear_files()
 
 
-class SacrudTest(BaseSacrudTest):
+class CommonTest(BaseSacrudTest):
 
     def test_relations(self):
         user = self.user_add()

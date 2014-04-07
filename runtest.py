@@ -9,13 +9,12 @@
 """
 Test runner
 """
-# nosetests --cover-package=sacrud --cover-erase --with-coverage  --with-doctest
 import sys
 
 import coverage
 import nose
 
-# --with-doctest
+# nosetests --cover-package=sacrud --cover-erase --with-coverage  --with-doctest
 argv = sys.argv[:]
 argv.insert(1, "--cover-package=sacrud")
 argv.insert(2, "--cover-erase")
