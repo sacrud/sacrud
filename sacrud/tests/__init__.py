@@ -246,4 +246,3 @@ class PositionTest(BaseSacrudTest):
         self.assertEqual(self.session.query(User).get(2).position, 2)
         self.assertEqual(self.session.query(User).get(3).position, 1)
         self.assertEqual(self.session.query(User).get(4).position, 3)
-

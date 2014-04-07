@@ -21,9 +21,10 @@ install:
   - pip install -r requirements.txt
   - pip install coverage
   - pip install coveralls
+  - pip install pytest pytest-cov pytest-pep8
 
 script:
   - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
-  - coverage run --source=sacrud setup.py test
+  - py.test coveralls/tests.py --doctest-modules --pep8 coveralls -v --cov coveralls --cov-report term-missing
 after_success:
   coveralls
