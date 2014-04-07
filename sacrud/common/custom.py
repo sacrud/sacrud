@@ -13,12 +13,15 @@ Any instruments for customizing Models
 
 def hosrizontal_field(*args, **kwargs):
     """
+    :Examples:
+
     >>> hosrizontal_field(sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ()}
     >>> hosrizontal_field('a', 'b', sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ('a', 'b')}
     >>> hosrizontal_field()
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': '', 'name': '', 'horizontal_columns': ()}
+
     """
     sacrud_name = ''
     if 'sacrud_name' in kwargs:
