@@ -49,9 +49,9 @@ class BaseSacrudTest(unittest.TestCase):
 
     def tearDown(self):
         def clear_files():
-            for filename in glob.glob("%s/*.html" % (PHOTO_PATH, )):
-                os.remove(os.path.join(PHOTO_PATH, filename))
-            for filename in glob.glob("%s/*.txt" % (PHOTO_PATH, )):
+            files = glob.glob("%s/*.html" % PHOTO_PATH)
+            files += glob.glob("%s/*.txt" % PHOTO_PATH)
+            for filename in files:
                 os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
 
@@ -59,21 +59,12 @@ class BaseSacrudTest(unittest.TestCase):
 class SacrudTest(BaseSacrudTest):
 
     def test_relations(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-
-        self.session.add(user)
-        transaction.commit()
-
-        profile = Profile(user=user)
-
-        self.session.add(profile)
-        transaction.commit()
-
-        profile = self.session.query(Profile).get(1)
+        user = self.user_add()
+        self.profile_add(user)
         user = self.session.query(User).get(1)
+        profile = self.session.query(Profile).get(1)
 
-        self.assertEqual(get_relations(user), [('profile',
-                                                [profile, ])])
+        self.assertEqual(get_relations(user), [('profile', [profile, ])])
         self.session.delete(profile)
         self.session.delete(user)
         transaction.commit()

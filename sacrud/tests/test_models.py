@@ -24,7 +24,7 @@ DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
 
 DBSession = orm.scoped_session(
-    orm.sessionmaker(extension=ZopeTransactionExtension()))
+    orm.sessionmaker(extension=ZopeTransactionExtension(), expire_on_commit=False))
 
 
 class User(Base):
