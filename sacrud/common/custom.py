@@ -11,15 +11,15 @@ Any instruments for customizing Models
 """
 
 
-def hosrizontal_field(*args, **kwargs):
+def horizontal_field(*args, **kwargs):
     """
     :Examples:
 
-    >>> hosrizontal_field(sacrud_name='foo')
+    >>> horizontal_field(sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ()}
-    >>> hosrizontal_field('a', 'b', sacrud_name='foo')
+    >>> horizontal_field('a', 'b', sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ('a', 'b')}
-    >>> hosrizontal_field()
+    >>> horizontal_field()
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': '', 'name': '', 'horizontal_columns': ()}
 
     """

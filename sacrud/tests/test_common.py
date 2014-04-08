@@ -16,6 +16,7 @@ from pyramid.testing import DummyRequest
 from webhelpers.paginate import PageURL_WebOb
 
 from sacrud.common.paginator import get_current_page, get_paginator
+from sacrud.common.custom import horizontal_field
 
 
 class BaseTest(unittest.TestCase):
@@ -46,3 +47,26 @@ class PaginatorTest(BaseTest):
         self.assertEqual(paginator['items_per_page'], 20)
         self.assertEqual(paginator['page'], 100500)
         self.assertEqual(type(paginator['url']), PageURL_WebOb)
+
+
+class CustomTest(BaseTest):
+
+    def test_horizontal_field(self):
+        widget = horizontal_field(sacrud_name='foo')
+        self.assertEqual(widget,
+                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                                   'sacrud_position': 'inline',
+                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
+                          'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ()})
+        widget = horizontal_field('a', 'b', sacrud_name='foo')
+        self.assertEqual(widget,
+                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                                   'sacrud_position': 'inline',
+                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
+                          'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ('a', 'b')})
+        widget = horizontal_field()
+        self.assertEqual(widget,
+                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                                   'sacrud_position': 'inline',
+                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
+                          'sacrud_name': '', 'name': '', 'horizontal_columns': ()})
