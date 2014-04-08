@@ -7,7 +7,7 @@ from StringIO import StringIO
 
 import transaction
 from pyramid.testing import DummyRequest
-from sqlalchemy import Column, create_engine, Integer
+from sqlalchemy import create_engine
 
 from sacrud.action import list as row_list
 from sacrud.action import create, delete, read, update
@@ -70,7 +70,13 @@ class SacrudTest(BaseSacrudTest):
         transaction.commit()
 
     def test_get_pk(self):
+        # class
         pk = get_pk(User)
+        self.assertEqual('id', pk[0].name)
+
+        # object
+        user = self.user_add()
+        pk = get_pk(user)
         self.assertEqual('id', pk[0].name)
 
     def test_list(self):
@@ -131,6 +137,8 @@ class SacrudTest(BaseSacrudTest):
         user = self.session.query(User).get(1)
         self.session.delete(user)
         transaction.commit()
+
+        self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
 
     def test_read(self):
         user = User(u'Vasya', u'Pupkin', u"123")
