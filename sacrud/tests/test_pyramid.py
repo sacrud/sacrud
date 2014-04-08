@@ -19,9 +19,8 @@ from sqlalchemy.orm.session import sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
-from sacrud.tests.test_models import User, Profile
-
-from sacrud.pyramid_ext.views import get_table
+from sacrud.pyramid_ext.views import get_relationship, get_table
+from sacrud.tests.test_models import Profile, User
 
 TEST_DATABASE_CONNECTION_STRING = "sqlite:///:memory:"
 DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
@@ -89,3 +88,10 @@ class ViewsTest(BaseTest):
         self.assertEqual(user, User)
         foo = get_table('foo', self.request)
         self.assertEqual(foo, None)
+
+    def test_get_relationship(self):
+        foo = get_relationship('foo', self.request)
+        self.assertEqual(foo, None)
+        bar = get_relationship('user', self.request)
+        self.assertEqual(len(bar), 1)
+        self.assertEqual(bar, [{'col': User.id, 'cls': Profile}])

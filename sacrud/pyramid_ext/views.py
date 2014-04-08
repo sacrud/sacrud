@@ -30,6 +30,8 @@ def get_table(tname, request):
 def get_relationship(tname, request):
     # TODO: write test
     obj = get_table(tname, request)
+    if not obj:
+        return None
     # Build a list of only relationship properties
     relation_properties = filter(
         lambda p: isinstance(p, sa.orm.properties.RelationshipProperty),
