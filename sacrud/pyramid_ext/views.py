@@ -18,9 +18,13 @@ def get_table(tname, request):
     """
     # TODO: write test
     # convert values of models dict to flat list
-    tables = itertools.chain(*get_settings_param(request, 'sacrud.models').values())
-    return filter(lambda table: (table.__tablename__).
-                  lower() == tname.lower(), tables)[0]
+    tables = itertools.chain(
+        *get_settings_param(request, 'sacrud.models').values())
+    tables = filter(lambda table: (table.__tablename__).
+                    lower() == tname.lower(), tables)
+    if not tables:
+        return None
+    return tables[0]
 
 
 def get_relationship(tname, request):
@@ -31,7 +35,7 @@ def get_relationship(tname, request):
         lambda p: isinstance(p, sa.orm.properties.RelationshipProperty),
         sa.orm.class_mapper(obj).iterate_properties
     )
-    #related_tables = [prop.target for prop in relation_properties]
+    # related_tables = [prop.target for prop in relation_properties]
     related_classes = [{'cls': prop.mapper.class_,
                         'col': list(prop.local_columns)[0]}
                        for prop in relation_properties]
@@ -56,6 +60,7 @@ def sa_list(request):
 
 
 class CRUD(object):
+
     def __init__(self, request):
         self.request = request
         self.tname = request.matchdict['table']
@@ -134,9 +139,7 @@ def sa_union_fields(request):
             row_name = field.replace("sa_col_", "")
             row_id_for_value = request.POST[field]
             row_value = DBSession.query(getattr(table, row_name))\
-                                 .filter(
-                                     getattr(table, pk) == row_id_for_value
-                                 ).one()
+                                 .filter(getattr(table, pk) == row_id_for_value).one()
             new_row_param[row_name] = [row_value, ]
         # delete rows
         for id in comp_objs:

@@ -12,15 +12,35 @@ Test for sacrud.common
 
 import unittest
 
+from pyramid import testing
+from sqlalchemy.engine import create_engine
+from sqlalchemy.orm.scoping import scoped_session
+from sqlalchemy.orm.session import sessionmaker
+from zope.sqlalchemy import ZopeTransactionExtension
+
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
+from sacrud.tests.test_models import User, Profile
+
+from sacrud.pyramid_ext.views import get_table
+
+TEST_DATABASE_CONNECTION_STRING = "sqlite:///:memory:"
+DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 
 
 class BaseTest(unittest.TestCase):
     def setUp(self):
-        pass
+        self.request = testing.DummyRequest()
+        config = testing.setUp(request=self.request)
+        config.registry.settings['sqlalchemy.url'] = TEST_DATABASE_CONNECTION_STRING
+        engine = create_engine(TEST_DATABASE_CONNECTION_STRING)
+        DBSession.remove()
+        DBSession.configure(bind=engine)
+        config.include('sacrud.pyramid_ext', route_prefix='/admin')
+        settings = config.registry.settings
+        settings['sacrud.models'] = {'': [User], 'auth': [User, Profile]}
 
     def tearDown(self):
-        pass
+        testing.tearDown()
 
 
 class BreadCrumbsTest(BaseTest):
@@ -60,3 +80,12 @@ class BreadCrumbsTest(BaseTest):
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': 'union',
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
+
+
+class ViewsTest(BaseTest):
+
+    def test_get_table(self):
+        user = get_table('user', self.request)
+        self.assertEqual(user, User)
+        foo = get_table('foo', self.request)
+        self.assertEqual(foo, None)
