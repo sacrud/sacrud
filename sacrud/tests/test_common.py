@@ -11,8 +11,11 @@ Test for sacrud.common
 """
 
 import unittest
+
 from pyramid.testing import DummyRequest
-from sacrud.common import paginator
+from webhelpers.paginate import PageURL_WebOb
+
+from sacrud.common.paginator import get_current_page, get_paginator
 
 
 class BaseTest(unittest.TestCase):
@@ -26,8 +29,20 @@ class BaseTest(unittest.TestCase):
 class PaginatorTest(BaseTest):
 
     def test_get_current_page(self):
-        page = paginator.get_current_page(self.request)
+        page = get_current_page(self.request)
         self.assertEqual(page, 1)
         self.request.GET['page'] = 5
-        page = paginator.get_current_page(self.request)
+        page = get_current_page(self.request)
         self.assertEqual(page, 5)
+
+    def test_get_paginator(self):
+        paginator = get_paginator(self.request)
+        self.assertEqual(paginator['items_per_page'], 10)
+        self.assertEqual(paginator['page'], 1)
+        self.assertEqual(type(paginator['url']), PageURL_WebOb)
+
+        self.request.GET['page'] = 100500
+        paginator = get_paginator(self.request, 20)
+        self.assertEqual(paginator['items_per_page'], 20)
+        self.assertEqual(paginator['page'], 100500)
+        self.assertEqual(type(paginator['url']), PageURL_WebOb)
