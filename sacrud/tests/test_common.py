@@ -11,11 +11,13 @@ Test for sacrud.common
 """
 
 import unittest
+from pyramid.testing import DummyRequest
+from sacrud.common import paginator
 
 
 class BaseTest(unittest.TestCase):
     def setUp(self):
-        pass
+        self.request = DummyRequest()
 
     def tearDown(self):
         pass
@@ -24,4 +26,8 @@ class BaseTest(unittest.TestCase):
 class PaginatorTest(BaseTest):
 
     def test_get_current_page(self):
-        pass
+        page = paginator.get_current_page(self.request)
+        self.assertEqual(page, 1)
+        self.request.GET['page'] = 5
+        page = paginator.get_current_page(self.request)
+        self.assertEqual(page, 5)
