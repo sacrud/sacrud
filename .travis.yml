@@ -21,7 +21,7 @@ install:
   - pip install -r requirements.txt
 
 script:
-  - coverage run --source=sacrud runtest.py sacrud
+  - coverage run runtest.py sacrud
 
 after_success:
   coveralls
