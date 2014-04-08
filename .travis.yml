@@ -17,7 +17,7 @@ python:
 
 install:
   - pip install nose coverage coveralls
-  - pip install pyramid
+  - pip install pyramid pyramid_jinja2
   - pip install -r requirements.txt
 
 script:

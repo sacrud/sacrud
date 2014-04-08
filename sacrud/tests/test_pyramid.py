@@ -85,7 +85,7 @@ class BreadCrumbsTest(BaseTest):
 class ViewsTest(BaseTest):
 
     def test_get_table(self):
-        user = get_table('user', self.request)
+        user = get_table('UsEr', self.request)
         self.assertEqual(user, User)
         foo = get_table('foo', self.request)
         self.assertEqual(foo, None)
