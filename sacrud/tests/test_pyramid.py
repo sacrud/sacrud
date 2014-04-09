@@ -38,7 +38,7 @@ def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
 class BaseTest(unittest.TestCase):
 
     def setUp(self):
-        from mock_main import main
+        from test_mock_main import main
         settings = {'sqlalchemy.url': TEST_DATABASE_CONNECTION_STRING}
         app = main({}, **settings)
         _initTestingDB()
