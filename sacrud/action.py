@@ -71,7 +71,7 @@ def create(session, table, request=''):
         obj = table(**args)
         for key, value in request.items():
             # chek columns exist
-            if not key in table.__table__.columns:
+            if key not in table.__table__.columns:
                 continue
             value = check_type(request, table, key)
             obj.__setattr__(key, value)

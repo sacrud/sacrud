@@ -48,6 +48,8 @@ class BaseSacrudTest(unittest.TestCase):
         Profile.metadata.create_all(engine)
 
     def tearDown(self):
+        DBSession.remove()
+
         def clear_files():
             files = glob.glob("%s/*.html" % PHOTO_PATH)
             files += glob.glob("%s/*.txt" % PHOTO_PATH)

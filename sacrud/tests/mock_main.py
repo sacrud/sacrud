@@ -27,6 +27,5 @@ def main(global_config, **settings):
     settings['sacrud.models'] = {'': [User],
                                  'Auth models': [User, Profile],
                                  }
-
     config.scan()
     return config.make_wsgi_app()
