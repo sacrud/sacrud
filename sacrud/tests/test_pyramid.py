@@ -10,36 +10,46 @@
 Test for sacrud.common
 """
 
+import os
 import unittest
 
 from pyramid import testing
-from sqlalchemy.engine import create_engine
-from sqlalchemy.orm.scoping import scoped_session
-from sqlalchemy.orm.session import sessionmaker
-from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
 from sacrud.tests.test_models import Profile, User
 
-TEST_DATABASE_CONNECTION_STRING = "sqlite:///:memory:"
-DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
+TEST_DATABASE_CONNECTION_STRING = "sqlite:///foo.sqlite"
+
+
+def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
+    from sqlalchemy import create_engine
+    from test_models import (
+        DBSession,
+        Base
+    )
+    engine = create_engine(url)
+    Base.metadata.create_all(engine)
+    if not DBSession:
+        DBSession.configure(bind=engine)
+    return DBSession
 
 
 class BaseTest(unittest.TestCase):
+
     def setUp(self):
-        self.request = testing.DummyRequest()
-        config = testing.setUp(request=self.request)
-        config.registry.settings['sqlalchemy.url'] = TEST_DATABASE_CONNECTION_STRING
-        engine = create_engine(TEST_DATABASE_CONNECTION_STRING)
-        DBSession.remove()
-        DBSession.configure(bind=engine)
-        config.include('sacrud.pyramid_ext', route_prefix='/admin')
-        settings = config.registry.settings
-        settings['sacrud.models'] = {'': [User], 'auth': [User, Profile]}
+        from mock_main import main
+        settings = {'sqlalchemy.url': TEST_DATABASE_CONNECTION_STRING}
+        app = main({}, **settings)
+        _initTestingDB()
+        from webtest import TestApp
+        self.testapp = TestApp(app)
 
     def tearDown(self):
-        testing.tearDown()
+        del self.testapp
+        from test_models import DBSession
+        DBSession.remove()
+        os.remove('foo.sqlite')
 
 
 class BreadCrumbsTest(BaseTest):
@@ -82,16 +92,39 @@ class BreadCrumbsTest(BaseTest):
 
 
 class ViewsTest(BaseTest):
+    def _include_sacrud(self):
+        request = testing.DummyRequest()
+        config = testing.setUp(request=request)
+        config.registry.settings['sqlalchemy.url'] = TEST_DATABASE_CONNECTION_STRING
+        config.include('sacrud.pyramid_ext', route_prefix='/admin')
+        settings = config.registry.settings
+        settings['sacrud.models'] = {'': [User], 'auth': [User, Profile]}
+        return request
 
     def test_get_table(self):
-        user = get_table('UsEr', self.request)
+        request = self._include_sacrud()
+        user = get_table('UsEr', request)
         self.assertEqual(user, User)
-        foo = get_table('foo', self.request)
+        foo = get_table('foo', request)
         self.assertEqual(foo, None)
 
     def test_get_relationship(self):
-        foo = get_relationship('foo', self.request)
+        request = self._include_sacrud()
+        foo = get_relationship('foo', request)
         self.assertEqual(foo, None)
-        bar = get_relationship('user', self.request)
+        bar = get_relationship('user', request)
         self.assertEqual(len(bar), 1)
         self.assertEqual(bar, [{'col': User.id, 'cls': Profile}])
+
+    def test_sa_home(self):
+        res = self.testapp.get('/admin/', status=200)
+        self.failUnless('Auth models' in res.body)
+        self.failUnless('<a id="id_user" href="http://localhost/admin/user">user</a>' in res.body)
+        self.failUnless('<a id="id_profile" href="http://localhost/admin/profile">profile</a>' in res.body)
+
+    def test_sa_list(self):
+        # FIXME: ++test
+        res = self.testapp.get('/admin/user', status=200)
+        self.failUnless('user list' in res.body)
+        res = self.testapp.get('/admin/profile', status=200)
+        self.failUnless('profile list' in res.body)

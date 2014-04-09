@@ -1,4 +1,14 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+Includeme of SACRUD
+"""
 import os
 import sqlalchemy
 import sqlalchemy.orm as orm
@@ -12,8 +22,6 @@ from sacrud.common.pyramid_helpers import (
     set_jinja2_silent_none,
     set_jinja2_globals,
 )
-
-DBSession = None
 
 
 def get_field_template(field):
@@ -39,13 +47,15 @@ def add_routes(config):
 
 
 def includeme(config):
-    global DBSession
     engine = sqlalchemy.engine_from_config(config.registry.settings)
-    if DBSession is None:
-        DBSession = orm.scoped_session(
-            orm.sessionmaker(extension=ZopeTransactionExtension()))
-    DBSession.remove()
+    DBSession = orm.scoped_session(
+        orm.sessionmaker(extension=ZopeTransactionExtension()))
     DBSession.configure(bind=engine)
+
+    def get_db(request):
+        return DBSession
+
+    config.set_request_property(get_db, 'dbsession', reify=True)
 
     config.include(add_routes)
     config.include('pyramid_jinja2')
@@ -61,5 +71,5 @@ def includeme(config):
                       'sacrud_ver': __version__,
                       'get_field_template': get_field_template}
     set_jinja2_globals(config, jinja2_globals)
-    #config.add_jinja2_extension('jinja2.ext.with_')
+    # config.add_jinja2_extension('jinja2.ext.with_')
     config.scan()
