@@ -46,9 +46,9 @@ class BaseTest(unittest.TestCase):
         self.testapp = TestApp(app)
 
     def tearDown(self):
-        del self.testapp
-        from test_models import DBSession
-        DBSession.remove()
+        #del self.testapp
+        from sacrud.tests.test_models import DBSession
+        #DBSession.remove()
         os.remove('foo.sqlite')
 
 

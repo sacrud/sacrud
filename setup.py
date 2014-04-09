@@ -51,11 +51,11 @@ setup(
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.pyramid_ext', 'sacrud.common'],
+    packages=['sacrud', 'sacrud.pyramid_ext', 'sacrud.common', 'sacrud.tests'],
     data_files=files,
     include_package_data=True,
     zip_safe=False,
-    test_suite="sacrud.tests",
+    test_suite="nose.collector",
     license="GPL",
     package_dir={'sacrud': 'sacrud'},
     package_data={
