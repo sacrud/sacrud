@@ -8,15 +8,16 @@ sacrud will solve your problem of CRUD interface for SQLAlchemy,
 by providing extension for Pyramid or use it in pure form. 
 
 Look how easy it is to use with Pyramid:
+```python
+config.include('pyramid_jinja2')
+config.add_jinja2_search_path("myprojectname:templates")
 
-    config.include('pyramid_jinja2')
-    config.add_jinja2_search_path("myprojectname:templates")
-
-    from .models import (Model1, Model2, Model3,)
-    # add sacrud and project models
-    config.include('sacrud.pyramid_ext')
-    settings = config.registry.settings
-    settings['sacrud.models'] = {'Group1': [Model1, Model2], '': [Model3]}
+from .models import (Model1, Model2, Model3,)
+# add sacrud and project models
+config.include('sacrud.pyramid_ext')
+settings = config.registry.settings
+settings['sacrud.models'] = {'Group1': [Model1, Model2], '': [Model3]}
+```
 
 go to http://localhost:6543/sacrud/
 
