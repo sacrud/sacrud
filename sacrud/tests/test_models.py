@@ -1,19 +1,24 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+Models for SACRUD tests
+"""
 import os
 
-from sqlalchemy import orm
+import transaction
+from sqlalchemy import create_engine, orm
 from sqlalchemy.event import listen
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.schema import Column, ForeignKey
-from zope.sqlalchemy import ZopeTransactionExtension
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.types import (
-    Integer,
-    String,
-    Text,
-    Boolean,
-    Float,
-    Enum,
-)
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
+from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.exttype import FileStore
 from sacrud.position import before_insert
@@ -26,6 +31,32 @@ PHOTO_PATH = os.path.join(DIRNAME)
 DBSession = orm.scoped_session(
     orm.sessionmaker(extension=ZopeTransactionExtension(),
                      expire_on_commit=False))
+
+DB_FILE = os.path.join(os.path.dirname(__file__), 'test.sqlite')
+TEST_DATABASE_CONNECTION_STRING = 'sqlite:///%s' % DB_FILE
+
+
+def user_add(session):
+    user = User(u'Vasya', u'Pupkin', u"123")
+    session.add(user)
+    transaction.commit()
+    user = session.query(User).get(1)
+    return user
+
+
+def profile_add(session, user):
+    profile = Profile(user=user)
+    session.add(profile)
+    transaction.commit()
+    profile = session.query(Profile).first()
+    return profile
+
+
+def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
+    engine = create_engine(url)
+    Base.metadata.create_all(engine)
+    DBSession.configure(bind=engine)
+    return DBSession
 
 
 class User(Base):

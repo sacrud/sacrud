@@ -10,57 +10,48 @@
     {% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
 {% endif %}
 
-<div class="sa_table checkboxFilter">
-    <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}">Add a new {{ table.__tablename__ }}</a>
-    |
-    <a href="#" id="sa_union">Union of the fields</a>
+<div class="sa_table">
+    <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}">
+        Add a new {{ table.__tablename__ }}
+    </a>
     <table id="sa_index">
-        {% if sa_crud %}
-            <thead>
-                <tr>
-                    {% if isdnd %}
-                        <th>
-                            <input type="checkbox"/>
-                        </th>
-                    {% endif %}
-                    {% for col in visible_columns %}
-                        <th>
-                            {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
-                        </th>
-                    {% endfor %}
-                    <th>actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in sa_crud['row'] %}
-                    {% set row_id = row[sa_crud['pk']] %}
-                    <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
-                        {% if isdnd %}
-                            <td>
-                                <input type="checkbox" value="{{ row_id }}" id="sa_row_{{ row_id }}" class="sa_row_chk_box">
-                            </td>
-                        {% endif %}
-                        {% for col in visible_columns %}
-                            <td>
-                                {% if col.__class__.__name__ == 'Column' %}
-                                    {% set col_value=row.__getattribute__(col.name) %}
-                                {% endif %}
-                                {% if col.info['sacrud_list_template'] %}
-                                    {% include col.info['sacrud_list_template'] %}
-                                {% else %}
-                                    {{ col_value|string|truncate(200) }}
-                                {% endif %}
-                            </td>
-                        {% endfor %}
-                        <td>
-                            {% include 'sacrud/forms/actions.jinja2' with context %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr><td>There are no open objects</td></tr>
-            {% endif %}
-        </tbody>
-    </table>
+    {% if sa_crud %}
+      <thead>
+        <tr>
+          {% for col in visible_columns %}
+            <th>
+              {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
+            </th>
+          {% endfor %}
+          <th>actions</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for row in sa_crud['row'] %}
+        {% set row_id = row[sa_crud['pk']] %}
+        <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
+          {% for col in visible_columns %}
+            <td>
+              {% if col.__class__.__name__ == 'Column' %}
+                {% set col_value=row.__getattribute__(col.name) %}
+              {% endif %}
+              {% if col.info['sacrud_list_template'] %}
+                  {% include col.info['sacrud_list_template'] %}
+              {% else %}
+                {{ col_value|string|truncate(200) }}
+              {% endif %}
+            </td>
+          {% endfor %}
+          <td>
+            {% include 'sacrud/forms/actions.jinja2' with context %}
+          </td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr><td>There are no open objects</td></tr>
+    {% endif %}
+    </tbody>
+  </table>
+
 </div>
 

@@ -17,22 +17,9 @@ from pyramid import testing
 
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
-from sacrud.tests.test_models import Profile, User
-
-TEST_DATABASE_CONNECTION_STRING = "sqlite:///foo.sqlite"
-
-
-def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
-    from sqlalchemy import create_engine
-    from test_models import (
-        DBSession,
-        Base
-    )
-    engine = create_engine(url)
-    Base.metadata.create_all(engine)
-    if not DBSession:
-        DBSession.configure(bind=engine)
-    return DBSession
+from sacrud.tests.test_models import (_initTestingDB, DB_FILE, Profile,
+                                      TEST_DATABASE_CONNECTION_STRING, User,
+                                      user_add, profile_add)
 
 
 class BaseTest(unittest.TestCase):
@@ -41,15 +28,20 @@ class BaseTest(unittest.TestCase):
         from sacrud.tests.mock_main import main
         settings = {'sqlalchemy.url': TEST_DATABASE_CONNECTION_STRING}
         app = main({}, **settings)
-        _initTestingDB()
+        DBSession = _initTestingDB()
+        user_add(DBSession)
+        user_add(DBSession)
+        user = user_add(DBSession)
+        #profile_add(DBSession, user)
+
         from webtest import TestApp
         self.testapp = TestApp(app)
 
     def tearDown(self):
-        #del self.testapp
+        del self.testapp
         from sacrud.tests.test_models import DBSession
-        #DBSession.remove()
-        os.remove('foo.sqlite')
+        DBSession.remove()
+        os.remove(DB_FILE)
 
 
 class BreadCrumbsTest(BaseTest):
@@ -123,8 +115,25 @@ class ViewsTest(BaseTest):
         self.failUnless('<a id="id_profile" href="http://localhost/admin/profile">profile</a>' in res.body)
 
     def test_sa_list(self):
-        # FIXME: ++test
         res = self.testapp.get('/admin/user', status=200)
         self.failUnless('user list' in res.body)
         res = self.testapp.get('/admin/profile', status=200)
         self.failUnless('profile list' in res.body)
+
+    def test_sa_read(self):
+        res = self.testapp.get('/admin/user/read/1', status=200)
+        self.failUnless('view user' in res.body)
+
+    def test_sa_update(self):
+        res = self.testapp.get('/admin/user/update/1', status=200)
+        self.failUnless('edit user' in res.body)
+
+    def test_sa_create(self):
+        res = self.testapp.get('/admin/user/create', status=200)
+        self.failUnless('create' in res.body)
+        self.failUnless('edit user' in res.body)
+
+    def test_sa_delete(self):
+        res = self.testapp.get('/admin/user/read/1', status=200)
+        self.failUnless('view user' in res.body)
+        self.testapp.get('/admin/user/delete/1', status=302)
