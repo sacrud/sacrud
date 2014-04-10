@@ -27,17 +27,23 @@
     {% endif %}
 
     <link href="{# request.static_url('css/__main.css') #}" rel="stylesheet" />
+
     <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
 
     {% block extra_css %}
     {% endblock extra_css %}
 
     <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
-
     <link href="{{ request.static_url('sacrud:static/css/kendo.default.min.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/kendo.rtl.min.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
 
-
-    
+    <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
 
     <noscript>
         <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
@@ -69,67 +75,70 @@
 </head>
 
 <body>
-    {% block menu %}
-        <div class="sa_head">
-            <ul id="sa_head_menu">
-                <li>
-                    <a href="{{ request.route_url('sa_home') }}">Home</a>
-                </li>
-                <li style="width:90px">
-                    <a href="https://github.com/uralbash/sacrud" target="_blank">ver: {{ sacrud_ver }}</a>
-                </li>
-            </ul>
-        </div>
-    {% endblock %}
-
-    {% block breadcrumbs %}
-        <div class="sa_breadcrumbs">
-            {% if breadcrumbs %}
-                <div class="sa_breadcrumbs_row">
-                    {% for crumb in breadcrumbs %}
-                        {% if not loop.last %}
-                            <a {% if crumb.visible %}href="{{ request.route_path(crumb.view, **crumb.param) }}"{% endif %}>{{ crumb.name }}</a> &rarr;
-                        {% else %}
-                            {{ crumb.name }}
-                        {% endif %}
-                    {% endfor %}
+    <div class="wrapper">
+        <div class="wrapper__inner">
+            <div class="header">
+                <div class="header__inner clear-fix">
+                    <div class="main-menu">
+                        <div class="main-menu__item">
+                            <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
+                        </div>
+                    </div>
+                    <div class="header__inner-info">
+                        <a href="https://github.com/uralbash/sacrud"  class="header__inner-info-text">ver: {{ sacrud_ver }}</a>
+                    </div>
                 </div>
-            {% endif %}
-        </div>
-    {% endblock %}
+            </div>
 
-    {% block flash_message %}
-        {% if request.session %}
-            {% if request.session.peek_flash() %}
-                <div id="flash">
-                    {% set flash = request.session.pop_flash() %}
-                    {% for message in flash %}
-                        {{ message }}<br>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endif %}
-    {% endblock %}
+            {% block breadcrumbs %}
+                {% if breadcrumbs %}
+                    <div class="nav">
+                        {% for crumb in breadcrumbs %}
+                            {% if not loop.last %}
+                                <a href="{% if crumb.visible %} {{ request.route_path(crumb.view, **crumb.param) }} {% endif %}"
+                                   class="nav__link">{{ crumb.name }}</a>
+                                <ins class="nav__separator">&nbsp;</ins>
+                            {% else %}
+                                <span class="nav__item_state_current">{{ crumb.name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endblock breadcrumbs %}
 
-    <div id="page">
-        {% block sa_body %}{% endblock %}
+            {% block flash_message %}
+                {% if request.session %}
+                    {% if request.session.peek_flash() %}
+                        <div id="flash">
+                            {% set flash = request.session.pop_flash() %}
+                            {% for message in flash %}
+                                {{ message }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
+
+            {% block sa_body %}{% endblock %}
+
             {% block paginator %}
                 {% if 'row' in sa_crud %}
                     {% set paginator = sa_crud['row'] %}
-                {% if paginator.items %}
-                    <div class="paginator">
-                        {{ paginator.pager() }}
-                    </div>
+                    {% if paginator.items %}
+                        <div class="paginator">
+                            {{ paginator.pager() }}
+                        </div>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endblock %}
+            {% endblock paginator %}
+        </div>
     </div>
 
     <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
     <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
 
     {% block extrascript %}
-    {% endblock %}
+    {% endblock extrascript %}
 
 </body>
 </html>

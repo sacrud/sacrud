@@ -1,15 +1,48 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
 {% block sa_body %}
-<div class="sa_body">
-  <h1>Tables</h1>
-  {% for group, table_list in tables.iteritems() %}
-    <h2>{{ group }}</h2>
-    {% for table in table_list %}
-      {% set tname = table.__tablename__ %}
-      <a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ table.verbose_name or tname }}</a>
-      <br /><hr />
-    {% endfor %}
-  {% endfor %}
-</div>
-{% endblock %}
+	<div class="sa_body">
+		<div id="page" class="page">
+	        <div class="page__left">
+	            <div class="page__left-inner">
+					<div class="page__left-inner-content">
+						<div class="page__title">Tables</div>
+						<ul id="panelbar">
+							{% for group, table_list in tables.iteritems() %}
+		                    	<li class="k-state-active">
+		                    		{{ group }}
+									<ul>
+										{% for table in table_list %}
+											<li>
+												{% set tname = table.__tablename__ %}
+												<a id="id_{{ tname }}" href="{{ request.route_url('sa_list', table=tname) }}">{{ table.verbose_name or tname }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+								</li>
+							{% endfor %}
+						</ul>
+	                </div>
+	            </div>
+	        </div>
+	        <div class="page__right">
+	        </div>
+	    </div>
+	</div>
+{% endblock sa_body  %}
+
+{% block extrascript %}
+	<script>
+		$(document).ready(function() {
+            var original = $("#panelbar").clone(true);
+            original.find(".k-state-active").removeClass("k-state-active");
+
+            var initPanelBar = function () {
+                $("#panelbar").kendoPanelBar();
+            };
+
+
+            initPanelBar();
+        });
+    </script>
+{% endblock extrascript %}

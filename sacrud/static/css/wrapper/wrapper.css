@@ -1,0 +1,12 @@
+.wrapper
+{
+	width: 100%;
+}
+	.wrapper__inner
+	{
+		margin: 0 auto;
+		max-width: 1160px;
+		min-width: 950px;
+		position: relative;
+		padding: 0 20px;
+	}

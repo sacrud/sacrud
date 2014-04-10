@@ -1,8 +1,10 @@
 <!--delete-->
-<div class="inline">
+
+
   <form action="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
         id=row[sa_crud['pk']]) }}" 
         method='POST'>
-    <input type="submit" value="delete" id="button_delete">
+        <button id="button_delete" class="k-primary" value="delete">Удалить</button>
   </form>
-</div>
+
+

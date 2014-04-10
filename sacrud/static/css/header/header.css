@@ -1,0 +1,21 @@
+.header
+{
+	width: 100%;
+	position: relative;
+}
+	.header__inner
+	{
+		background: #333;
+		position: relative;
+		padding: 0 1em;
+	}
+		.header__inner-info
+		{
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+			.header__inner-info-text
+			{
+
+			}
