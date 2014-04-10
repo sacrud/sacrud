@@ -1,74 +1,135 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        SACRUD
+        {% block title %}
+           
 
-<meta charset="utf-8"/>
-<title>SACRUD</title>
-<meta name="author" content="Uralbash"/>
-<link rel="shortcut icon" href="{{ request.static_url('sacrud:static/favicon.ico') }}"/>
-<link rel="stylesheet" href="{{ request.static_url('sacrud:static/style/style.css') }}"/>
+        {% endblock title %}
+        {% if site_name %}
+          | {{ site_name }}
+        {% endif %}
+    </title>
 
-{% block extrascript %}
-{% endblock %}
 
-{% block userspace %}
-{% endblock %}
+    <link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    {% if 'geograftour.com' in request.get_host %}
+        <meta name="robots" content="index,follow" />
+        <meta name="robots" content="noyaca" />
+        <meta name="google-site-verification" content="" />
+        <meta name="yandex-verification" content="" />
+    {% else %}
+        <meta name="robots" content="none" />
+    {% endif %}
+
+    <link href="{# request.static_url('css/__main.css') #}" rel="stylesheet" />
+    <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
+
+    {% block extra_css %}
+    {% endblock extra_css %}
+
+    <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
+
+    <link href="{{ request.static_url('sacrud:static/css/kendo.default.min.css') }}" rel="stylesheet">
+
+
+    
+
+    <noscript>
+        <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
+    </noscript>
+
+    <!--[if gte IE 9]>
+    <style type="text/css">
+      .gradient { filter: none; }
+    </style>
+    <![endif]-->
+    <!--[if IE 8]>
+    <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 7]>
+    <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <!--[if IE 6]>
+    <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
+    <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+    <![endif]-->
+
+    {% block extrahead %}
+    {% endblock extrahead %}
+
+    {% block userspace %}
+    {% endblock %}
+
 </head>
 
 <body>
-{% block menu %}
-  <div class="sa_head">
-    <ul id="sa_head_menu">
-      <a href="{{ request.route_url('sa_home') }}"><li>Home</li></a>
-      <a href="https://github.com/uralbash/sacrud" target="_blank">
-        <li style="width:90px">ver: {{ sacrud_ver }}</li>
-      </a>
-    </ul>
-  </div>
-{% endblock %}
-
-{% block breadcrumbs %}
-  <div class="sa_breadcrumbs">
-    {% if breadcrumbs %}
-      <div class="sa_breadcrumbs_row">
-        {% for crumb in breadcrumbs %}
-          {% if not loop.last %}
-            <a {% if crumb.visible %}href=
-                "{{ request.route_path(crumb.view, **crumb.param) }}"
-              {% endif %}>{{ crumb.name }}</a> &rarr;
-          {% else %}{{ crumb.name }}{% endif %}
-        {% endfor %}
-      </div>
-    {% endif %}
-  </div>
-{% endblock %}
-
-{% block flash_message %}
-  {% if request.session %}
-    {% if request.session.peek_flash() %}
-      <div id="flash">
-        {% set flash = request.session.pop_flash() %}
-        {% for message in flash %}
-          {{ message }}<br>
-        {% endfor %}
-      </div>
-    {% endif %}
-  {% endif %}
-{% endblock %}
-
-<div id="page">
-  {% block sa_body %}{% endblock %}
-  {% block paginator %}
-    {% if 'row' in sa_crud %}
-      {% set paginator = sa_crud['row'] %}
-      {% if paginator.items %}
-        <div class="paginator">
-          {{ paginator.pager() }}
+    {% block menu %}
+        <div class="sa_head">
+            <ul id="sa_head_menu">
+                <li>
+                    <a href="{{ request.route_url('sa_home') }}">Home</a>
+                </li>
+                <li style="width:90px">
+                    <a href="https://github.com/uralbash/sacrud" target="_blank">ver: {{ sacrud_ver }}</a>
+                </li>
+            </ul>
         </div>
-      {% endif %}
-    {% endif %}
-  {% endblock %}
-</div>
+    {% endblock %}
+
+    {% block breadcrumbs %}
+        <div class="sa_breadcrumbs">
+            {% if breadcrumbs %}
+                <div class="sa_breadcrumbs_row">
+                    {% for crumb in breadcrumbs %}
+                        {% if not loop.last %}
+                            <a {% if crumb.visible %}href="{{ request.route_path(crumb.view, **crumb.param) }}"{% endif %}>{{ crumb.name }}</a> &rarr;
+                        {% else %}
+                            {{ crumb.name }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endblock %}
+
+    {% block flash_message %}
+        {% if request.session %}
+            {% if request.session.peek_flash() %}
+                <div id="flash">
+                    {% set flash = request.session.pop_flash() %}
+                    {% for message in flash %}
+                        {{ message }}<br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endif %}
+    {% endblock %}
+
+    <div id="page">
+        {% block sa_body %}{% endblock %}
+            {% block paginator %}
+                {% if 'row' in sa_crud %}
+                    {% set paginator = sa_crud['row'] %}
+                {% if paginator.items %}
+                    <div class="paginator">
+                        {{ paginator.pager() }}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endblock %}
+    </div>
+
+    <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
+    <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
+
+    {% block extrascript %}
+    {% endblock %}
 
 </body>
 </html>
