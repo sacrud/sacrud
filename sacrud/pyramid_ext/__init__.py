@@ -43,7 +43,6 @@ def add_routes(config):
     config.add_route('sa_paste',    prefix + '{table}/paste/{id}/' +
                                              '{target_id}')
     config.add_route('sa_paste_tmp', prefix + '{table}/paste/{id}')
-    config.add_route('sa_union_fields', prefix + '{table}/union')
 
 
 def includeme(config):

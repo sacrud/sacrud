@@ -56,9 +56,6 @@ def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
     engine = create_engine(url)
     Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
-
-    user_add(DBSession)
-
     return DBSession
 
 

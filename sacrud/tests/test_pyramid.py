@@ -19,7 +19,7 @@ from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
 from sacrud.tests.test_models import (_initTestingDB, DB_FILE, Profile,
                                       TEST_DATABASE_CONNECTION_STRING, User,
-                                      user_add)
+                                      user_add, profile_add)
 
 
 class BaseTest(unittest.TestCase):
@@ -31,7 +31,9 @@ class BaseTest(unittest.TestCase):
         DBSession = _initTestingDB()
         user_add(DBSession)
         user_add(DBSession)
-        user_add(DBSession)
+        user = user_add(DBSession)
+        #profile_add(DBSession, user)
+
         from webtest import TestApp
         self.testapp = TestApp(app)
 

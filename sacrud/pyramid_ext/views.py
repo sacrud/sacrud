@@ -1,5 +1,14 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import ast
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+Views for Pyramid frontend
+"""
 import itertools
 
 import sqlalchemy as sa
@@ -123,42 +132,3 @@ def sa_paste(request):
                   {pos_name: [getattr(source_obj, pos_name)]})
 
     return HTTPFound(location=request.route_url('sa_list', table=tname))
-
-
-@view_config(route_name='sa_union_fields', renderer='/sacrud/compare.jinja2')
-def sa_union_fields(request):
-    # XXX: experimental future
-    tname = request.matchdict['table']
-    table = get_table(tname, request)
-    pk = action.get_pk(table)
-    if 'form.submitted' in request.params and pk:
-        comp_objs = ast.literal_eval(request.POST['sa_comp_objs'])
-        new_row_param = {}
-        for field in request.POST:
-            if 'sa_col_' not in field:
-                continue
-            row_name = field.replace("sa_col_", "")
-            row_id_for_value = request.POST[field]
-            row_value = request.dbsession.query(getattr(table, row_name))\
-                .filter(getattr(table, pk) == row_id_for_value).one()
-            new_row_param[row_name] = [row_value, ]
-        # delete rows
-        for id in comp_objs:
-            action.delete(request.dbsession, table, id)
-        # add new union row
-        action.create(request.dbsession, table, new_row_param)
-        return HTTPFound(location=request.route_url('sa_list', table=tname))
-
-    order_by = request.params.get('order_by', False)
-    args = [request.dbsession, table]
-    if order_by:
-        args.append(order_by)
-    resp = action.list(*args)
-
-    sa_checked_row = request.POST.get('sa_checked_row', None).split(",")
-    if '' not in sa_checked_row:
-        compare_objs = map(int, sa_checked_row)
-    else:
-        return HTTPFound(location=request.route_url('sa_list', table=tname))
-    return {'compare_objs': compare_objs, 'sa_crud': resp,
-            'breadcrumbs': breadcrumbs(tname, 'sa_union')}
