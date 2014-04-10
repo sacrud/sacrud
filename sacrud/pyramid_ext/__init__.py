@@ -55,13 +55,12 @@ def includeme(config):
         return DBSession
 
     config.set_request_property(get_db, 'dbsession', reify=True)
-
     config.include(add_routes)
     config.include('pyramid_jinja2')
-    config.add_static_view('/sa_static', 'sacrud:static')
     config.add_jinja2_search_path("sacrud:templates")
-
     set_jinja2_silent_none(config)
+
+    config.add_static_view('/sa_static', 'sacrud:static')
 
     jinja2_globals = {'str': str, 'getattr': getattr, 'isinstance': isinstance,
                       'hasattr': hasattr,
