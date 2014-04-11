@@ -3,3 +3,4 @@ zope.sqlalchemy
 transaction
 webhelpers
 webtest
+ziggurat_foundations
