@@ -6,7 +6,7 @@
 	.widget-title
 	{
 		padding: 5px 10px 4px;
-		background: #1ba1e2;
+		background: #7ea700;
 		font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		color: #fff;
 	}
@@ -25,7 +25,7 @@
 		}
 		.widget-row:hover
 		{
-			background: rgba(28, 183, 236, 0.1);
+			background: #efefef;
 		}
 			.widget-row__item
 			{

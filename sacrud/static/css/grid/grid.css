@@ -1,0 +1,18 @@
+.grid
+{
+
+}
+	.grid__title
+	{
+		float: left;
+	}
+	.grid__action
+	{
+		float: right;
+	}
+	.grid__content
+	{
+		width: 100%;
+		clear: both;
+		padding: 20px 0 0 0;
+	}

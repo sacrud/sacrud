@@ -29,19 +29,19 @@
     {% endblock extra_css %}
 
     <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/kendo.default.min.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/kendo.metro.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/kendo.rtl.min.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
-
-
 
     <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/user/user.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
 
@@ -81,7 +81,7 @@
                 <div class="header__inner clear-fix">
                     <div class="logo">
                         <div class="logo__text">
-                            <a href="https://github.com/uralbash/sacrud" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
+                            <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
                         </div>
                     </div>
                     <div class="header__inner-menu">
@@ -91,8 +91,9 @@
                             </div>
                         </div>
                     </div>
-
-                    {% include 'sacrud/user_in_head.jinja2' %}
+                    <div class="header__user">
+                        {% include 'sacrud/user_in_head.jinja2' %}
+                    </div>
                 </div>
             </div>
 
