@@ -12,11 +12,13 @@
 
 <div class="grid">
     <div class="grid__title">{{ sa_crud['table'].__tablename__ }} list</div>
-    <div class="grid__action">
-        <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-button-icontext k-grid-add">
-            <span class="k-icon k-add"></span>
-            Add a new {{ table.__tablename__ }}
-        </a>
+    <div id="sa_grid_action">
+      <div class="grid__action">
+          <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-button-icontext k-grid-add">
+              <span class="k-icon k-add"></span>
+              Add a new {{ table.__tablename__ }}
+          </a>
+      </div>
     </div>
     <div class="grid__content">
         <table id="sa_index">

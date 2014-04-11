@@ -2,12 +2,12 @@
 
 {% block sa_body %}
     <div id="page" class="page">
-       
+
         <!--
             <div id="cutelement" class="hidden sa_table selected"></div>
         -->
 
-        {% include 'sacrud/forms/list.jinja2' with context %} 
+        {% include 'sacrud/forms/list.jinja2' with context %}
 
     </div>
 {% endblock %}
@@ -23,10 +23,11 @@
                     buttonCount: 5
                 },
                 batch: true,
+                resizable: true,
                 pageSize: 20,
                 filterable: true,
                 columnMenu: true,
-                toolbar: ["create", "save", "cancel", "refresh"],
+                toolbar: kendo.template($("#sa_grid_action").html()),
             });
         });
     </script>
