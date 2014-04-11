@@ -2,17 +2,13 @@
 
 {% block sa_body %}
     <div id="page" class="page">
-        <div class="page__left">
-            <div class="page__left-inner">
-                <div class="page__left-inner-content">
-                    <div class="page__title">{{ sa_crud['table'].__tablename__ }} list</div>
-                    <div id="cutelement" class="hidden sa_table selected"></div>
-                    {% include 'sacrud/forms/list.jinja2' with context %}      
-                </div>
-            </div>
-        </div>
-        <div class="page__right">
-        </div>
+       
+        <!--
+            <div id="cutelement" class="hidden sa_table selected"></div>
+        -->
+
+        {% include 'sacrud/forms/list.jinja2' with context %} 
+
     </div>
 {% endblock %}
 
@@ -29,7 +25,8 @@
                 batch: true,
                 pageSize: 20,
                 filterable: true,
-                columnMenu: true
+                columnMenu: true,
+                toolbar: ["create", "save", "cancel", "refresh"],
             });
         });
     </script>

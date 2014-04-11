@@ -1,0 +1,10 @@
+<div class="user">
+	{% if request.user %}
+		<div class="user__text">
+			<a href="{{ request.route_url('ziggurat.routes.sign_out') }}" class="user__link">{{ request.user }}</a>
+			<a href="{{ request.route_url('ziggurat.routes.sign_out') }}" class="user__link">logout</a>
+		</div>
+	{% else %}
+		<a href="{{ request.route_url('login') }}" class="user__link">Login</a>
+	{% endif %}
+</div>

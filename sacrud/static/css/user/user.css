@@ -1,0 +1,17 @@
+.user
+{
+	width: 100%;
+}
+	.user__text
+	{
+		font: 1.2em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		letter-spacing: 0.02em;
+		color: #fff;
+		text-decoration: none;
+		text-transform: uppercase;
+	}
+	.user__link
+	{
+		color: #fff;
+		text-decoration: none;
+	}
