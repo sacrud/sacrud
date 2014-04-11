@@ -4,12 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>
         SACRUD
-        {% block title %}
 
-        {% endblock title %}
-        {% if site_name %}
-          | {{ site_name }}
-        {% endif %}
+        {% block title %}{% endblock title %}
     </title>
 
 
@@ -38,11 +34,16 @@
     <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
 
+
+
     <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
     <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
 
     <noscript>
         <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
@@ -78,13 +79,17 @@
         <div class="wrapper__inner">
             <div class="header">
                 <div class="header__inner clear-fix">
-                    <div class="main-menu">
-                        <div class="main-menu__item">
-                            <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
+                    <div class="logo">
+                        <div class="logo__text">
+                            <a href="https://github.com/uralbash/sacrud" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
                         </div>
                     </div>
-                    <div class="header__inner-info">
-                        <a href="https://github.com/uralbash/sacrud"  class="header__inner-info-text">ver: {{ sacrud_ver }}</a>
+                    <div class="header__inner-menu">
+                        <div class="main-menu">
+                            <div class="main-menu__item">
+                                <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

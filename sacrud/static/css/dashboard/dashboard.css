@@ -1,0 +1,26 @@
+.dashboard
+{
+	margin: 0 0 20px 0;
+}
+	.dashboard-title
+	{
+		font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+		font-weight: 300;
+		color: #000000;
+		font-size: 1.6em;
+		text-transform: uppercase;
+		padding: 0 0 0.5em 0;
+	}
+	.dashboard__inner
+	{
+
+	}
+	.dashboard__column
+	{
+		width: 32%;
+		float: left;
+		margin: 0 2% 0 0;
+	}
+	.dashboard__column:last-child {
+		margin: 0;
+	}
