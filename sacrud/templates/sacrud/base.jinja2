@@ -26,45 +26,44 @@
     <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
 
     {% block extra_css %}
+      <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/kendo.metro.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/kendo.rtl.min.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
+
+      <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/user/user.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
+      <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
+
+      <noscript>
+          <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
+      </noscript>
+
+      <!--[if gte IE 9]>
+      <style type="text/css">
+        .gradient { filter: none; }
+      </style>
+      <![endif]-->
+      <!--[if IE 8]>
+      <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
+      <![endif]-->
+      <!--[if IE 7]>
+      <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
+      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+      <![endif]-->
+      <!--[if IE 6]>
+      <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
+      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+      <![endif]-->
     {% endblock extra_css %}
-
-    <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/kendo.metro.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/kendo.rtl.min.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
-
-    <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/user/user.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
-    <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
-
-    <noscript>
-        <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
-    </noscript>
-
-    <!--[if gte IE 9]>
-    <style type="text/css">
-      .gradient { filter: none; }
-    </style>
-    <![endif]-->
-    <!--[if IE 8]>
-    <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
-    <![endif]-->
-    <!--[if IE 7]>
-    <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
-    <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-    <![endif]-->
-    <!--[if IE 6]>
-    <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
-    <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-    <![endif]-->
 
     {% block extrahead %}
     {% endblock extrahead %}
@@ -140,10 +139,9 @@
         </div>
     </div>
 
-    <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
-    <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
-
     {% block extrascript %}
+      <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
+      <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
     {% endblock extrascript %}
 
 </body>
