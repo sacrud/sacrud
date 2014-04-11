@@ -1,0 +1,37 @@
+.widget
+{
+	margin: 0 0 20px 0;
+	background: #fff;
+}
+	.widget-title
+	{
+		padding: 5px 10px 4px;
+		background: #1ba1e2;
+		font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		color: #fff;
+	}
+	.widget-content
+	{
+		/*border: solid 1px black;*/
+		border: 1px #eaeaea solid;
+		border-top: none;
+	}
+		.widget-row
+		{
+			border-top: 1px #eaeaea solid;
+			padding: 8px;
+			vertical-align: top;
+		}
+		.widget-row:hover
+		{
+			background: rgba(28, 183, 236, 0.1);
+		}
+			.widget-row__item
+			{
+				font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+				line-height: 14pt;
+			}
+				.widget-row__item-link
+				{
+					color: #000;
+				}

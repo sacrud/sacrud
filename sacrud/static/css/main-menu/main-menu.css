@@ -1,7 +1,6 @@
 .main-menu
 {
 	position: relative;
-	margin: 0 0 15px 0;
 }
 	.main-menu__wrapper
 	{
@@ -15,8 +14,8 @@
 			{
 				display: table-cell;
 				text-align: center;
-				padding: 0.8em 0;
 				position: relative;
+				padding: 0.95em 1em 0.9em 1em;
 			}
 				.main-menu__item-link
 				{
@@ -25,4 +24,9 @@
 					color: #fff;
 					text-decoration: none;
 					text-transform: uppercase;
+					
 				}
+			.main-menu__item:hover
+			{
+				background: #000;
+			}
