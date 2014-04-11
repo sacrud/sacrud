@@ -24,7 +24,6 @@ from sacrud.pyramid_ext.breadcrumbs import breadcrumbs
 def get_table(tname, request):
     """ Return table by table name from sacrud.models in settings.
     """
-    # TODO: write test
     # convert values of models dict to flat list
     tables = itertools.chain(
         *get_settings_param(request, 'sacrud.models').values())
@@ -36,7 +35,6 @@ def get_table(tname, request):
 
 
 def get_relationship(tname, request):
-    # TODO: write test
     obj = get_table(tname, request)
     if not obj:
         return None
@@ -57,6 +55,13 @@ def sa_home(request):
     return {'tables': get_settings_param(request, 'sacrud.models')}
 
 
+"""
+def sarow_to_json(resp):
+    rows = [x.__dict__ for x in resp['row']]
+    return map(lambda x: x.pop("_sa_instance_state", None), rows)
+"""
+
+
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
 def sa_list(request):
     tname = request.matchdict['table']
@@ -66,6 +71,11 @@ def sa_list(request):
     if order_by:
         args.append(order_by)
     resp = action.list(*args, paginator=get_paginator(request))
+
+    # if URL like /sacrud/tablename?json=? return json
+    # if request.GET.get('json', None):
+    # request.override_renderer = 'json'
+    # return sarow_to_json(resp)
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 

@@ -10,6 +10,7 @@ language: python
 
 notifications:
   email: "sacrud@uralbash.ru"
+  email: "arkadiy@bk.ru"
 
 python:
   - "2.7"
