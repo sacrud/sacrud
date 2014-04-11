@@ -35,6 +35,8 @@ def pkg_prefix(config):
 
 def _silent_none(value):
     """
+    >>> _silent_none(0)
+    0
     >>> _silent_none('foo')
     'foo'
     >>> _silent_none(None)
@@ -43,7 +45,10 @@ def _silent_none(value):
     ''
     >>> _silent_none(False)
     ''
+
     """
+    if type(value) == int:
+        return value
     if hasattr(value, '__bool__'):
         return value
     if not value or value == 'None':
