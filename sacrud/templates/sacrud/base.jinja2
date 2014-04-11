@@ -10,22 +10,15 @@
 
 
     <link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% block sa_head_meta %}
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% endblock %}
 
-    {% if 'geograftour.com' in request.get_host %}
-        <meta name="robots" content="index,follow" />
-        <meta name="robots" content="noyaca" />
-        <meta name="google-site-verification" content="" />
-        <meta name="yandex-verification" content="" />
-    {% else %}
-        <meta name="robots" content="none" />
-    {% endif %}
+    {% block sa_head_css %}
+      <link href="{# request.static_url('css/__main.css') #}" rel="stylesheet" />
 
-    <link href="{# request.static_url('css/__main.css') #}" rel="stylesheet" />
+      <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
 
-    <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
-
-    {% block extra_css %}
       <link href="{{ request.static_url('sacrud:static/css/kendo.common.min.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/kendo.metro.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/kendo.rtl.min.css') }}" rel="stylesheet">
@@ -63,6 +56,9 @@
       <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
       <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
       <![endif]-->
+    {% endblock %}
+
+    {% block extra_css %}
     {% endblock extra_css %}
 
     {% block extrahead %}
@@ -139,9 +135,11 @@
         </div>
     </div>
 
-    {% block extrascript %}
+    {% block sa_body_js %}
       <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
       <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
+    {% endblock %}
+    {% block extrascript %}
     {% endblock extrascript %}
 
 </body>
