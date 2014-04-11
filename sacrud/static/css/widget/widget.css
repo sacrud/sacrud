@@ -19,8 +19,9 @@
 		.widget-row
 		{
 			border-top: 1px #eaeaea solid;
-			padding: 8px;
 			vertical-align: top;
+			width: 100%;
+			display: table;
 		}
 		.widget-row:hover
 		{
@@ -30,8 +31,25 @@
 			{
 				font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 				line-height: 14pt;
+				display: table-row;
+			}
+			.widget-row__item-c1
+			{
+				width: 150px;
+				display: table-cell;
+			}
+			.widget-row__item-c2
+			{
+				display: table-cell;
 			}
 				.widget-row__item-link
 				{
 					color: #000;
+					display: inline-block;
+					padding: 8px;
+				}
+				.widget-row__item-inner
+				{
+					display: inline-block;
+					padding: 8px;
 				}

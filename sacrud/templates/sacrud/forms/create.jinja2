@@ -3,59 +3,60 @@
 {% set visible_columns=sa_crud['col'] %}
 {% set fk_template = "sacrud/types/ForeignKey.jinja2" %}
 
-<form method="POST"
-  accept-charset="utf-8"
-  enctype="multipart/form-data"
-  {% if sa_crud %}
-    {% if not obj %}
-      action="{{ request.route_url('sa_create', table=obj_cls.__tablename__) }}"
-    {% else %}
-      action="{{ request.route_url('sa_update', table=obj_cls.__tablename__,
-      id=getattr(obj, sa_crud['pk'])) }}"
+<form method="POST" accept-charset="utf-8" enctype="multipart/form-data"
+    {% if sa_crud %}
+        {% if not obj %}
+            action="{{ request.route_url('sa_create', table=obj_cls.__tablename__) }}"
+        {% else %}
+            action="{{ request.route_url('sa_update', table=obj_cls.__tablename__,id=getattr(obj, sa_crud['pk'])) }}"
+        {% endif %}
     {% endif %}>
-  {% endif %}
-  <div class="sa_table">
-    <table id="index">
-      <tr>
-        <th>Column</th>
-        <th>Value</th>
-      </tr>
-      {% if sa_crud %}
-        {% for col in visible_columns %}
-            {% set css_class=[] %}
-            {# TODO: move to include "set_css_style.jinja2" #}
-            {% if hasattr(obj_cls, 'sacrud_css_class') %}
-              {% for key, value in obj_cls.sacrud_css_class.items() %}
-                {% if col in value %}
-                  {{ css_class.append(key) }}
-                {% endif %}
-              {% endfor %}
-              {% set css_styles=' '.join(css_class) %}
-            {% endif %}
-            {# ============== #}
 
-            <tr>
-                {% if col.info['sacrud_position']=='inline' %}
-                  <td colspan="2">
-                    <h3>{{ col.info['verbose_name'] or col.sacrud_name }}</h3>
-                {% else %}
-                  <td>
-                    {{ col.info['verbose_name'] or col.name }}
-                  </td>
-                  <td>
+    {% if sa_crud %}
+        <div class="widget">
+            <div class="widget-title">sdfsdfasdfsdf</div>
+            {% for col in visible_columns %}
+                {% set css_class=[] %}
+                {# TODO: move to include "set_css_style.jinja2" #}
+                {% if hasattr(obj_cls, 'sacrud_css_class') %}
+
+                    {% for key, value in obj_cls.sacrud_css_class.items() %}
+                        {% if col in value %}
+                            {{ css_class.append(key) }}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% set css_styles=' '.join(css_class) %}
                 {% endif %}
-                {% if col.info['sacrud_template'] %}
-                  {% include col.info['sacrud_template'] %}
-                {% elif col.foreign_keys %}
-                  {% include fk_template %}
-                {% else %}
-                  {% include get_field_template(col.type.__class__.__name__) %}
-                {% endif %}
-              </td>
-            </tr>
-        {% endfor %}
-      {% endif %}
-    </table>
-  </div>
-  <input type="submit" id="button_save" name="form.submitted" value="Save" />
+
+                <div class="widget-content">
+                    <div class="widget-row">
+                        <div class="widget-row__item">
+                            <div class="widget-row__item-c1">
+                                <div class="widget-row__item-inner">
+                                    {% if col.info['sacrud_position']=='inline' %}
+                                        {{ col.info['verbose_name'] or col.sacrud_name }}
+                                    {% else %}
+                                        {{ col.info['verbose_name'] or col.name }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="widget-row__item-c2">
+                                <div class="widget-row__item-inner">
+                                    {% if col.info['sacrud_template'] %}
+                                        {% include col.info['sacrud_template'] %}
+                                    {% elif col.foreign_keys %}
+                                        {% include fk_template %}
+                                    {% else %}
+                                        {% include get_field_template(col.type.__class__.__name__) %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <input type="submit" id="button_save" name="form.submitted" value="Save" />
 </form>
