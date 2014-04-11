@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/ITCase/sacrud.svg?branch=master)](https://travis-ci.org/ITCase/sacrud)
 [![Coverage Status](https://coveralls.io/repos/ITCase/sacrud/badge.png?branch=master)](https://coveralls.io/r/ITCase/sacrud?branch=master)
 [![Stories in Progress](https://badge.waffle.io/ITCase/sacrud.png?label=in progress&title=In Progress)](http://waffle.io/ITCase/sacrud)
-[![Downloads](https://pypip.in/download/sacrud/badge.png)](https://pypi.python.org/pypi/sacrud/)
+[![Downloads](https://pypip.in/d/sacrud/badge.png)](https://pypi.python.org/pypi/sacrud/)
 
 
 
