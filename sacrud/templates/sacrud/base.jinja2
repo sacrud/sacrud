@@ -8,8 +8,8 @@
         {% block title %}{% endblock title %}
     </title>
 
-
     <link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+    
     {% block sa_head_meta %}
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
     {% endblock %}
@@ -25,6 +25,7 @@
       <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
 
+
       <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
@@ -35,6 +36,9 @@
       <link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
       <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
+
+      <link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">
+
 
       <noscript>
           <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
@@ -73,22 +77,25 @@
     <div class="wrapper">
         <div class="wrapper__inner">
             {% block sa_menu %}
-              <div class="header">
-                  <div class="header__inner clear-fix">
-                      <div class="logo">
-                          <div class="logo__text">
-                              <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
-                          </div>
-                      </div>
-                      <div class="header__inner-menu">
-                          <div class="main-menu">
-                              <div class="main-menu__item">
-                                  <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+                <div class="header">
+                    <div class="header__inner clear-fix">
+                        <div class="logo">
+                            <div class="logo__text">
+                                <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
+                            </div>
+                        </div>
+                        <div class="header__inner-menu">
+                            <div class="main-menu">
+                                <div class="main-menu__item">
+                                    <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header__user">
+                            {% include 'auth/user_in_head.jinja2' %}
+                        </div>
+                    </div>
+                </div>
             {% endblock %}
 
             {% block breadcrumbs %}
@@ -139,6 +146,7 @@
       <script src="{{ request.static_url('sacrud:static/js/jquery.min.js') }}"></script>
       <script src="{{ request.static_url('sacrud:static/js/kendo.web.min.js') }}"></script>
     {% endblock %}
+
     {% block extrascript %}
     {% endblock extrascript %}
 

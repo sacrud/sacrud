@@ -14,7 +14,7 @@
 
     {% if sa_crud %}
         <div class="widget">
-            <div class="widget-title">sdfsdfasdfsdf</div>
+            <div class="widget-title">Добавить {{ sa_crud['table'].__tablename__ }}</div>
             {% for col in visible_columns %}
                 {% set css_class=[] %}
                 {# TODO: move to include "set_css_style.jinja2" #}
@@ -34,11 +34,13 @@
                         <div class="widget-row__item">
                             <div class="widget-row__item-c1">
                                 <div class="widget-row__item-inner">
-                                    {% if col.info['sacrud_position']=='inline' %}
-                                        {{ col.info['verbose_name'] or col.sacrud_name }}
-                                    {% else %}
-                                        {{ col.info['verbose_name'] or col.name }}
-                                    {% endif %}
+                                    <div class="widget-row__item-name">
+                                        {% if col.info['sacrud_position']=='inline' %}
+                                            {{ col.info['verbose_name'] or col.sacrud_name }}
+                                        {% else %}
+                                            {{ col.info['verbose_name'] or col.name }}
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
                             <div class="widget-row__item-c2">
@@ -58,5 +60,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    <input type="submit" id="button_save" name="form.submitted" value="Save" />
+
+    <button type="submit" name="form.submitted" class="k-primary k-button" data-role="button" role="button" aria-disabled="false" tabindex="0">Primary Button</button>
+
 </form>

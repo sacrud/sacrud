@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/ITCase/sacrud.svg?branch=master)](https://travis-ci.org/ITCase/sacrud)
 [![Coverage Status](https://coveralls.io/repos/ITCase/sacrud/badge.png?branch=master)](https://coveralls.io/r/ITCase/sacrud?branch=master)
 [![Stories in Progress](https://badge.waffle.io/ITCase/sacrud.png?label=in progress&title=In Progress)](http://waffle.io/ITCase/sacrud)
+[![PyPI](http://img.shields.io/pypi/dm/sacrud.svg)](http://img.shields.io/pypi/dm/sacrud.svg)
 
 sacrud
 ======
@@ -49,7 +50,7 @@ Installation
 
 Install from github:
 
-    pip install git+http://github.com/uralbash/sacrud.git
+    pip install git+http://github.com/ITCase/sacrud.git
 
 PyPi:
 
@@ -62,10 +63,10 @@ Source:
 Contribute
 ----------
 
-- Issue Tracker: http://github.com/uralbash/sacrud/issues
-- Source Code: http://github.com/uralbash/sacrud
+- Issue Tracker: http://github.com/ITCase/sacrud/issues
+- Source Code: http://github.com/ITCase/sacrud
 - Docs: http://sacrud.readthedocs.org (in process)
-- Demo: http://github.com/uralbash/pyramid_sacrud_example
+- Demo: http://github.com/ITCase/pyramid_sacrud_example
 
 Support
 -------

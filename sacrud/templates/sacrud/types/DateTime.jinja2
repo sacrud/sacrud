@@ -7,4 +7,12 @@
         name="{{ col.name }}"
         value="{{ value }}"
         />
+    <script>
+        $(document).ready(function () {
+            var target = sacrud_datetime_{{ col.name }};
+            $(target).kendoDateTimePicker({
+                value:new Date()
+            });
+        });
+    </script>
 {% endblock %}

@@ -4,7 +4,7 @@
 }
 	.user__text
 	{
-		font: 1.2em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		font: 0.8em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		letter-spacing: 0.02em;
 		color: #fff;
 		text-decoration: none;
@@ -14,4 +14,14 @@
 	{
 		color: #fff;
 		text-decoration: none;
+		display: inline-block;
+		margin: 0 1em 0 0;
+	}
+	.user__link:hover
+	{
+		color: #7ea700;
+	}
+	.user__link:last-child
+	{
+		margin: 0;
 	}
