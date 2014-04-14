@@ -9,7 +9,7 @@
     </title>
 
     <link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
-    
+
     {% block sa_head_meta %}
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
     {% endblock %}
@@ -90,9 +90,6 @@
                                     <a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="header__user">
-                            {% include 'auth/user_in_head.jinja2' %}
                         </div>
                     </div>
                 </div>
