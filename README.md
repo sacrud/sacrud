@@ -6,7 +6,7 @@ sacrud
 ======
 
 sacrud will solve your problem of CRUD interface for SQLAlchemy,
-by providing extension for Pyramid or use it in pure form. 
+by providing extension for Pyramid or use it in pure form.
 
 Look how easy it is to use with Pyramid:
 ```python

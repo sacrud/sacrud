@@ -13,21 +13,37 @@
 {% endblock %}
 
 {% block extrascript %}
+    <div id="foo"></div>
     <script>
         $(document).ready(function() {
-            $("#sa_index").kendoGrid({
-                sortable: true,
-                pageable: {
-                    refresh: true,
-                    pageSizes: true,
-                    buttonCount: 5
-                },
-                batch: true,
-                resizable: true,
-                pageSize: 20,
-                filterable: true,
-                columnMenu: true,
-                toolbar: kendo.template($("#sa_grid_action").html()),
+            var foo  = new kendo.data.DataSource({
+                transport: {
+                    read:  {
+                        url: "?json=?",
+                        dataType: "json"
+                    }
+                }
+            });
+
+            console.log(foo);
+            $("#foo").kendoGrid({
+                dataSource: foo,//[{ "id": "Jane", "foo": "True"}, { id: "John", foo: "False"}],
+                columns: [
+                  {field: "id", title: "id"},
+                  {field: "foo", title: "foo"}
+                ]
+                /*sortable: true,*/
+                /*pageable: {*/
+                    /*refresh: true,*/
+                    /*pageSizes: true,*/
+                    /*buttonCount: 5*/
+                /*},*/
+                /*batch: true,*/
+                /*pageSize: 20,*/
+                /*filterable: true,*/
+                /*columnMenu: true,*/
+                /*editable: true,*/
+                /*toolbar: ["create", "save", "cancel", "refresh"],*/
             });
         });
     </script>

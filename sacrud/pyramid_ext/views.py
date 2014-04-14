@@ -55,11 +55,10 @@ def sa_home(request):
     return {'tables': get_settings_param(request, 'sacrud.models')}
 
 
-"""
-def sarow_to_json(resp):
-    rows = [x.__dict__ for x in resp['row']]
-    return map(lambda x: x.pop("_sa_instance_state", None), rows)
-"""
+def sarow_to_json(rows):
+    json_list = [x.__dict__ for x in rows.items]
+    map(lambda x: x.pop("_sa_instance_state", None), json_list)
+    return json_list
 
 
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
@@ -73,9 +72,10 @@ def sa_list(request):
     resp = action.list(*args, paginator=get_paginator(request))
 
     # if URL like /sacrud/tablename?json=? return json
-    # if request.GET.get('json', None):
-    # request.override_renderer = 'json'
-    # return sarow_to_json(resp)
+    if request.GET.get('json', None):
+        request.override_renderer = 'json'
+        return [{"id": "Jane", "foo": "True"}, {"id": "John", 'foo': "False"}]
+        return sarow_to_json(resp['row'])
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
 
