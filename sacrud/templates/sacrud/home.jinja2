@@ -1,14 +1,20 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
+{% block extra_css %}
+{% endblock extra_css %}
+
 {% block sa_body %}
 	<div class="sa_body">
-		<div id="page" class="dashboard">
+		<div class="dashboard">
 			<div class="dashboard-title">Dashboard</div>
 			<div class="dashboard__inner clear-fix">
-				<div class="dashboard__column">
+				<div class="dashboard__column" id="dashboardColumnOne">
 					{% for group, table_list in tables.iteritems() %}
-						<div class="widget">
-							<div class="widget-title">{{ group }}</div>
+						<div class="widget widget_type_drag">
+							<div class="widget-title">
+								{{ group }}
+								<span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
+							</div>
 							<div class="widget-content">
 								{% for table in table_list %}
 									<div class="widget-row">
@@ -22,16 +28,74 @@
 						</div>
 					{% endfor %}
 				</div>
-				<div class="dashboard__column">
-					2
-				</div>
-				<div class="dashboard__column">
-					3
-				</div>
+				<div class="dashboard__column" id="dashboardColumnTwo"></div>
+				<div class="dashboard__column" id="dashboardColumnThree"></div>
 			</div>
-     </div>
+		</div>
 	</div>
 {% endblock sa_body  %}
 
 {% block extrascript %}
+	<script>
+		$(document).ready(function() {
+            $("#dashboardColumnOne").kendoSortable({
+                cursor: "move",
+                connectWith: "#dashboardColumnTwo, #dashboardColumnThree",
+                placeholder: placeholder,
+                hint: hint,
+                end: end
+            });
+
+            $("#dashboardColumnTwo").kendoSortable({
+                cursor: "move",
+                connectWith: "#dashboardColumnOne, #dashboardColumnThree",
+                placeholder: placeholder,
+                hint: hint,
+                end: end
+            });
+
+            $("#dashboardColumnThree").kendoSortable({
+                //filter: ">div",
+                cursor: "move",
+                connectWith: "#dashboardColumnOne, #dashboardColumnTwo",
+                placeholder: placeholder,
+                hint: hint,
+                end: end
+            });
+
+            $(".widget").on("click", "span.k-i-arrowhead-s", function(e) {
+                var contentElement = $(e.target).closest(".widget").find(".widget-content");
+                $(e.target)
+                    .removeClass("k-i-arrowhead-s")
+                    .addClass("k-i-arrowhead-n");
+
+                kendo.fx(contentElement).expand("vertical").stop().play();
+            });
+
+
+            $(".widget").on("click", ".k-i-arrowhead-n", function(e) {
+                var contentElement = $(e.target).closest(".widget").find(".widget-content");
+                $(e.target)
+                    .removeClass("k-i-arrowhead-n")
+                    .addClass("k-i-arrowhead-s");
+
+                kendo.fx(contentElement).expand("vertical").stop().reverse();
+            });
+        });
+
+        function placeholder(element) {
+            return element.clone().addClass("widget_state_placeholder");
+        }
+
+        function hint(element) {
+        	$(".dashboard__column").addClass("widget_area_hint");
+            return element.clone().addClass("hint")
+                        .height(element.height())
+                        .width(element.width());
+        }
+
+        function end() {
+        	$(".dashboard__column").removeClass("widget_area_hint");
+        }
+    </script>
 {% endblock extrascript %}
