@@ -14,7 +14,7 @@
 
     {% if sa_crud %}
         <div class="widget">
-            <div class="widget-title">Добавить {{ sa_crud['table'].__tablename__ }}</div>
+            <div class="widget-title">edit {{ sa_crud['table'].__tablename__ }}</div>
             {% for col in visible_columns %}
                 {% set css_class=[] %}
                 {# TODO: move to include "set_css_style.jinja2" #}
