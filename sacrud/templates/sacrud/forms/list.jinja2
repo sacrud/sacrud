@@ -40,7 +40,7 @@
                             {% for col in visible_columns %}
                                 <td>
                                     {% if col.__class__.__name__ == 'Column' %}
-                                        {% set col_value=row.__getattribute__(col.name) %}
+                                        {% set col_value=row.__getattribute__(col.instance_name) %}
                                     {% endif %}
                                     {% if col.info['sacrud_list_template'] %}
                                         {% include col.info['sacrud_list_template'] %}
