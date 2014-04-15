@@ -116,9 +116,9 @@ class ViewsTest(BaseTest):
 
     def test_sa_list(self):
         res = self.testapp.get('/admin/user', status=200)
-        self.failUnless('user list' in res.body)
+        self.failUnless('user_1' in res.body)
         res = self.testapp.get('/admin/profile', status=200)
-        self.failUnless('profile list' in res.body)
+        self.failUnless('profile_1' not in res.body)
 
     def test_sa_read(self):
         res = self.testapp.get('/admin/user/read/1', status=200)
