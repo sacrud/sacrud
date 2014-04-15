@@ -1,65 +1,64 @@
 {% set table=sa_crud['table'] %}
 
 {% if hasattr(table, 'sacrud_list_col') %}
-    {% set visible_columns=table.sacrud_list_col %}
+	{% set visible_columns=table.sacrud_list_col %}
 {% else %}
-    {% set visible_columns=sa_crud['col'] %}
+	{% set visible_columns=sa_crud['col'] %}
 {% endif %}
 
 {% if hasattr(sa_crud['table'], '__mapper_args__') %}
-    {% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
+	{% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
 {% endif %}
 
 <div class="sacrud-grid">
-    <div class="sacrud-grid__title">
-        {{ sa_crud['table'].__tablename__ }} list
-    </div>
-    <div class="sacrud-grid__action" id="sa_grid_action">
-      <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-button-icontext k-grid-add">
-          <span class="k-icon k-add"></span>
-          Add a new {{ table.__tablename__ }}
-      </a>
-    </div>
-    <div class="sacrud-grid-content">
-        <table id="sa_index">
-            {% if sa_crud %}
-                <thead>
-                    <tr>
-                        {% for col in visible_columns %}
-                            <th>
-                                {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
-                            </th>
-                        {% endfor %}
-                        <th>actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in sa_crud['row'] %}
-                        {% set row_id = row[sa_crud['pk']] %}
-                        <tr valign="top" id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
-                            {% for col in visible_columns %}
-                                <td>
-                                    {% if col.__class__.__name__ == 'Column' %}
-                                        {% set col_value=row.__getattribute__(col.instance_name) %}
-                                    {% endif %}
-                                    {% if col.info['sacrud_list_template'] %}
-                                        {% include col.info['sacrud_list_template'] %}
-                                    {% else %}
-                                        {{ col_value|string|truncate(200) }}
-                                    {% endif %}
-                                </td>
-                            {% endfor %}
-                            <td>
-                                {% include 'sacrud/forms/actions.jinja2' with context %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            {% else %}
-                <tr>
-                    <td>There are no open objects</td>
-                </tr>
-            {% endif %}
-      </table>
-    </div>
+	<div class="sacrud-grid__title">
+		{{ sa_crud['table'].__tablename__ }} administration
+	</div>
+	<div class="sacrud-grid__action" id="sa_grid_action">
+		<a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-primary">
+			Add a new {{ table.__tablename__ }}
+		</a>
+	</div>
+	<div class="sacrud-grid-content">
+		<table id="sa_index">
+			{% if sa_crud %}
+				<thead>
+					<tr>
+						{% for col in visible_columns %}
+							<th>
+								{{ col.info.verbose_name or col.name or col.sacrud_name or None }}
+							</th>
+						{% endfor %}
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for row in sa_crud['row'] %}
+						{% set row_id = row[sa_crud['pk']] %}
+						<tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}">
+							{% for col in visible_columns %}
+								<td>
+									{% if col.__class__.__name__ == 'Column' %}
+										{% set col_value=row.__getattribute__(col.instance_name) %}
+									{% endif %}
+									{% if col.info['sacrud_list_template'] %}
+										{% include col.info['sacrud_list_template'] %}
+									{% else %}
+										{{ col_value|string|truncate(200) }}
+									{% endif %}
+								</td>
+							{% endfor %}
+							<td>
+								{% include 'sacrud/forms/actions.jinja2' with context %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			{% else %}
+				<tr>
+					<td>There are no open objects</td>
+				</tr>
+			{% endif %}
+		</table>
+	</div>
 </div>

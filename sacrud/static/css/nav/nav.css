@@ -2,6 +2,8 @@
 {
 	position: relative;
 	margin: 0 0 1em 0;
+	background: #eee;
+	padding: 0.5em 0 0.5em 1em;
 }
 	.nav__button
 	{
@@ -12,7 +14,7 @@
 	.nav__link
 	{
 		color: #002863;
-		font: 1.1em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		font: 0.8em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		letter-spacing: 0.02em;
 		text-decoration: none;
 		text-transform: uppercase;
@@ -31,12 +33,12 @@
 		text-decoration: none;
 		position: relative;
 		padding: 0 0.5em;
-		top: -0.1em;
+		top: 0em;
 	}
 	.nav__item_state_current
 	{
-		font: 1.1em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
-		color: #525252;
+		font: 0.8em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		color: #000;
 		position: relative;
 		text-transform: uppercase;
 	}

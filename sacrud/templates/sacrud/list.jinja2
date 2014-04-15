@@ -1,45 +1,57 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
 {% block sa_body %}
-    <div id="page" class="page">
+	<div class="page">
+		{% include 'sacrud/forms/list.jinja2' with context %}
 
-        <!--
-            <div id="cutelement" class="hidden sa_table selected"></div>
-        -->
-        {% include 'sacrud/forms/list.jinja2' with context %}
-        <div id="foo"></div>
-    </div>
+		<div class="sacrud-grid">
+			<div class="sacrud-grid__title">
+				{{ sa_crud['table'].__tablename__ }} administration
+			</div>
+			<div class="sacrud-grid__action" id="sa_grid_action">
+				<a href="#" class="k-button k-primary">
+					Add a new #
+				</a>
+			</div>
+			<div class="sacrud-grid-content">
+				<div id="sacrud-grid"></div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block extrascript %}
-    <script>
-        $(document).ready(function() {
-            $("#foo").kendoGrid({
-                dataSource: {
-                    transport: {
-                        read:  {
-                            url: '',
-                            data: {json: 'on'},
-                            dataType: 'json'
-                        }
-                    }
-                },
-                scrollable: false,
-                sortable: true,
-                pageable: {
-                    refresh: true,
-                    pageSizes: true,
-                    pageSize: 20,
-                    buttonCount: 5
-                },
-                columnMenu: true,
-                // toolbar: [
-                //     'create',
-                //     'save',
-                //     'cancel',
-                //     'refresh',
-                // ],
-            });
-        });
-    </script>
+	<script>
+		$(document).ready(function() {
+			$("#sacrud-grid").kendoGrid({
+				dataSource: {
+					transport: {
+						read:  {
+							url: '',
+							data: {json: 'on'},
+							dataType: 'json'
+						}
+					}
+				},
+				scrollable: false,
+				selectable: "multiple",
+				sortable: true,
+				pageable: {
+					refresh: true,
+					pageSizes: true,
+					pageSize: 20,
+					buttonCount: 5
+				},
+				columnMenu: true,
+				// toolbar: [
+				//     'create',
+				//     'save',
+				//     'cancel',
+				//     'refresh',
+				// ],
+			});
+
+		});
+	</script>
+
 {% endblock %}
