@@ -24,7 +24,6 @@
 		}
 	.widget-content
 	{
-		/*border: solid 1px black;*/
 		border: 1px #eaeaea solid;
 		border-top: none;
 	}
@@ -74,7 +73,7 @@
 						display: inline-block;
 						padding: 8px;
 					}
-.widget:hover .widget-content
+.widget_type_drag:hover .widget-content
 {
     background-color: #fcfcfc;
     border-color: #cccccc;

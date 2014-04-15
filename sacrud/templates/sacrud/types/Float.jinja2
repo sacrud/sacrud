@@ -2,9 +2,21 @@
 
 {% block sacrud_column %}
   <input type="number"
-        class="sacrud_float {{ css_styles }}"
+        class="{{ css_styles }}"
         id="sacrud_float_{{ col.name }}"
         name="{{ col.name }}"
         value="{{ value }}"
         />
+
+	<script>
+		$(document).ready(function () {
+			var target = sacrud_float_{{ col.name }};
+			/* TODO: Get User System Culture */
+			$(target).kendoNumericTextBox({
+				min: 0,
+				step: 0.1,
+				placeholder: "Select A Value"
+			});
+		});
+	</script>
 {% endblock %}

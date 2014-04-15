@@ -126,12 +126,13 @@ class ViewsTest(BaseTest):
 
     def test_sa_update(self):
         res = self.testapp.get('/admin/user/update/1', status=200)
-        self.failUnless('edit user' in res.body)
+        self.failUnless('Add a new user' in res.body)
 
     def test_sa_create(self):
         res = self.testapp.get('/admin/user/create', status=200)
         self.failUnless('create' in res.body)
-        self.failUnless('edit user' in res.body)
+        # XXX: not good
+        self.failUnless('Add a new user' in res.body)
 
     def test_sa_delete(self):
         res = self.testapp.get('/admin/user/read/1', status=200)

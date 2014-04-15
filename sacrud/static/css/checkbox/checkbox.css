@@ -1,0 +1,55 @@
+.checkbox
+{
+	position: relative;
+}
+	.checkbox__status
+	{
+		width: 20px;
+		height: 20px;
+		background-color: #ffffff;
+		border: 2px #d9d9d9 solid;
+		padding: 0;
+		margin: 0 5px 0 0;
+		position: relative;
+		display: inline-block;
+		vertical-align: middle;
+	}
+		.checkbox__status_cheked:after
+		{
+			content: "\e003";
+			margin: 2px;
+			top: 0;
+			color: #1d1d1d;
+			position: absolute;
+			font-family: metroSysIcons;
+			font-size: 9pt;
+			line-height: 9pt;
+		}
+	.checkbox__checkbox
+	{
+		width: 20px;
+		height: 20px;
+		display: block;
+		position: absolute;
+		left: 0;
+		top: 0;
+		visibility: visible;
+		opacity: 0;
+		z-index: 100;
+	}
+	.checkbox__name
+	{
+		font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+		color: #000000;
+		font-size: 1em;
+		padding: 0 0 0.5em 0;
+	}
+.textarea:focus
+{
+	outline: 0;
+	border-color: #919191;
+}
+.checkbox:hover .checkbox__status
+{
+	border-color: #919191;
+}
