@@ -16,6 +16,30 @@ import inspect
 import sqlalchemy
 
 
+def get_attrname_by_colname(instance, name):
+    """ Get value from SQLAlchemy instance by column name
+
+    :Parameters:
+        - `instance`: SQLAlchemy model instance.
+        - `name`:  Column name
+
+    :Examples:
+
+    >>> from sqlalchemy import Column, Integer
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> Base = declarative_base()
+    >>> class MPTTPages(Base):
+    ...     __tablename__ = "mptt_pages"
+    ...     id = Column(Integer, primary_key=True)
+    ...     left = Column("lft", Integer, nullable=False)
+    >>> get_attrname_by_colname(MPTTPages(), 'lft')
+    'left'
+    """
+    for attr, column in sqlalchemy.inspect(instance.__class__).c.items():
+        if column.name == name:
+            return attr
+
+
 def get_pk(obj):
     """ Return primary key name by model class or instance.
 

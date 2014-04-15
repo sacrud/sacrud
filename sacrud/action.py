@@ -17,6 +17,7 @@ from sacrud.common.sa_helpers import (
     check_type,
     get_pk,
     get_relations,
+    get_attrname_by_colname,
 )
 
 prefix = 'crud'
@@ -44,6 +45,10 @@ def list(session, table, paginator=None, order_by=None):
     row = query.all()
     if paginator:
         row = Page(row, **paginator)
+    if row:
+        # It gives you opportunity to get instance attr by column name
+        # Like this: row.__getattribute__(col.instance_name)
+        map(lambda x: setattr(x, "instance_name", get_attrname_by_colname(row[0], x.name)), col)
 
     return {'row': row,
             'pk': pk_name,

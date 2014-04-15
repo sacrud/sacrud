@@ -71,7 +71,7 @@ def sa_list(request):
         args.append(order_by)
     resp = action.list(*args, paginator=get_paginator(request))
 
-    # if URL like /sacrud/tablename?json=? return json
+    # if URL like /sacrud/tablename?json=on return json
     if request.GET.get('json', None):
         request.override_renderer = 'json'
         return sarow_to_json(resp['row'])
