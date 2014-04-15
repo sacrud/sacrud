@@ -74,7 +74,6 @@ def sa_list(request):
     # if URL like /sacrud/tablename?json=? return json
     if request.GET.get('json', None):
         request.override_renderer = 'json'
-        return [{"id": "Jane", "foo": "True"}, {"id": "John", 'foo': "False"}]
         return sarow_to_json(resp['row'])
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
 
