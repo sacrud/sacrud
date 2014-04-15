@@ -9,11 +9,13 @@
 
         {% include 'sacrud/forms/list.jinja2' with context %}
 
+        <div id="foo"></div>
+
     </div>
 {% endblock %}
 
 {% block extrascript %}
-    <div id="foo"></div>
+    
     <script>
         $(document).ready(function() {
             $("#foo").kendoGrid({

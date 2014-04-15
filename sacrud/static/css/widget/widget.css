@@ -14,6 +14,7 @@
 		font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		color: #fff;
 		position: relative;
+		min-height: 15px;
 	}
 		.widget-title_state_switch
 		{
@@ -36,7 +37,7 @@
 		}
 		.widget-row:hover
 		{
-			background: #efefef;
+			background: #DCECFB;
 		}
 			.widget-row__item-inner
 			{
