@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'metroSysIcons';
+    src: url('../fonts/metroSysIcons.woff') format('woff'),
+         url('../fonts/metroSysIcons.ttf') format('truetype'),
+         url('../fonts/metroSysIcons.svg#metroSysIcons') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body
 {
     width: 100%;
@@ -29,22 +38,4 @@ input::-webkit-inner-spin-button {
     border: solid 1px red;
     position: relative;
     z-index: 9999;
-}
-
-.vacancy-selector
-{
-    padding: 0 0 1em 0;
-}
-.vacancy-list
-{
-    padding: 0 0 1em 0;
-}
-.vacancy-form
-{
-    border-bottom: solid 1px #ccc;
-    background: #efefef;
-    padding: 1em 1.5em;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
 }

@@ -1,17 +1,16 @@
 {% extends "sacrud/types/SacrudBase.jinja2" %}
 
 {% block sacrud_column %}
-  <input type="checkbox"
-        class="sacrud_boolean"
-        id="sacrud_boolean_{{ col.name }}"
-        name="{{ col.name }}"
-        value="1"
-        {% if obj %}
-          {% if value %}checked{% endif %}
-        {% endif %}
-        />
-  <input type="hidden"
-        name="{{ col.name }}"
-        value="0"
-        />
+	<label class="checkbox" for="sacrud_boolean_{{ col.name }}">
+		<span class="checkbox__status checkbox__status_cheked">&nbsp;</span>
+		<input type="checkbox"
+			   class="checkbox__checkbox"
+			   id="sacrud_boolean_{{ col.name }}"
+			   name="{{ col.name }}"
+			   value="1"
+			   {% if obj %} {% if value %}checked{% endif %} {% endif %}
+		/>
+		<span class="checkbox__name">Checkbox Name</span>
+		<input type="hidden" name="{{ col.name }}" value="0" />
+  </label>
 {% endblock %}

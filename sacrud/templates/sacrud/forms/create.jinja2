@@ -14,22 +14,21 @@
 
     {% if sa_crud %}
         <div class="widget">
-            <div class="widget-title">Добавить {{ sa_crud['table'].__tablename__ }}</div>
-            {% for col in visible_columns %}
-                {% set css_class=[] %}
-                {# TODO: move to include "set_css_style.jinja2" #}
-                {% if hasattr(obj_cls, 'sacrud_css_class') %}
+            <div class="widget-title">Add a new {{ sa_crud['table'].__tablename__ }}</div>
+            <div class="widget-content">
+                {% for col in visible_columns %}
+                    {% set css_class=[] %}
+                    {# TODO: move to include "set_css_style.jinja2" #}
+                    {% if hasattr(obj_cls, 'sacrud_css_class') %}
 
-                    {% for key, value in obj_cls.sacrud_css_class.items() %}
-                        {% if col in value %}
-                            {{ css_class.append(key) }}
-                        {% endif %}
-                    {% endfor %}
+                        {% for key, value in obj_cls.sacrud_css_class.items() %}
+                            {% if col in value %}
+                                {{ css_class.append(key) }}
+                            {% endif %}
+                        {% endfor %}
 
-                    {% set css_styles=' '.join(css_class) %}
-                {% endif %}
-
-                <div class="widget-content">
+                        {% set css_styles=' '.join(css_class) %}
+                    {% endif %}
                     <div class="widget-row">
                         <div class="widget-row__item">
                             <div class="widget-row__item-c1">
@@ -56,11 +55,20 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 
-    <button type="submit" name="form.submitted" class="k-primary k-button" data-role="button" role="button" aria-disabled="false" tabindex="0">Primary Button</button>
+    <button
+        type="submit"
+        name="form.submitted"
+        class="k-primary k-button"
+        data-role="button"
+        role="button"
+        aria-disabled="false"
+        tabindex="0">
+       Save
+    </button>
 
 </form>

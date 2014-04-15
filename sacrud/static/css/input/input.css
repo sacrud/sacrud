@@ -26,3 +26,19 @@
 	{
 		border: 1px #d9d9d9 solid;
 	}
+	.input_type_float
+	{
+		border: 1px #d9d9d9 solid;
+	}
+	.input_type_unicode
+	{
+		border: 1px #d9d9d9 solid;
+	}
+	.input_type_hstore
+	{
+		border: 1px #d9d9d9 solid;
+	}
+	.input_type_guid
+	{
+		border: 1px #d9d9d9 solid;
+	}
