@@ -43,6 +43,14 @@
 					buttonCount: 5
 				},
 				columnMenu: true,
+        columns: [
+          {% for col in sa_crud['col'] %}
+            {
+              field: "{{ col.name }}",
+              title: "{{ col.info.verbose_name or col.name }}"
+            },
+          {% endfor %}
+        ],
 				// toolbar: [
 				//     'create',
 				//     'save',

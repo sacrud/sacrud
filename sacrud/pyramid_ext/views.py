@@ -56,8 +56,16 @@ def sa_home(request):
 
 
 def sarow_to_json(rows):
+    def serializator(x):
+        def serialize_date(value):
+            import datetime
+            if isinstance(value, (datetime.datetime, datetime.date)):
+                return str(value)
+            return value
+        return {k: serialize_date(v) for k, v in x.items()}
     json_list = [x.__dict__ for x in rows.items]
     map(lambda x: x.pop("_sa_instance_state", None), json_list)
+    json_list = map(lambda x: serializator(x), json_list)
     return json_list
 
 
