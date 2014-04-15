@@ -6,16 +6,12 @@
         <!--
             <div id="cutelement" class="hidden sa_table selected"></div>
         -->
-
         {% include 'sacrud/forms/list.jinja2' with context %}
-
         <div id="foo"></div>
-
     </div>
 {% endblock %}
 
 {% block extrascript %}
-    
     <script>
         $(document).ready(function() {
             $("#foo").kendoGrid({
@@ -27,23 +23,22 @@
                             dataType: 'json'
                         }
                     }
-                }
-                /*, columns: [*/
-                  /*{field: 'id' }*/
-                  /*, {field: 'foo' }*/
-                /*]*/
-                , sortable: true
-                , pageable: {
-                    refresh: true
-                    , pageSizes: true
-                    , pageSize: 1
-                    , buttonCount: 5
-                }
-                // , batch: true
-                // , filterable: true  // @petrikoz: this not work for me
-                // , columnMenu: true  // @petrikoz: this not work for me
-                // , editable: true  //  @petrikoz: this not work without 'update' transport
-                , toolbar: ['create', 'save', 'cancel', 'refresh']  // @petrikoz: maybe this required urls
+                },
+                scrollable: false,
+                sortable: true,
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    pageSize: 20,
+                    buttonCount: 5
+                },
+                columnMenu: true,
+                // toolbar: [
+                //     'create',
+                //     'save',
+                //     'cancel',
+                //     'refresh',
+                // ],
             });
         });
     </script>

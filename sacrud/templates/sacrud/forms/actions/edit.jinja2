@@ -1,8 +1,6 @@
-<!--edit-->
-<div class="inline">
-  <form action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
-        id=row[sa_crud['pk']]) }}"
-        method='POST'>
-    <input type="submit" value="edit" id="button_other">
-  </form>
-</div>
+<form
+	class="sacrud-grid-content__button"
+	action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,id=row[sa_crud['pk']]) }}"
+	method="POST">
+	<button class="k-button" value="edit">Edit</button>
+</form>

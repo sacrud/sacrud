@@ -11,7 +11,8 @@
         $(document).ready(function () {
             var target = sacrud_datetime_{{ col.name }};
             $(target).kendoDateTimePicker({
-                value:new Date()
+                value: new Date(),
+                format: "yyyy-MM-dd"
             });
         });
     </script>

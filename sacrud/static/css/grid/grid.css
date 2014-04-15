@@ -1,18 +1,53 @@
-.grid
+.sacrud-grid
 {
 
 }
-	.grid__title
+	.sacrud-grid__title
 	{
 		float: left;
 	}
-	.grid__action
+	.sacrud-grid__action
 	{
 		float: right;
 	}
-	.grid__content
+	.sacrud-grid-content
 	{
 		width: 100%;
 		clear: both;
 		padding: 20px 0 0 0;
 	}
+		.sacrud-grid-content table
+		{
+			width: 100%;
+			border-collapse: collapse;
+			margin: 0 0 2em 0;
+			position: relative;
+		}
+			.sacrud-grid-content tr
+			{
+				color: #444;
+			}
+				.sacrud-grid-content th
+				{
+					color: #444;
+					text-align: left;
+					border: 1px solid #ccc;
+					padding: 0.5em 1em;
+					background: #eee;
+					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+				}
+				.sacrud-grid-content td
+				{
+					padding: 0.5em 1em;
+					vertical-align: top;
+					border: 1px #eaeaea solid;
+					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+				}
+				.sacrud-grid-content td:last-child
+				{
+					width: 200px;
+				}
+				.sacrud-grid-content__button
+				{
+					display: inline-block;
+				}

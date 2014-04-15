@@ -10,17 +10,17 @@
     {% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
 {% endif %}
 
-<div class="grid">
-    <div class="grid__title">{{ sa_crud['table'].__tablename__ }} list</div>
-    <div id="sa_grid_action">
-      <div class="grid__action">
-          <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-button-icontext k-grid-add">
-              <span class="k-icon k-add"></span>
-              Add a new {{ table.__tablename__ }}
-          </a>
-      </div>
+<div class="sacrud-grid">
+    <div class="sacrud-grid__title">
+        {{ sa_crud['table'].__tablename__ }} list
     </div>
-    <div class="grid__content">
+    <div class="sacrud-grid__action" id="sa_grid_action">
+      <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}" class="k-button k-button-icontext k-grid-add">
+          <span class="k-icon k-add"></span>
+          Add a new {{ table.__tablename__ }}
+      </a>
+    </div>
+    <div class="sacrud-grid-content">
         <table id="sa_index">
             {% if sa_crud %}
                 <thead>
