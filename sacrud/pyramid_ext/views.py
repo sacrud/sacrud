@@ -58,8 +58,12 @@ def sa_home(request):
 def sarow_to_json(rows):
     def serializator(x):
         def serialize_date(value):
-            import datetime
-            if isinstance(value, (datetime.datetime, datetime.date)):
+            import json
+            if not value or isinstance(value, basestring):
+                return value
+            try:
+                json.dump(value)
+            except TypeError:
                 return str(value)
             return value
         return {k: serialize_date(v) for k, v in x.items()}

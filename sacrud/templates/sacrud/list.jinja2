@@ -46,7 +46,7 @@
         columns: [
           {% for col in sa_crud['col'] %}
             {
-              field: "{{ col.name }}",
+              field: "{% if hasattr(col, 'instance_name') %}{{ col.instance_name }}{% else %}{{ col.name }}{% endif %}",
               title: "{{ col.info.verbose_name or col.name }}"
             },
           {% endfor %}
