@@ -10,15 +10,12 @@
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import inspect
-import transaction
 
+import transaction
 from webhelpers.paginate import Page
-from sacrud.common.sa_helpers import (
-    check_type,
-    get_pk,
-    get_relations,
-    get_attrname_by_colname,
-)
+
+from sacrud.common.sa_helpers import (check_type, get_pk, get_relations,
+                                      set_instance_name)
 
 prefix = 'crud'
 
@@ -46,9 +43,7 @@ def list(session, table, paginator=None, order_by=None):
     if paginator:
         row = Page(row, **paginator)
     if row:
-        # It gives you opportunity to get instance attr by column name
-        # Like this: row.__getattribute__(col.instance_name)
-        map(lambda x: setattr(x, "instance_name", get_attrname_by_colname(row[0], x.name)), col)
+        col = set_instance_name(row[0], col)
 
     return {'row': row,
             'pk': pk_name,
@@ -128,9 +123,7 @@ def update(session, table, pk, request=''):
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col_list = [c for c in table.__table__.columns]
     if obj:
-        # It gives you opportunity to get instance attr by column name
-        # Like this: row.__getattribute__(col.instance_name)
-        map(lambda x: setattr(x, "instance_name", get_attrname_by_colname(obj, x.name)), col_list)
+        col = set_instance_name(obj, col_list)
 
     if request:
         for col in col_list:
