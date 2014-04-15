@@ -16,34 +16,32 @@
     <div id="foo"></div>
     <script>
         $(document).ready(function() {
-            var foo  = new kendo.data.DataSource({
-                transport: {
-                    read:  {
-                        url: "?json=?",
-                        dataType: "json"
+            $("#foo").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read:  {
+                            url: '',
+                            data: {json: 'on'},
+                            dataType: 'json'
+                        }
                     }
                 }
-            });
-
-            console.log(foo);
-            $("#foo").kendoGrid({
-                dataSource: foo,//[{ "id": "Jane", "foo": "True"}, { id: "John", foo: "False"}],
-                columns: [
-                  {field: "id", title: "id"},
-                  {field: "foo", title: "foo"}
+                , columns: [
+                  {field: 'id' }
+                  , {field: 'foo' }
                 ]
-                /*sortable: true,*/
-                /*pageable: {*/
-                    /*refresh: true,*/
-                    /*pageSizes: true,*/
-                    /*buttonCount: 5*/
-                /*},*/
-                /*batch: true,*/
-                /*pageSize: 20,*/
-                /*filterable: true,*/
-                /*columnMenu: true,*/
-                /*editable: true,*/
-                /*toolbar: ["create", "save", "cancel", "refresh"],*/
+                , sortable: true
+                , pageable: {
+                    refresh: true
+                    , pageSizes: true
+                    , pageSize: 1
+                    , buttonCount: 5
+                }
+                // , batch: true
+                // , filterable: true  // @petrikoz: this not work for me
+                // , columnMenu: true  // @petrikoz: this not work for me
+                // , editable: true  //  @petrikoz: this not work without 'update' transport
+                , toolbar: ['create', 'save', 'cancel', 'refresh']  // @petrikoz: maybe this required urls
             });
         });
     </script>
