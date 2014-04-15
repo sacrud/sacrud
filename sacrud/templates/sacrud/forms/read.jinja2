@@ -13,7 +13,7 @@
       {% set obj=sa_crud['obj'] %}
       {% for col in sa_crud['col'] %}
         <td>
-          {{ obj.__getattribute__(col.name) }}
+          {{ obj.__getattribute__(col.instance_name) }}
         </td>
       {% endfor %}
       <td>
@@ -53,7 +53,7 @@
       {% for obj in rel[1] %}
         <tr>
           {% for col in rel[1][0].__table__.columns %}
-            <td>{{ obj.__getattribute__(col.name) }}</td>
+            <td>{{ obj.__getattribute__(col.instance_name) }}</td>
           {% endfor %}
           <td>
             <!--delete-->

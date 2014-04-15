@@ -127,6 +127,10 @@ def update(session, table, pk, request=''):
     pk_name = get_pk_hook(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
     col_list = [c for c in table.__table__.columns]
+    if obj:
+        # It gives you opportunity to get instance attr by column name
+        # Like this: row.__getattribute__(col.instance_name)
+        map(lambda x: setattr(x, "instance_name", get_attrname_by_colname(obj, x.name)), col_list)
 
     if request:
         for col in col_list:
