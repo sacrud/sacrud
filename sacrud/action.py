@@ -129,7 +129,7 @@ def update(session, table, pk, request=''):
         for col in col_list:
             if col.name not in request:
                 continue
-            if getattr(obj, col.name) == request[col.name][0]:
+            if getattr(obj, col.instance_name, col.name) == request[col.name][0]:
                 continue
             if col.type.__class__.__name__ == 'FileStore':
                 if not hasattr(request[col.name][0], 'filename'):

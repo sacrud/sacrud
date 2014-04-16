@@ -77,11 +77,14 @@ def sarow_to_json(rows):
 def sa_list(request):
     tname = request.matchdict['table']
     order_by = request.params.get('order_by', False)
-    args = [request.dbsession, get_table(tname, request)]
+    table = get_table(tname, request)
+    args = [request.dbsession, table]
 
     if order_by:
         args.append(order_by)
-    resp = action.list(*args, paginator=get_paginator(request))
+
+    items_per_page = getattr(table, 'items_per_page', 10)
+    resp = action.list(*args, paginator=get_paginator(request, items_per_page))
 
     # if URL like /sacrud/tablename?json=on return json
     if request.GET.get('json', None):
