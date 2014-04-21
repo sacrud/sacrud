@@ -20,18 +20,8 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <script>
-                        $(document).ready(function() {
-                            var target = sacrud_fk_{{ col.name }}
-                            $(target).kendoComboBox({
-                                suggest: true
-                            });
-                        });
-                    </script>
                 {% endif %}
             {% endif %}
       {% endfor %}
     {% endfor %}
-
-   
 {% endblock %}
