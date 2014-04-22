@@ -1,0 +1,15 @@
+<div class="paginator">
+    <div class="paginator-inner clear-fix">
+        <ins class="paginator__title">Pages:</ins>
+        {% for item in paginator.items %}
+          <ins class="paginator__item">
+            <a class="paginator__link
+                {% if item == 1 %}paginator__link_state_current{% endif %}"
+                href="?page={{ loop.index }}">
+                {% if loop.last %} ... {% endif %}
+                {{ loop.index }}
+                {%if loop.first %} ... {% endif %}</a>
+          </ins>
+        {% endfor %}
+    </div>
+</div>
