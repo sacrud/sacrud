@@ -2,7 +2,7 @@
 {
 	position: relative;
 	margin: 0 0 1em 0;
-	background: #eee;
+	border: solid 1px #eee;
 	padding: 0.5em 0 0.5em 1em;
 }
 	.nav__button
@@ -13,7 +13,7 @@
 	}
 	.nav__link
 	{
-		color: #002863;
+		color: #4183c4;
 		font: 0.8em 'Segoe UI', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		letter-spacing: 0.02em;
 		text-decoration: none;
@@ -21,7 +21,8 @@
 	}
 	.nav__link:hover
 	{
-		color: #FF6702;
+		color: #4183c4;
+		text-decoration: underline;
 	}
 	.nav__separator
 	{

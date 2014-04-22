@@ -8,7 +8,7 @@
 		<div class="dashboard">
 			<div class="dashboard-title">Dashboard</div>
 			<div class="dashboard__inner clear-fix">
-				<div class="dashboard__column" id="dashboardColumnOne">
+				<div class="dashboard__column">
 					{% for group, table_list in tables.iteritems() %}
 						<div class="widget widget_type_drag">
 							<div class="widget-title">
@@ -28,74 +28,12 @@
 						</div>
 					{% endfor %}
 				</div>
-				<div class="dashboard__column" id="dashboardColumnTwo"></div>
-				<div class="dashboard__column" id="dashboardColumnThree"></div>
+				<div class="dashboard__column"></div>
+				<div class="dashboard__column"></div>
 			</div>
 		</div>
 	</div>
 {% endblock sa_body  %}
 
 {% block extrascript %}
-	<script>
-		$(document).ready(function() {
-            $("#dashboardColumnOne").kendoSortable({
-                cursor: "move",
-                connectWith: "#dashboardColumnTwo, #dashboardColumnThree",
-                placeholder: placeholder,
-                hint: hint,
-                end: end
-            });
-
-            $("#dashboardColumnTwo").kendoSortable({
-                cursor: "move",
-                connectWith: "#dashboardColumnOne, #dashboardColumnThree",
-                placeholder: placeholder,
-                hint: hint,
-                end: end
-            });
-
-            $("#dashboardColumnThree").kendoSortable({
-                //filter: ">div",
-                cursor: "move",
-                connectWith: "#dashboardColumnOne, #dashboardColumnTwo",
-                placeholder: placeholder,
-                hint: hint,
-                end: end
-            });
-
-            $(".widget").on("click", "span.k-i-arrowhead-s", function(e) {
-                var contentElement = $(e.target).closest(".widget").find(".widget-content");
-                $(e.target)
-                    .removeClass("k-i-arrowhead-s")
-                    .addClass("k-i-arrowhead-n");
-
-                kendo.fx(contentElement).expand("vertical").stop().play();
-            });
-
-
-            $(".widget").on("click", ".k-i-arrowhead-n", function(e) {
-                var contentElement = $(e.target).closest(".widget").find(".widget-content");
-                $(e.target)
-                    .removeClass("k-i-arrowhead-n")
-                    .addClass("k-i-arrowhead-s");
-
-                kendo.fx(contentElement).expand("vertical").stop().reverse();
-            });
-        });
-
-        function placeholder(element) {
-            return element.clone().addClass("widget_state_placeholder");
-        }
-
-        function hint(element) {
-        	$(".dashboard__column").addClass("widget_area_hint");
-            return element.clone().addClass("hint")
-                        .height(element.height())
-                        .width(element.width());
-        }
-
-        function end() {
-        	$(".dashboard__column").removeClass("widget_area_hint");
-        }
-    </script>
 {% endblock extrascript %}

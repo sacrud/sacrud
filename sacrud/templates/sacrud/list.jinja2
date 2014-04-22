@@ -3,14 +3,5 @@
 {% block sa_body %}
     <div class="page">
         {% include 'sacrud/forms/list.jinja2' with context %}
-
-        {% if 'row' in sa_crud %}
-            {% set paginator = sa_crud['row'] %}
-            {% if paginator.items %}
-                <div class="paginator">
-                    {% include "sacrud/paginator.jinja2" %}
-                </div>
-            {% endif %}
-        {% endif %}
     </div>
 {% endblock %}
