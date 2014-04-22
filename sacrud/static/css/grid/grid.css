@@ -27,6 +27,7 @@
 		.sacrud-grid-toolbar-button
 		{
 			display: table;
+			float: left;
 		}
 			.sacrud-grid-toolbar-button__item
 			{
@@ -74,6 +75,18 @@
 			.sacrud-grid-toolbar-button__item_state_disable:hover
 			{
 				background: #eee;
+			}
+		.sacrud-grid-toolbar-search
+		{
+			width: 20%;
+			float: right;
+			display: table;
+			padding: 10px 15px 10px 0;
+		}
+			.sacrud-grid-toolbar-search__inner
+			{
+				display: table-cell;
+				vertical-align: middle;
 			}
 	.sacrud-grid-toolbar:after
 	{

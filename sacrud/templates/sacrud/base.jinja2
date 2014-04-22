@@ -15,7 +15,6 @@
 	{% endblock %}
 
 	{% block sa_head_css %}
-		<link href="{# request.static_url('css/__main.css') #}" rel="stylesheet" />
 		<link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
 		
 		<link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
@@ -34,6 +33,7 @@
 		<link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
+		<link href="{{ request.static_url('sacrud:static/css/search/search.css') }}" rel="stylesheet">
 
 		<link href="{{ request.static_url('sacrud:static/css/checkbox/checkbox.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">

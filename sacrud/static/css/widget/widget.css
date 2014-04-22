@@ -10,7 +10,7 @@
 	.widget-title
 	{
 		padding: 5px 10px 4px;
-		background: #7ea700;
+		background: #4183c4;
 		font-family: 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 		color: #fff;
 		position: relative;
@@ -37,7 +37,8 @@
 		}
 		.widget-row:hover
 		{
-			background: #DCECFB;
+			background: #F4F9FE;
+			color: #fff;
 		}
 			.widget-row__item-inner
 			{

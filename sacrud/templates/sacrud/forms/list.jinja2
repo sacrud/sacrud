@@ -16,7 +16,7 @@
     </div>
     <div class="sacrud-grid__action" id="sa_grid_action">
     </div>
-    <div class="sacrud-grid-toolbar">
+    <div class="sacrud-grid-toolbar clear-fix">
         <div class="sacrud-grid-toolbar-button">
             <div class="sacrud-grid-toolbar-button__item">
                 <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}"
@@ -29,6 +29,18 @@
             </div>
             <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
                 <div class="sacrud-grid-toolbar-button__item-name">Hide</div>
+            </div>
+        </div>
+        <div class="sacrud-grid-toolbar-search">
+            <div class="sacrud-grid-toolbar-search__inner">
+                <form class="search" action="/search/">
+                    <div class="search__input no-js">
+                        <ins class="search__input-box">
+                            <input id="site_search" name="search" class="search__input-box-text" value="поиск" placeholder="поиск" autocomplete="off">
+                            <span class="search__input-icon">&nbsp;</span>
+                        </ins>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
