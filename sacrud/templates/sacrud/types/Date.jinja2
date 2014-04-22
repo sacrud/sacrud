@@ -1,19 +1,19 @@
 {% extends "sacrud/types/SacrudBase.jinja2" %}
 
 {% block sacrud_column %}
-  <input type="date"
+    <input
+        type="date"
         class="sacrud_date {{ css_styles }}"
         id="sacrud_date_{{ col.name }}"
         name="{{ col.name }}"
         value="{{ value }}"
-        />
-	<script>
-	    $(document).ready(function () {
-	        var target = sacrud_date_{{ col.name }};
-	        $(target).kendoDatePicker({
-	            value: new Date(),
-	            format: "yyyy-MM-dd"
-	        });
-	    });
-	</script>
+    />
+    <p>Date: <input type="text" id="datepicker"></p>
+    <script>
+        $(document).ready(function () {
+            $("datepicker").datepicker({
+                showButtonPanel: true
+            });
+        });
+    </script>
 {% endblock %}

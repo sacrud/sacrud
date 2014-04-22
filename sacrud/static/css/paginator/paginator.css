@@ -19,7 +19,7 @@
 			text-decoration: none;
 			padding: 0.1em 0 0 0;
 		}
-		.b_pager__item
+		.paginator__item
 		{
 			display: inline-block;
 			vertical-align: top;

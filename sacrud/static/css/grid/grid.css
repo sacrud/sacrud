@@ -22,27 +22,59 @@
 		zoom: 1;
 		border: 1px solid #ccc;
 		margin: 0 0 20px 0;
+		
 	}
-		.sacrud-grid-toolbar__item
+		.sacrud-grid-toolbar-button
 		{
-			width: 80px;
-			line-height: 50px;
-			float: left;
-			text-align: center;
-			cursor: pointer;
-			border-right: 1px solid #ccc;
+			display: table;
 		}
-			.sacrud-grid-toolbar__item-name
+			.sacrud-grid-toolbar-button__item
 			{
-				line-height: 50px;
-				display: inline-block;
-				font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+				width: 100px;
+				display: table-cell;
+				text-align: center;
+				cursor: pointer;
+				border-right: 1px solid #ccc;
 			}
-		.sacrud-grid-toolbar__item:hover
-		{
-			background: #7ea700;
-			color: #fff;
-		}
+				.sacrud-grid-toolbar-button__item-name
+				{
+					display: inline-block;
+					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+					vertical-align: middle;
+					padding: 10px 15px;
+				}
+				.sacrud-grid-toolbar-button__item-link
+				{
+					display: inline-block;
+					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+					vertical-align: middle;
+					padding: 10px 15px;
+					color: #444 !important;
+					text-decoration: none;
+				}
+			.sacrud-grid-toolbar-button__item:hover
+			{
+				background: #7ea700;
+				color: #fff;
+			}
+				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link
+				{
+					color: #fff !important;
+				}
+			.sacrud-grid-toolbar-button__item_state_disable
+			{
+				background: #eee;
+				cursor: default;
+			}
+				.sacrud-grid-toolbar-button__item-name,
+				.sacrud-grid-toolbar-button__item-link
+				{
+					color: #777;
+				}
+			.sacrud-grid-toolbar-button__item_state_disable:hover
+			{
+				background: #eee;
+			}
 	.sacrud-grid-toolbar:after
 	{
 		display: block;
@@ -72,43 +104,71 @@
 			position: relative;
 		}
 
-		.sacrud-grid-content-grid table
+		.sacrud-grid-content-grid
 		{
 			width: 100%;
 			border-collapse: collapse;
 			margin: 0 0 2em 0;
 			position: relative;
 		}
-			.sacrud-grid-content-grid tr
+
+			.sacrud-grid-content-grid__header
 			{
-				color: #444;
+
 			}
-				.sacrud-grid-content-grid th
+				.sacrud-grid-content-grid__header-row
 				{
 					color: #444;
-					text-align: left;
 					border: 1px solid #ccc;
-					padding: 0.5em 1em;
-					background: #eee;
-					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 				}
-				.sacrud-grid-content-grid th:first-child
+					.sacrud-grid-content-grid__header-item
+					{
+						color: #444;
+						text-align: left;
+						padding: 0.5em 1em;
+						background: #eee;
+						font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+						border: none;
+					}
+					.sacrud-grid-content-grid__header-item:first-child
+					{
+						width: 20px;
+						padding: 0.5em 1em;
+						text-align: center;
+					}
+						.sacrud-grid-content-grid__header-item-link
+						{
+							color: #444;
+						}
+						.sacrud-grid-content-grid__header-item-link:hover
+						{
+							color: red;
+						}
+				.sacrud-grid-content-grid__body-row
 				{
-					width: 20px;
-					padding: 0;
-					text-align: center;
-				}
-				/*.sacrud-grid-content-grid th:last-child
-				{
-					width: 100px;
-				}*/
-				.sacrud-grid-content-grid td
-				{
-					padding: 0.5em 1em;
-					vertical-align: top;
+					color: #444;
 					border: 1px #eaeaea solid;
-					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 				}
+				.sacrud-grid-content-grid__body-row:hover
+				{
+					background: #F4F9FE;
+				}
+					.sacrud-grid-content-grid__body-item
+					{
+						padding: 0.5em 1em;
+						vertical-align: top;
+						font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+					}
+					.sacrud-grid-content-grid__body-item:first-child
+					{
+						width: 20px;
+						padding: 0.5em 1em;
+						text-align: center;
+					}
+			.sacrud-grid-content__paginator
+			{
+				text-align: center;
+			}
 		.sacrud-grid-content-filter
 		{
 			background: #7ea700;

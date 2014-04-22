@@ -3,29 +3,5 @@
 {% block sa_body %}
     <div class="page">
         {% include 'sacrud/forms/list.jinja2' with context %}
-
-        {% if 'row' in sa_crud %}
-            {% set paginator = sa_crud['row'] %}
-            {% if paginator.items %}
-                <div class="paginator">
-                    <div class="paginator">
-                        <div class="paginator-inner clear-fix">
-                            <ins class="paginator__title">Страницы:</ins>
-                            <ins class="paginator__item">
-                                <a href="" class="paginator__link">1 ...</a>
-                            </ins>
-                            <ins class="paginator__item">
-                                <span class="paginator__link paginator__link_state_current">2</span>
-                                <a href="" class="paginator__link">2</a>
-                            </ins>
-                            <ins class="paginator__item">
-                                <a href="?" class="paginator__link">... 3</a>
-                            </ins>
-                        </div>
-                    </div>
-                    {{ paginator.pager() }}
-                </div>
-            {% endif %}
-        {% endif %}
     </div>
 {% endblock %}
