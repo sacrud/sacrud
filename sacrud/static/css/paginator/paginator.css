@@ -1,0 +1,45 @@
+.paginator
+{
+	clear: both;
+	padding: 0 0 1em 0;
+}
+	.paginator-inner
+	{
+		position: relative;
+		vertical-align: top;
+		padding: 0.5em 10% 0.5em 6%;
+		text-align: center;
+		text-decoration: none;
+	}
+		.paginator__title
+		{
+			font: 0.9em Arial;
+			color: #444;
+			display: inline-block;
+			text-decoration: none;
+			padding: 0.1em 0 0 0;
+		}
+		.b_pager__item
+		{
+			display: inline-block;
+			vertical-align: top;
+			text-decoration: none;
+			margin: 0 0.2em;
+		}
+			.paginator__link
+			{
+				font: 1.1em Arial;
+				color: #535353;
+				padding: 0.2em 0.5em 0.1em 0.5em;
+			}
+			.paginator__link:hover
+			{
+				color: #EF7F1B;
+			}
+			.paginator__link-state-current
+			{
+				font: 1.1em Arial;
+				color: #fff;
+				padding: 0.2em 0.5em 0.1em 0.5em;
+				text-decoration: none;
+			}

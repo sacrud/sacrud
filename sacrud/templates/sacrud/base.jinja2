@@ -37,6 +37,7 @@
 		<link href="{{ request.static_url('sacrud:static/css/checkbox/checkbox.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/textarea/textarea.css') }}" rel="stylesheet">
+		<link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
 
 
 	  <noscript>
@@ -124,17 +125,6 @@
 			{% endblock %}
 
 			{% block sa_body %}{% endblock %}
-
-			{% block paginator %}
-				{% if 'row' in sa_crud %}
-					{% set paginator = sa_crud['row'] %}
-					{% if paginator.items %}
-						<div class="paginator">
-							{{ paginator.pager() }}
-						</div>
-					{% endif %}
-				{% endif %}
-			{% endblock paginator %}
 		</div>
 	</div>
 

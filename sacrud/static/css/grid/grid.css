@@ -16,24 +16,74 @@
 	{
 		float: right;
 	}
+	.sacrud-grid-toolbar
+	{
+		clear: both;
+		zoom: 1;
+		border: 1px solid #ccc;
+		margin: 0 0 20px 0;
+	}
+		.sacrud-grid-toolbar__item
+		{
+			width: 80px;
+			line-height: 50px;
+			float: left;
+			text-align: center;
+			cursor: pointer;
+			border-right: 1px solid #ccc;
+		}
+			.sacrud-grid-toolbar__item-name
+			{
+				line-height: 50px;
+				display: inline-block;
+				font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+			}
+		.sacrud-grid-toolbar__item:hover
+		{
+			background: #7ea700;
+			color: #fff;
+		}
+	.sacrud-grid-toolbar:after
+	{
+		display: block;
+		clear: both;
+		content: "";
+	}
 	.sacrud-grid-content
 	{
 		width: 100%;
-		clear: both;
-		padding: 20px 0 0 0;
+		padding: 0;
 	}
-		.sacrud-grid-content table
+		.sacrud-grid-content__left
+		{
+			width: 100%;
+			float: left;
+			position: relative;
+		}
+			.sacrud-grid-content__left-inner
+			{
+				padding: 0 220px 0 0;
+			}
+		.sacrud-grid-content__right
+		{
+			width: 200px;
+			float: right;
+			margin-left: -205px;
+			position: relative;
+		}
+
+		.sacrud-grid-content-grid table
 		{
 			width: 100%;
 			border-collapse: collapse;
 			margin: 0 0 2em 0;
 			position: relative;
 		}
-			.sacrud-grid-content tr
+			.sacrud-grid-content-grid tr
 			{
 				color: #444;
 			}
-				.sacrud-grid-content th
+				.sacrud-grid-content-grid th
 				{
 					color: #444;
 					text-align: left;
@@ -42,18 +92,25 @@
 					background: #eee;
 					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 				}
-				.sacrud-grid-content td
+				.sacrud-grid-content-grid th:first-child
+				{
+					width: 20px;
+					padding: 0;
+					text-align: center;
+				}
+				/*.sacrud-grid-content-grid th:last-child
+				{
+					width: 100px;
+				}*/
+				.sacrud-grid-content-grid td
 				{
 					padding: 0.5em 1em;
 					vertical-align: top;
 					border: 1px #eaeaea solid;
 					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 				}
-				.sacrud-grid-content td:last-child
-				{
-					width: 200px;
-				}
-				.sacrud-grid-content__button
-				{
-					display: inline-block;
-				}
+		.sacrud-grid-content-filter
+		{
+			background: #7ea700;
+			padding: 0.95em 1em 0.9em 1em;
+		}

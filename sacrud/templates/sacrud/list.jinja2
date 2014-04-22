@@ -1,65 +1,31 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
 {% block sa_body %}
-	<div class="page">
-		{% include 'sacrud/forms/list.jinja2' with context %}
+    <div class="page">
+        {% include 'sacrud/forms/list.jinja2' with context %}
 
-		<div class="sacrud-grid">
-			<div class="sacrud-grid__title">
-				{{ sa_crud['table'].__tablename__ }} administration
-			</div>
-			<div class="sacrud-grid__action" id="sa_grid_action">
-				<a href="#" class="k-button k-primary">
-					Add a new #
-				</a>
-			</div>
-			<div class="sacrud-grid-content">
-				<div id="sacrud-grid"></div>
-			</div>
-		</div>
-	</div>
-{% endblock %}
-
-{% block extrascript %}
-	<script>
-		$(document).ready(function() {
-			$("#sacrud-grid").kendoGrid({
-				dataSource: {
-					transport: {
-						read:  {
-							url: '',
-							data: {json: 'on'},
-							dataType: 'json'
-						}
-					}
-				},
-				scrollable: false,
-				selectable: "multiple",
-				sortable: true,
-				pageable: {
-					refresh: true,
-					pageSizes: true,
-					pageSize: 20,
-					buttonCount: 5
-				},
-				columnMenu: true,
-        columns: [
-          {% for col in sa_crud['col'] %}
-            {
-              field: "{% if hasattr(col, 'instance_name') %}{{ col.instance_name }}{% else %}{{ col.name }}{% endif %}",
-              title: "{{ col.info.verbose_name or col.name }}"
-            },
-          {% endfor %}
-        ],
-				// toolbar: [
-				//     'create',
-				//     'save',
-				//     'cancel',
-				//     'refresh',
-				// ],
-			});
-
-		});
-	</script>
-
+        {% if 'row' in sa_crud %}
+            {% set paginator = sa_crud['row'] %}
+            {% if paginator.items %}
+                <div class="paginator">
+                    <div class="paginator">
+                        <div class="paginator-inner clear-fix">
+                            <ins class="paginator__title">Страницы:</ins>
+                            <ins class="paginator__item">
+                                <a href="" class="paginator__link">1 ...</a>
+                            </ins>
+                            <ins class="paginator__item">
+                                <span class="paginator__link paginator__link_state_current">2</span>
+                                <a href="" class="paginator__link">2</a>
+                            </ins>
+                            <ins class="paginator__item">
+                                <a href="?" class="paginator__link">... 3</a>
+                            </ins>
+                        </div>
+                    </div>
+                    {{ paginator.pager() }}
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
