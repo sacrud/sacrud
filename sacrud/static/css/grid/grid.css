@@ -218,6 +218,13 @@
 					text-decoration: none;
 					color: #444;
 				}
+				.sacrud-grid-content-filter__group-item_state_active,
+				.sacrud-grid-content-filter__group-item_state_active:hover
+				{
+					background: #4183c4;
+					color: #fff !important;
+				}
+				
 				.sacrud-grid-content-filter__group-item:hover
 				{
 					color: #4183c4;
