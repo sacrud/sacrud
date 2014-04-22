@@ -70,6 +70,4 @@ def includeme(config):
                       'get_field_template': get_field_template}
     set_jinja2_globals(config, jinja2_globals)
     # config.add_jinja2_extension('jinja2.ext.with_')
-    from pyramid.renderers import JSONP
-    config.add_renderer('jsonp', JSONP(param_name='callback'))
     config.scan()

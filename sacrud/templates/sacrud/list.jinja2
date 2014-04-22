@@ -23,7 +23,18 @@
                             </ins>
                         </div>
                     </div>
-                    {{ paginator.pager() }}
+                    <div class="pager">
+                      {% set link_attr={"class": "btn small"} %}
+                      {% set curpage_attr={"class": "btn primary small disabled"} %}
+                      {% set dotdot_attr={"class": "btn small disabled"} %}
+
+                      {{ paginator.pager(format="$link_previous ~2~ $link_next",
+                              symbol_previous="«",
+                              symbol_next="»",
+                              link_attr=link_attr,
+                              curpage_attr=curpage_attr,
+                              dotdot_attr=dotdot_attr) }}
+                    </div>
                 </div>
             {% endif %}
         {% endif %}
