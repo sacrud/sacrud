@@ -1,7 +1,9 @@
 .paginator
 {
 	clear: both;
-	padding: 0 0 1em 0;
+	border: solid 1px #eee;
+	padding: 0.5em 0 0.5em 1em;
+	margin: 0 0 50px 0;
 }
 	.paginator-inner
 	{
@@ -13,11 +15,11 @@
 	}
 		.paginator__title
 		{
-			font: 0.9em Arial;
+			font: 0.9em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
 			color: #444;
 			display: inline-block;
 			text-decoration: none;
-			padding: 0.1em 0 0 0;
+			padding: 0.25em 0 0 0;
 		}
 		.paginator__item
 		{
@@ -28,18 +30,24 @@
 		}
 			.paginator__link
 			{
-				font: 1.1em Arial;
-				color: #535353;
-				padding: 0.2em 0.5em 0.1em 0.5em;
+				font: 1.2em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+				color: #444;
+				padding: 0.2em 0.5em 0.3em 0.5em;
+				text-decoration: none;
 			}
 			.paginator__link:hover
 			{
-				color: #EF7F1B;
+				color: #4183c4;
+				text-decoration: underline;
 			}
-			.paginator__link-state-current
+			.paginator__link_state_current
 			{
-				font: 1.1em Arial;
 				color: #fff;
-				padding: 0.2em 0.5em 0.1em 0.5em;
+				text-decoration: none;
+				background: #4183c4;
+			}
+			.paginator__link_state_current:hover
+			{
+				color: #fff;
 				text-decoration: none;
 			}
