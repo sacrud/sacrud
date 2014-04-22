@@ -55,7 +55,7 @@
 				}
 			.sacrud-grid-toolbar-button__item:hover
 			{
-				background: #7ea700;
+				background: #4183c4;
 				color: #fff;
 			}
 				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link
@@ -81,7 +81,7 @@
 			width: 20%;
 			float: right;
 			display: table;
-			padding: 10px 15px 10px 0;
+			padding: 10px 15px 5px 0;
 		}
 			.sacrud-grid-toolbar-search__inner
 			{
@@ -132,14 +132,14 @@
 				.sacrud-grid-content-grid__header-row
 				{
 					color: #444;
-					border: 1px solid #ccc;
+					border: 1px solid #eaeaea;
 				}
 					.sacrud-grid-content-grid__header-item
 					{
 						color: #444;
 						text-align: left;
 						padding: 0.5em 1em;
-						background: #eee;
+						background: #edf4fc;
 						font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 						border: none;
 					}
@@ -151,11 +151,13 @@
 					}
 						.sacrud-grid-content-grid__header-item-link
 						{
-							color: #444;
+							color: #4183c4;
+							text-decoration: none;
 						}
 						.sacrud-grid-content-grid__header-item-link:hover
 						{
-							color: red;
+							color: #4183c4;
+							text-decoration: underline;
 						}
 				.sacrud-grid-content-grid__body-row
 				{
@@ -184,6 +186,40 @@
 			}
 		.sacrud-grid-content-filter
 		{
-			background: #7ea700;
-			padding: 0.95em 1em 0.9em 1em;
 		}
+			.sacrud-grid-content-filter__group
+			{
+				border-bottom: solid 1px #eee;
+				margin: 0 0 20px 0;
+			}
+				.sacrud-grid-content-filter__group-title
+				{
+					border: solid 1px #eee;
+					border-bottom: none;
+					display: block;
+					position: relative;
+					padding: 10px 20px;
+					text-decoration: none;
+					color: #444;
+					background: #edf4fc;
+					font: 1.2em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+				}
+				.sacrud-grid-content-filter__group-title:hover
+				{
+					color: #4183c4;
+					text-decoration: underline;
+				}
+				.sacrud-grid-content-filter__group-item
+				{
+					border: solid 1px #eee;
+					padding: 10px 20px;
+					font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+					display: block;
+					text-decoration: none;
+					color: #444;
+				}
+				.sacrud-grid-content-filter__group-item:hover
+				{
+					color: #4183c4;
+					text-decoration: underline;
+				}
