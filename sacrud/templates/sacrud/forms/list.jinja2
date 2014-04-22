@@ -98,7 +98,7 @@
                 {% if 'row' in sa_crud %}
                     <div class="sacrud-grid-content__paginator">
                         {% set paginator = sa_crud['row'] %}
-                        {% if paginator.items %}
+                        {% if paginator.items > 1 and paginator.page_count > 1 %}
                             <div class="paginator">
                                 {% include "sacrud/paginator.jinja2" %}
                             </div>
@@ -125,5 +125,4 @@
             </div>
         </div>
     </div>
-    
 </div>
