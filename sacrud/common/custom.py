@@ -11,6 +11,14 @@ Any instruments for customizing Models
 """
 
 
+def get_name(column):
+    if column.name:
+        return column.name
+    if 'verbose_name' in column.info:
+        return column.info['verbose_name']
+    return ''
+
+
 def horizontal_field(*args, **kwargs):
     """
     :Examples:
@@ -33,4 +41,17 @@ def horizontal_field(*args, **kwargs):
             'horizontal_columns': args,
             'sacrud_name': sacrud_name,
             'name': '',
+            }
+
+
+def as_link(column, *args, **kwargs):
+    sacrud_name = ''
+    if 'sacrud_name' in kwargs:
+        sacrud_name = kwargs['sacrud_name']
+    return {'info': {'sacrud_position': 'inline',
+                     'sacrud_list_template': 'sacrud/custom/AsLinkList.jinja2',
+                     },
+            'column': column,
+            'sacrud_name': sacrud_name,
+            'name': get_name(column),
             }
