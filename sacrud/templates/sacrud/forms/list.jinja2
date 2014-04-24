@@ -64,6 +64,14 @@
                             </tr>
                         </thead>
                         <tbody class="sacrud-grid-content-grid__body">
+                            <tr class="sacrud-grid-content-grid__body-row sacrud-grid-content-grid__body-row_state_active">
+                                <td class="sacrud-grid-content-grid__body-item"><input type="checkbox"></td>
+                                <td class="sacrud-grid-content-grid__body-item">0</td>                                    
+                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>                                    
+                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio,</td>
+                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>
+                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>
+                            </tr>
                             {% for row in sa_crud['row'] %}
                                 {% set row_id = row[sa_crud['pk']] %}
                                 <tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}"
@@ -111,7 +119,7 @@
             <div class="sacrud-grid-content-filter">
                 <div class="sacrud-grid-content-filter__group">
                     <a href="#" class="sacrud-grid-content-filter__group-title">Group title</a>
-                    <a href="#" class="sacrud-grid-content-filter__group-item">Group title item 1</a>
+                    <a href="#" class="sacrud-grid-content-filter__group-item sacrud-grid-content-filter__group-item_state_active">Group title item 1</a>
                     <a href="#" class="sacrud-grid-content-filter__group-item">Group title item 2</a>
                     <a href="#" class="sacrud-grid-content-filter__group-item">Group title item 3</a>
                 </div>

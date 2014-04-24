@@ -164,6 +164,11 @@
 					color: #444;
 					border: 1px #eaeaea solid;
 				}
+				.sacrud-grid-content-grid__body-row_state_active,
+				.sacrud-grid-content-grid__body-row_state_active:hover
+				{
+					background: #FEFAE7 !important;
+				}
 				.sacrud-grid-content-grid__body-row:hover
 				{
 					background: #F4F9FE;
@@ -218,6 +223,13 @@
 					text-decoration: none;
 					color: #444;
 				}
+				.sacrud-grid-content-filter__group-item_state_active,
+				.sacrud-grid-content-filter__group-item_state_active:hover
+				{
+					background: #4183c4;
+					color: #fff !important;
+				}
+				
 				.sacrud-grid-content-filter__group-item:hover
 				{
 					color: #4183c4;
