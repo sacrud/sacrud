@@ -19,7 +19,6 @@
 		
 		<link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
 
-
 		<link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
 		<link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
 
@@ -85,13 +84,7 @@
 								<a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
 							</div>
 						</div>
-						<div class="header__inner-menu">
-							<div class="main-menu">
-								<div class="main-menu__item">
-									<a href="{{ request.route_url('sa_home') }}" class="main-menu__item-link">Home</a>
-								</div>
-							</div>
-						</div>
+						<div class="header__inner-menu">&nbsp;</div>
 					</div>
 				</div>
 			{% endblock %}

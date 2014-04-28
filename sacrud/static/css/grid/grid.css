@@ -53,12 +53,30 @@
 					color: #444 !important;
 					text-decoration: none;
 				}
+				.sacrud-grid-toolbar-button__item-button
+				{
+					width: 100%;
+					border: solid 0 #fff;
+					padding: 0;
+					margin: 0;
+					display: inline-block;
+					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+					vertical-align: middle;
+					padding: 10px 15px;
+					color: #444 !important;
+					text-decoration: none;
+					background: none;
+				}
 			.sacrud-grid-toolbar-button__item:hover
 			{
 				background: #4183c4;
 				color: #fff;
 			}
 				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link
+				{
+					color: #fff !important;
+				}
+				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-button
 				{
 					color: #fff !important;
 				}
