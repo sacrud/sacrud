@@ -80,7 +80,7 @@ def create(session, table, request=''):
         return
 
     pk_name = get_pk_hook(table)
-    col = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
+    col = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
     return {'pk': pk_name,
             'col': col,
             'table': table,
@@ -139,7 +139,7 @@ def update(session, table, pk, request=''):
         session.add(obj)
         transaction.commit()
         return
-    col_list = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
+    col_list = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
     return {'obj': obj,
             'pk': pk_name,
             'col': col_list,
