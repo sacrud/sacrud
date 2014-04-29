@@ -2,6 +2,10 @@
 
 {% block sa_body %}
     <div class="page">
+      {% if sa_crud['table'].sacrud_list_template %}
+        {% include sa_crud['table'].sacrud_list_template with context %}
+      {% else %}
         {% include '/sacrud/forms/list.jinja2' with context %}
+      {% endif %}
     </div>
 {% endblock %}
