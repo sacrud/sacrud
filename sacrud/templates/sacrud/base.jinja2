@@ -1,134 +1,134 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>
-		SACRUD
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+        SACRUD
 
-		{% block title %}{% endblock title %}
-	</title>
+        {% block title %}{% endblock title %}
+    </title>
 
-	<link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
+    <link href="{{ request.static_url('sacrud:static/favicon.ico') }}" rel="shortcut icon" type="image/x-icon">
 
-	{% block sa_head_meta %}
-	  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	{% endblock %}
+    {% block sa_head_meta %}
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {% endblock %}
 
-	{% block sa_head_css %}
-		<link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
-		
-		<link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
+    {% block sa_head_css %}
+        <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
+        
+        <link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
 
-		<link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
 
-		<link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/user/user.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/search/search.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/wrapper/wrapper.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/header/header.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/logo/logo.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/main-menu/main-menu.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/user/user.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/nav/nav.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/dashboard/dashboard.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/grid/grid.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/search/search.css') }}" rel="stylesheet">
 
-		<link href="{{ request.static_url('sacrud:static/css/checkbox/checkbox.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/textarea/textarea.css') }}" rel="stylesheet">
-		<link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/checkbox/checkbox.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/textarea/textarea.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
 
 
-	  <noscript>
-		  <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
-	  </noscript>
+      <noscript>
+          <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
+      </noscript>
 
-	  <!--[if gte IE 9]>
-	  <style type="text/css">
-		.gradient { filter: none; }
-	  </style>
-	  <![endif]-->
-	  <!--[if IE 8]>
-	  <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
-	  <![endif]-->
-	  <!--[if IE 7]>
-	  <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
-	  <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-	  <![endif]-->
-	  <!--[if IE 6]>
-	  <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
-	  <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-	  <![endif]-->
-	{% endblock %}
+      <!--[if gte IE 9]>
+      <style type="text/css">
+        .gradient { filter: none; }
+      </style>
+      <![endif]-->
+      <!--[if IE 8]>
+      <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
+      <![endif]-->
+      <!--[if IE 7]>
+      <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
+      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+      <![endif]-->
+      <!--[if IE 6]>
+      <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
+      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+      <![endif]-->
+    {% endblock %}
 
-	{% block extra_css %}
-	{% endblock extra_css %}
+    {% block extra_css %}
+    {% endblock extra_css %}
 
-	{% block extrahead %}
-	{% endblock extrahead %}
+    {% block extrahead %}
+    {% endblock extrahead %}
 
-	{% block userspace %}
-	{% endblock %}
+    {% block userspace %}
+    {% endblock %}
 
 </head>
 
 <body>
-	<div class="wrapper">
-		<div class="wrapper__inner">
-			{% block sa_menu %}
-				<div class="header">
-					<div class="header__inner clear-fix">
-						<div class="logo">
-							<div class="logo__text">
-								<a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
-							</div>
-						</div>
-						<div class="header__inner-menu">&nbsp;</div>
-					</div>
-				</div>
-			{% endblock %}
+    <div class="wrapper">
+        <div class="wrapper__inner">
+            {% block sa_menu %}
+                <div class="header">
+                    <div class="header__inner clear-fix">
+                        <div class="logo">
+                            <div class="logo__text">
+                                <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
+                            </div>
+                        </div>
+                        <div class="header__inner-menu">&nbsp;</div>
+                    </div>
+                </div>
+            {% endblock %}
 
-			{% block breadcrumbs %}
-				{% if breadcrumbs %}
-					<div class="nav">
-						{% for crumb in breadcrumbs %}
-							{% if not loop.last %}
-								<a href="{% if crumb.visible %} {{ request.route_path(crumb.view, **crumb.param) }} {% endif %}"
-								   class="nav__link">{{ crumb.name }}</a>
-								<ins class="nav__separator">&nbsp;</ins>
-							{% else %}
-								<span class="nav__item_state_current">{{ crumb.name }}</span>
-							{% endif %}
-						{% endfor %}
-					</div>
-				{% endif %}
-			{% endblock breadcrumbs %}
+            {% block breadcrumbs %}
+                {% if breadcrumbs %}
+                    <div class="nav">
+                        {% for crumb in breadcrumbs %}
+                            {% if not loop.last %}
+                                <a href="{% if crumb.visible %} {{ request.route_path(crumb.view, **crumb.param) }} {% endif %}"
+                                   class="nav__link">{{ crumb.name }}</a>
+                                <ins class="nav__separator">&nbsp;</ins>
+                            {% else %}
+                                <span class="nav__item_state_current">{{ crumb.name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endblock breadcrumbs %}
 
-			{% block flash_message %}
-				{% if request.session %}
-					{% if request.session.peek_flash() %}
-						<div id="flash">
-							{% set flash = request.session.pop_flash() %}
-							{% for message in flash %}
-								{{ message }}<br>
-							{% endfor %}
-						</div>
-					{% endif %}
-				{% endif %}
-			{% endblock %}
+            {% block flash_message %}
+                {% if request.session %}
+                    {% if request.session.peek_flash() %}
+                        <div id="flash">
+                            {% set flash = request.session.pop_flash() %}
+                            {% for message in flash %}
+                                {{ message }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
 
-			{% block sa_body %}{% endblock %}
-		</div>
-	</div>
+            {% block sa_body %}{% endblock %}
+        </div>
+    </div>
 
-	{% block sa_body_js %}
-		<script src="{{ request.static_url('sacrud:static/js/jquery/jquery-1.10.2.js') }}"></script>
-		<script src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-	{% endblock %}
+    {% block sa_body_js %}
+        <script src="{{ request.static_url('sacrud:static/js/jquery/jquery-1.10.2.js') }}"></script>
+        <script src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
+    {% endblock %}
 
-	{% block extrascript %}
-	{% endblock extrascript %}
+    {% block extrascript %}
+    {% endblock extrascript %}
 
 </body>
 </html>

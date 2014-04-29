@@ -49,11 +49,13 @@
                              
                                     <tr class="sacrud-grid-content-grid__body-row">
                                         <td class="sacrud-grid-content-grid__body-item">
-                                            {% if col.info['sacrud_position']=='inline' %}
-                                                {{ col.info['verbose_name'] or col.sacrud_name }}
-                                            {% else %}
-                                                {{ col.info['verbose_name'] or col.name }}
-                                            {% endif %}
+                                            <div  class="sacrud-grid-content-grid__body-item-name">
+                                                {% if col.info['sacrud_position']=='inline' %}
+                                                    {{ col.info['verbose_name'] or col.sacrud_name }}
+                                                {% else %}
+                                                    {{ col.info['verbose_name'] or col.name }}
+                                                {% endif %}
+                                            </div>
                                         </td>
                                         <td class="sacrud-grid-content-grid__body-item">
                                             {% if col.info['sacrud_template'] %}

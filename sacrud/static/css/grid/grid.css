@@ -193,7 +193,7 @@
 				}
 					.sacrud-grid-content-grid__body-item
 					{
-						padding: 0.5em 1em;
+						padding: 1em;
 						vertical-align: top;
 						font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
 					}
@@ -203,6 +203,18 @@
 						padding: 0.5em 1em;
 						text-align: center;
 					}
+						.sacrud-grid-content-grid__body-item-name
+						{
+							padding: 1em 0 0 0;
+						}
+						.sacrud-grid-content-grid__body-item-link
+						{
+							color: #4183c4;
+						}
+						.sacrud-grid-content-grid__body-item-link:hover
+						{
+							color: #444;
+						}
 			.sacrud-grid-content__paginator
 			{
 				text-align: center;

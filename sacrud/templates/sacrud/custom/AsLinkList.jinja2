@@ -1,6 +1,7 @@
 {% set value=getattr(row, col.column.name) %}
 
-<a href="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__, id=row[sa_crud['pk']]) }}">
+<a href="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__, id=row[sa_crud['pk']]) }}"
+    class="sacrud-grid-content-grid__body-item-link">
   {{ value }}
   {% if not value %}
     link
