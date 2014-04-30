@@ -28,6 +28,10 @@
 		border: 1px #eaeaea solid;
 		border-top: none;
 	}
+		.widget-tree
+		{
+			padding: 1em 0 1em 20px;
+		}
 		.widget-row
 		{
 			border-top: 1px #eaeaea solid;

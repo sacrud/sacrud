@@ -4,7 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>
         SACRUD
-
         {% block title %}{% endblock title %}
     </title>
 
@@ -15,7 +14,7 @@
     {% endblock %}
 
     {% block sa_head_css %}
-        <link href="{{ request.static_url('sacrud:static/style/style.css') }}" rel="stylesheet" />
+        
         
         <link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
 
@@ -33,11 +32,12 @@
         <link href="{{ request.static_url('sacrud:static/css/page/page.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/widget/widget.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/search/search.css') }}" rel="stylesheet">
-
+        <link href="{{ request.static_url('sacrud:static/css/footer/footer.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/checkbox/checkbox.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/input/input.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/textarea/textarea.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/message/message.css') }}" rel="stylesheet">
 
 
       <noscript>
@@ -74,59 +74,69 @@
 </head>
 
 <body>
-	<div class="wrapper">
-		<div class="wrapper__inner">
-			{% block sa_menu %}
-				<div class="header">
-					<div class="header__inner clear-fix">
-						<div class="logo">
-							<div class="logo__text">
-								<a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
-							</div>
-						</div>
-						<div class="header__inner-menu">&nbsp;</div>
-					</div>
-				</div>
-			{% endblock %}
+    <div class="wrapper">
+        <div class="wrapper__inner">
+            {% block sa_menu %}
+                <div class="header">
+                    <div class="header__inner clear-fix">
+                        <div class="logo">
+                            <div class="logo__text">
+                                <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
+                            </div>
+                        </div>
+                        <div class="header__inner-menu">&nbsp;</div>
+                    </div>
+                </div>
+            {% endblock %}
 
-			{% block breadcrumbs %}
-				{% if breadcrumbs %}
-					<div class="nav">
-						{% for crumb in breadcrumbs %}
-							{% if not loop.last %}
-								<a href="{% if crumb.visible %} {{ request.route_path(crumb.view, **crumb.param) }} {% endif %}"
-								   class="nav__link">{{ crumb.name }}</a>
-								<ins class="nav__separator">&nbsp;</ins>
-							{% else %}
-								<span class="nav__item_state_current">{{ crumb.name }}</span>
-							{% endif %}
-						{% endfor %}
-					</div>
-				{% endif %}
-			{% endblock breadcrumbs %}
+            {% block breadcrumbs %}
+                {% if breadcrumbs %}
+                    <div class="nav">
+                        {% for crumb in breadcrumbs %}
+                            {% if not loop.last %}
+                                <a href="{% if crumb.visible %} {{ request.route_path(crumb.view, **crumb.param) }} {% endif %}"
+                                   class="nav__link">{{ crumb.name }}</a>
+                                <ins class="nav__separator">&nbsp;</ins>
+                            {% else %}
+                                <span class="nav__item_state_current">{{ crumb.name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endblock breadcrumbs %}
+            <div class="message message_type_success" id="flash">
+                <div class="message__text">You created new object of test_customizing</div>
+            </div>
+            <div class="message message_type_error" id="flash">
+                <div class="message__text">Can not created new object of test_customizing</div>
+            </div>
+            <div class="message message_type_warning" id="flash">
+                <div class="message__text">You created new object of test_customizing click link to see more</div>
+            </div>            
+            {% block flash_message %}
+                {% if request.session %}
+                    {% if request.session.peek_flash() %}
+                        <div id="flash">
+                            {% set flash = request.session.pop_flash() %}
+                            {% for message in flash %}
+                                {{ message }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endblock %}
 
-			{% block flash_message %}
-				{% if request.session %}
-					{% if request.session.peek_flash() %}
-						<div id="flash">
-							{% set flash = request.session.pop_flash() %}
-							{% for message in flash %}
-								{{ message }}<br>
-							{% endfor %}
-						</div>
-					{% endif %}
-				{% endif %}
-			{% endblock %}
+            {% block sa_body %}{% endblock %}
 
-			{% block sa_body %}{% endblock %}
-		</div>
-	</div>
+            <div class="footer">&nbsp;</div>
+        </div>
+    </div>
 
-	{% block sa_body_js %}
-	{% endblock %}
+    {% block sa_body_js %}
+    {% endblock %}
 
-	{% block extrascript %}
-	{% endblock extrascript %}
+    {% block extrascript %}
+    {% endblock extrascript %}
 
 </body>
 </html>
