@@ -17,14 +17,14 @@
             <div class="sacrud-grid__title">Add a new {{ sa_crud['table'].__tablename__ }}</div>
             <div class="sacrud-grid-toolbar clear-fix">
                 <div class="sacrud-grid-toolbar-button">
-                    <div class="sacrud-grid-toolbar-button__item">
+                    <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
                          <button type="submit" name="form.submitted" class="sacrud-grid-toolbar-button__item-button">Save</button>
                     </div>
-                    <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
+                    <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_type_red">
                         <div class="sacrud-grid-toolbar-button__item-name">Delete</div>
                     </div>
-                    <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
-                        <div class="sacrud-grid-toolbar-button__item-name">Cancel</div>
+                    <div class="sacrud-grid-toolbar-button__item">
+                        <a href="#" class="sacrud-grid-toolbar-button__item-link">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -34,41 +34,45 @@
                         <table class="sacrud-grid-content-grid" id="sa_index">
                             <tbody class="sacrud-grid-content-grid__body">
                                 {% for group, columns in visible_columns %}
-                                    <tr><td>{{ group }}</td></tr>
+                                    <tr class="sacrud-grid-content-grid__body-row sacrud-grid-content-grid__body-row_type_group">
+                                        <td class="sacrud-grid-content-grid__body-item" colspan="2">
+                                            {{ group }}
+                                        </td>
+                                    </tr>
                                     {% for col in columns %}
-                                      {% set css_class=[] %}
-                                      {# TODO: move to include "set_css_style.jinja2" #}
-                                      {% if hasattr(obj_cls, 'sacrud_css_class') %}
+                                        {% set css_class=[] %}
+                                        {# TODO: move to include "set_css_style.jinja2" #}
+                                        {% if hasattr(obj_cls, 'sacrud_css_class') %}
 
-                                          {% for key, value in obj_cls.sacrud_css_class.items() %}
-                                              {% if col in value %}
-                                                  {{ css_class.append(key) }}
-                                              {% endif %}
-                                          {% endfor %}
+                                            {% for key, value in obj_cls.sacrud_css_class.items() %}
+                                                {% if col in value %}
+                                                    {{ css_class.append(key) }}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% set css_styles=' '.join(css_class) %}
 
-                                          {% set css_styles=' '.join(css_class) %}
-                                      {% endif %}
+                                        {% endif %}
 
-                                      <tr class="sacrud-grid-content-grid__body-row">
-                                          <td class="sacrud-grid-content-grid__body-item">
-                                              <div  class="sacrud-grid-content-grid__body-item-name">
-                                                  {% if col.info['sacrud_position']=='inline' %}
-                                                      {{ col.info['verbose_name'] or col.sacrud_name }}
-                                                  {% else %}
-                                                      {{ col.info['verbose_name'] or col.name }}
-                                                  {% endif %}
-                                              </div>
-                                          </td>
-                                          <td class="sacrud-grid-content-grid__body-item">
-                                              {% if col.info['sacrud_template'] %}
-                                                  {% include col.info['sacrud_template'] %}
-                                              {% elif col.foreign_keys %}
-                                                  {% include fk_template %}
-                                              {% else %}
-                                                  {% include get_field_template(col.type.__class__.__name__) %}
-                                              {% endif %}
-                                          </td>
-                                      </tr>
+                                        <tr class="sacrud-grid-content-grid__body-row">
+                                            <td class="sacrud-grid-content-grid__body-item">
+                                                <div  class="sacrud-grid-content-grid__body-item-name">
+                                                    {% if col.info['sacrud_position']=='inline' %}
+                                                        {{ col.info['verbose_name'] or col.sacrud_name }}
+                                                    {% else %}
+                                                        {{ col.info['verbose_name'] or col.name }}
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="sacrud-grid-content-grid__body-item">
+                                                {% if col.info['sacrud_template'] %}
+                                                    {% include col.info['sacrud_template'] %}
+                                                {% elif col.foreign_keys %}
+                                                    {% include fk_template %}
+                                                {% else %}
+                                                    {% include get_field_template(col.type.__class__.__name__) %}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
                                     {% endfor %}
                                 {% endfor %}
                             </tbody>

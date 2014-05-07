@@ -50,7 +50,7 @@
 					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
 					vertical-align: middle;
 					padding: 10px 15px;
-					color: #444 !important;
+					color: #444;
 					text-decoration: none;
 				}
 				.sacrud-grid-toolbar-button__item-button
@@ -63,7 +63,7 @@
 					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
 					vertical-align: middle;
 					padding: 10px 15px;
-					color: #444 !important;
+					color: #444;
 					text-decoration: none;
 					background: none;
 				}
@@ -72,13 +72,24 @@
 				background: #4183c4;
 				color: #fff;
 			}
-				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link
-				{
-					color: #fff !important;
-				}
+			/*.sacrud-grid-toolbar-button__item_type_red
+			{
+				background: #CF2737;
+			}
+					.sacrud-grid-toolbar-button__item_type_red .sacrud-grid-toolbar-button__item-name,
+					.sacrud-grid-toolbar-button__item_type_red .sacrud-grid-toolbar-button__item-link
+					{
+						color: #fff;
+					}*/
+			.sacrud-grid-toolbar-button__item_type_red:hover
+			{
+				background: #E73212;
+			}
+				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-name,
+				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link,
 				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-button
 				{
-					color: #fff !important;
+					color: #fff;
 				}
 			.sacrud-grid-toolbar-button__item_state_disable
 			{
@@ -86,13 +97,18 @@
 				cursor: default;
 			}
 				.sacrud-grid-toolbar-button__item-name,
-				.sacrud-grid-toolbar-button__item-link
+				.sacrud-grid-toolbar-button__item-link,
+				.sacrud-grid-toolbar-button__item-button
 				{
 					color: #777;
 				}
-			.sacrud-grid-toolbar-button__item_state_disable:hover
+			.sacrud-grid-toolbar-button__item_state_disable:hover,
+			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-name,
+			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-link,
+			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-button
 			{
 				background: #eee;
+				color: #777;
 			}
 		.sacrud-grid-toolbar-search
 		{
@@ -134,12 +150,10 @@
 			margin-left: -205px;
 			position: relative;
 		}
-
 		.sacrud-grid-content-grid
 		{
 			width: 100%;
 			border-collapse: collapse;
-			margin: 0 0 2em 0;
 			position: relative;
 		}
 
@@ -181,6 +195,26 @@
 				{
 					color: #444;
 					border: 1px #eaeaea solid;
+				}
+				.sacrud-grid-content-grid__body-row_type_group
+				{
+					font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+					font-weight: 300;
+					color: #fff;
+					font-size: 1.1em;
+					text-transform: uppercase;
+					padding: 0.5em 0.7em;
+					border: 1px solid #eaeaea;
+					border-bottom: none;
+					background: #7AA8D6;
+				}
+					.sacrud-grid-content-grid__body-row_type_group .sacrud-grid-content-grid__body-item
+					{
+						text-align: left !important;
+					}
+				.sacrud-grid-content-grid__body-row_type_group:hover
+				{
+					background: #7AA8D6 !important;
 				}
 				.sacrud-grid-content-grid__body-row_state_active,
 				.sacrud-grid-content-grid__body-row_state_active:hover
