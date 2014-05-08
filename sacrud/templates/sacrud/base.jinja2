@@ -14,8 +14,6 @@
     {% endblock %}
 
     {% block sa_head_css %}
-
-
         <link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
 
         <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
@@ -62,11 +60,8 @@
       <![endif]-->
     {% endblock %}
 
-    {% block extra_css %}
-    {% endblock extra_css %}
-
-    {% block extrahead %}
-    {% endblock extrahead %}
+    {% block sa_head_js %}
+    {% endblock %}
 
     {% block userspace %}
     {% endblock %}
