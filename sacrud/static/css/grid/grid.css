@@ -22,7 +22,7 @@
 		zoom: 1;
 		border: 1px solid #ccc;
 		margin: 0 0 20px 0;
-		
+
 	}
 		.sacrud-grid-toolbar-button
 		{
@@ -293,9 +293,17 @@
 					background: #4183c4;
 					color: #fff !important;
 				}
-				
+
 				.sacrud-grid-content-filter__group-item:hover
 				{
 					color: #4183c4;
 					text-decoration: underline;
 				}
+
+.table-tr-selected-class {
+    background-color: #EEEEEE !important;
+    border-color: #CCCCCC !important;
+    color: #454545 !important;
+    background-image: none, linear-gradient(to bottom, rgba(0, 0, 0, 0.13) 0px, rgba(0, 0, 0, 0.08) 100%) !important;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.15) inset !important;
+}

@@ -20,7 +20,9 @@
 		width: 32%;
 		float: left;
 		margin: 0 1.5% 0 0;
+		padding: 0 0 100px 0;
 		border: solid 1px #fff;
+		min-height: 300px;
 	}
 	.dashboard__column:last-child {
 		margin: 0;

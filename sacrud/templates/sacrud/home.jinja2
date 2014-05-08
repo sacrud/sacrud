@@ -8,7 +8,7 @@
 		<div class="dashboard">
 			<div class="dashboard-title">Dashboard</div>
 			<div class="dashboard__inner clear-fix">
-				<div class="dashboard__column">
+				<div class="dashboard__column sortable">
 					{% for group, table_list in tables.iteritems() %}
 						<div class="widget widget_type_drag">
 							<div class="widget-title">
@@ -28,12 +28,15 @@
 						</div>
 					{% endfor %}
 				</div>
-				<div class="dashboard__column"></div>
-				<div class="dashboard__column"></div>
+				<div class="dashboard__column sortable"></div>
+				<div class="dashboard__column sortable"></div>
 			</div>
 		</div>
 	</div>
 {% endblock sa_body  %}
 
 {% block extrascript %}
+	<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-1.9.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
+	<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/sortable.js') }}"></script>
 {% endblock extrascript %}
