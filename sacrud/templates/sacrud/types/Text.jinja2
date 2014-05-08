@@ -3,7 +3,5 @@
 {% block sacrud_column %}
 	<textarea class="textarea {{ css_styles }}"
 			id="sacrud_textarea_{{ col.name }}"
-			name="{{ col.name }}">
-		{{ value }}
-	</textarea>
+			name="{{ col.name }}">{{ value }}</textarea>
 {% endblock %}
