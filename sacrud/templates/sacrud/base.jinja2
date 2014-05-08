@@ -14,8 +14,8 @@
     {% endblock %}
 
     {% block sa_head_css %}
-        
-        
+
+
         <link href="{{ request.static_url('sacrud:static/css/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
 
         <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
@@ -104,22 +104,22 @@
                     </div>
                 {% endif %}
             {% endblock breadcrumbs %}
-            <div class="message message_type_success" id="flash">
-                <div class="message__text">You created new object of test_customizing</div>
-            </div>
-            <div class="message message_type_error" id="flash">
-                <div class="message__text">Can not created new object of test_customizing</div>
-            </div>
-            <div class="message message_type_warning" id="flash">
-                <div class="message__text">You created new object of test_customizing click link to see more</div>
-            </div>            
+
             {% block flash_message %}
                 {% if request.session %}
                     {% if request.session.peek_flash() %}
                         <div id="flash">
                             {% set flash = request.session.pop_flash() %}
                             {% for message in flash %}
-                                {{ message }}<br>
+                              <div class="message message_type_success" id="flash">
+                                  <div class="message__text">{{ message }}</div>
+                              </div>
+                              <!--div class="message message_type_error" id="flash">
+                                  <div class="message__text">Can not created new object of test_customizing</div>
+                              </div>
+                              <div class="message message_type_warning" id="flash">
+                                  <div class="message__text">You created new object of test_customizing click link to see more</div>
+                              </div-->
                             {% endfor %}
                         </div>
                     {% endif %}
