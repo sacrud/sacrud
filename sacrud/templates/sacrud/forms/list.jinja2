@@ -16,31 +16,33 @@
     </div>
     <div class="sacrud-grid__action" id="sa_grid_action">
     </div>
-    <div class="sacrud-grid-toolbar clear-fix">
-        <div class="sacrud-grid-toolbar-button">
-            <div class="sacrud-grid-toolbar-button__item">
-                <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}"
-                   class="sacrud-grid-toolbar-button__item-link">
-                    Add a new {{ table.__tablename__ }}
-                </a>
+    <div class="sacrud-grid__toolbar">
+        <div class="toolbar clear-fix">
+            <div class="toolbar-button">
+                <div class="toolbar-button__item">
+                    <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}"
+                       class="toolbar-button__item-link">
+                        Add a new {{ table.__tablename__ }}
+                    </a>
+                </div>
+                <div class="toolbar-button__item toolbar-button__item_state_disable">
+                    <div class="toolbar-button__item-name">Delete</div>
+                </div>
+                <div class="toolbar-button__item toolbar-button__item_state_disable">
+                    <div class="toolbar-button__item-name">Hide</div>
+                </div>
             </div>
-            <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
-                <div class="sacrud-grid-toolbar-button__item-name">Delete</div>
-            </div>
-            <div class="sacrud-grid-toolbar-button__item sacrud-grid-toolbar-button__item_state_disable">
-                <div class="sacrud-grid-toolbar-button__item-name">Hide</div>
-            </div>
-        </div>
-        <div class="sacrud-grid-toolbar-search">
-            <div class="sacrud-grid-toolbar-search__inner">
-                <form class="search" action="/search/">
-                    <div class="search__input no-js">
-                        <ins class="search__input-box">
-                            <input id="site_search" name="search" class="search__input-box-text" value="search" placeholder="search" autocomplete="off">
-                            <span class="search__input-icon">&nbsp;</span>
-                        </ins>
-                    </div>
-                </form>
+            <div class="toolbar-search">
+                <div class="toolbar-search__inner">
+                    <form class="search" action="/search/">
+                        <div class="search__input no-js">
+                            <ins class="search__input-box">
+                                <input id="site_search" name="search" class="search__input-box-text" value="search" placeholder="search" autocomplete="off">
+                                <span class="search__input-icon">&nbsp;</span>
+                            </ins>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

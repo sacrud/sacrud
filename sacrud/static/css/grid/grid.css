@@ -16,117 +16,9 @@
 	{
 		float: right;
 	}
-	.sacrud-grid-toolbar
+	.sacrud-grid__toolbar
 	{
-		clear: both;
-		zoom: 1;
-		border: 1px solid #ccc;
 		margin: 0 0 20px 0;
-
-	}
-		.sacrud-grid-toolbar-button
-		{
-			display: table;
-			float: left;
-		}
-			.sacrud-grid-toolbar-button__item
-			{
-				width: 100px;
-				display: table-cell;
-				text-align: center;
-				cursor: pointer;
-				border-right: 1px solid #ccc;
-			}
-				.sacrud-grid-toolbar-button__item-name
-				{
-					display: inline-block;
-					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
-					vertical-align: middle;
-					padding: 10px 15px;
-				}
-				.sacrud-grid-toolbar-button__item-link
-				{
-					display: inline-block;
-					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
-					vertical-align: middle;
-					padding: 10px 15px;
-					color: #444;
-					text-decoration: none;
-				}
-				.sacrud-grid-toolbar-button__item-button
-				{
-					width: 100%;
-					border: solid 0 #fff;
-					padding: 0;
-					margin: 0;
-					display: inline-block;
-					font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
-					vertical-align: middle;
-					padding: 10px 15px;
-					color: #444;
-					text-decoration: none;
-					background: none;
-				}
-			.sacrud-grid-toolbar-button__item:hover
-			{
-				background: #4183c4;
-				color: #fff;
-			}
-			/*.sacrud-grid-toolbar-button__item_type_red
-			{
-				background: #CF2737;
-			}
-					.sacrud-grid-toolbar-button__item_type_red .sacrud-grid-toolbar-button__item-name,
-					.sacrud-grid-toolbar-button__item_type_red .sacrud-grid-toolbar-button__item-link
-					{
-						color: #fff;
-					}*/
-			.sacrud-grid-toolbar-button__item_type_red:hover
-			{
-				background: #E73212;
-			}
-				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-name,
-				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-link,
-				.sacrud-grid-toolbar-button__item:hover .sacrud-grid-toolbar-button__item-button
-				{
-					color: #fff;
-				}
-			.sacrud-grid-toolbar-button__item_state_disable
-			{
-				background: #eee;
-				cursor: default;
-			}
-				.sacrud-grid-toolbar-button__item-name,
-				.sacrud-grid-toolbar-button__item-link,
-				.sacrud-grid-toolbar-button__item-button
-				{
-					color: #777;
-				}
-			.sacrud-grid-toolbar-button__item_state_disable:hover,
-			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-name,
-			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-link,
-			.sacrud-grid-toolbar-button__item_state_disable:hover .sacrud-grid-toolbar-button__item-button
-			{
-				background: #eee;
-				color: #777;
-			}
-		.sacrud-grid-toolbar-search
-		{
-			width: 20%;
-			float: right;
-			display: table;
-			padding: 10px 15px 5px 0;
-		}
-			.sacrud-grid-toolbar-search__inner
-			{
-				display: table-cell;
-				vertical-align: middle;
-			}
-	.sacrud-grid-toolbar:after
-	{
-		display: block;
-		clear: both;
-		content: "";
 	}
 	.sacrud-grid-content
 	{
@@ -155,6 +47,11 @@
 			width: 100%;
 			border-collapse: collapse;
 			position: relative;
+			margin: 20px 0 0 0;
+		}
+		.sacrud-grid-content-grid:first-child
+		{
+			margin: 0;
 		}
 
 			.sacrud-grid-content-grid__header

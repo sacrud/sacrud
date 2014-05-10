@@ -36,28 +36,28 @@
         <link href="{{ request.static_url('sacrud:static/css/textarea/textarea.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/message/message.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/toolbar/toolbar.css') }}" rel="stylesheet">
 
+        <noscript>
+            <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
+        </noscript>
 
-      <noscript>
-          <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
-      </noscript>
-
-      <!--[if gte IE 9]>
-      <style type="text/css">
+        <!--[if gte IE 9]>
+        <style type="text/css">
         .gradient { filter: none; }
-      </style>
-      <![endif]-->
-      <!--[if IE 8]>
-      <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
-      <![endif]-->
-      <!--[if IE 7]>
-      <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
-      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-      <![endif]-->
-      <!--[if IE 6]>
-      <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
-      <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
-      <![endif]-->
+        </style>
+        <![endif]-->
+        <!--[if IE 8]>
+        <link href="{{ STATIC_URL }}css/ie/ie8.css" rel="stylesheet" type="text/css" />
+        <![endif]-->
+        <!--[if IE 7]>
+        <link href="{{ STATIC_URL }}css/ie/ie7.css" rel="stylesheet" type="text/css" />
+        <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+        <![endif]-->
+        <!--[if IE 6]>
+        <link href="{{ STATIC_URL }}css/ie/ie6.css" rel="stylesheet" type="text/css" />
+        <link href="{{ STATIC_URL }}css/ie/normalize_v1" rel="stylesheet" type="text/css" />
+        <![endif]-->
     {% endblock %}
 
     {% block sa_head_js %}
