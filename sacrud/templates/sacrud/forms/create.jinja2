@@ -33,7 +33,7 @@
             <div class="sacrud-grid-content">
                 <div class="sacrud-grid-content__left">
                     <div class="sacrud-grid-content__left-inner">
- 
+
                         {% for group, columns in visible_columns %}
                             <table class="sacrud-grid-content-grid" id="sa_index">
                                 <tbody class="sacrud-grid-content-grid__body">
@@ -73,6 +73,10 @@
                                                     {% include fk_template %}
                                                 {% else %}
                                                     {% include get_field_template(col.type.__class__.__name__) %}
+                                                {% endif %}
+                                                <br />
+                                                {% if col.info['description'] %}
+                                                  {{ col.info['description'] }}
                                                 {% endif %}
                                             </td>
                                         </tr>
