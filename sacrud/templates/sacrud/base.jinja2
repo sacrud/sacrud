@@ -106,8 +106,8 @@
                         <div id="flash">
                             {% set flash = request.session.pop_flash() %}
                             {% for message in flash %}
-                              <div class="message message_type_success" id="flash">
-                                  <div class="message__text">{{ message }}</div>
+                              <div class="message message_type_{{ message[1] }}" id="flash">
+                                  <div class="message__text">{{ message[0] }}</div>
                               </div>
                               <!--div class="message message_type_error" id="flash">
                                   <div class="message__text">Can not created new object of test_customizing</div>

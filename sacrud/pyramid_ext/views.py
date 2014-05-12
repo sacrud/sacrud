@@ -103,9 +103,9 @@ class CRUD(object):
         self.id = request.matchdict.get('id')
         self.params = request.params.dict_of_lists()
 
-    def flash_message(self, message):
+    def flash_message(self, message, status="success"):
         if hasattr(self.request, 'session'):
-            self.request.session.flash(message)
+            self.request.session.flash([message, status])
 
     @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
     def sa_create(self):
