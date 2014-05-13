@@ -112,3 +112,13 @@ class ChoiceType(TypeDecorator):
 
     def process_result_value(self, value, dialect):
         return self.choices[value]
+
+
+class SlugType(TypeDecorator):
+
+    impl = String
+
+    def __init__(self, input_id, reflection=True, **kw):
+        self.input_id = input_id
+        self.reflection = reflection
+        super(SlugType, self).__init__(**kw)
