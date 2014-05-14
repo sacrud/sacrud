@@ -90,7 +90,9 @@ class ViewsTest(BaseTest):
         config.registry.settings['sqlalchemy.url'] = TEST_DATABASE_CONNECTION_STRING
         config.include('sacrud.pyramid_ext', route_prefix='/admin')
         settings = config.registry.settings
-        settings['sacrud.models'] = {'': [User], 'auth': [User, Profile]}
+        settings['sacrud.models'] = {'': {'tables': [User]},
+                                     'Auth models': {'tables': [User, Profile]}
+                                     }
         return request
 
     def test_get_table(self):
