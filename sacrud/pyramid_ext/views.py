@@ -26,8 +26,9 @@ def get_table(tname, request):
     """ Return table by table name from sacrud.models in settings.
     """
     # convert values of models dict to flat list
-    tables = itertools.chain(
-        *get_settings_param(request, 'sacrud.models').values())
+    setting_params = get_settings_param(request, 'sacrud.models').values()
+    tables_lists = map(lambda x: x['tables'], setting_params)
+    tables = itertools.chain(*tables_lists)
     tables = filter(lambda table: (table.__tablename__).
                     lower() == tname.lower(), tables)
     if not tables:
