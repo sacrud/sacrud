@@ -34,15 +34,16 @@ def get_field_template(field):
 
 def add_routes(config):
     prefix = pkg_prefix(config)
-    config.add_route('sa_home',     prefix)
-    config.add_route('sa_list',     prefix + '{table}')
-    config.add_route('sa_create',   prefix + '{table}/create')
-    config.add_route('sa_read',     prefix + '{table}/read/{id}')
-    config.add_route('sa_update',   prefix + '{table}/update/{id}')
-    config.add_route('sa_delete',   prefix + '{table}/delete/{id}')
-    config.add_route('sa_paste',    prefix + '{table}/paste/{id}/' +
-                                             '{target_id}')
-    config.add_route('sa_paste_tmp', prefix + '{table}/paste/{id}')
+    config.add_route('sa_home',           prefix)
+    config.add_route('sa_save_position',  prefix + 'save_position')
+    config.add_route('sa_list',           prefix + '{table}')
+    config.add_route('sa_create',         prefix + '{table}/create')
+    config.add_route('sa_read',           prefix + '{table}/read/{id}')
+    config.add_route('sa_update',         prefix + '{table}/update/{id}')
+    config.add_route('sa_delete',         prefix + '{table}/delete/{id}')
+    config.add_route('sa_paste',          prefix + '{table}/paste/{id}/' +
+                                                   '{target_id}')
+    config.add_route('sa_paste_tmp',      prefix + '{table}/paste/{id}')
 
 
 def includeme(config):

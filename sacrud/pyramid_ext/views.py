@@ -10,7 +10,8 @@
 Views for Pyramid frontend
 """
 import itertools
-
+import operator
+import transaction
 import sqlalchemy as sa
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
@@ -50,9 +51,81 @@ def get_relationship(tname, request):
     return related_classes
 
 
+@view_config(route_name='sa_save_position', request_method='POST',
+             renderer='json')
+def sa_save_position(request):
+    kwargs = dict(request.POST)
+    session = request.dbsession
+    position_model_path = request.registry.settings\
+                                 .get('sacrud_dashboard_position_model')
+    if position_model_path:
+        parts = position_model_path.split(':')
+        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
+        PositionModel = getattr(temp, parts[1])
+        # getattr(PositionModel, 'widget')
+        widget_obj = session.query(PositionModel)\
+                            .filter(PositionModel.widget == kwargs['widget'])\
+                            .first()
+        old_column = getattr(widget_obj, 'column', 0)
+        session.query(PositionModel)\
+               .filter(PositionModel.column == kwargs['column'],
+                       PositionModel.position >= kwargs['position'])\
+               .update({'position': PositionModel.position+1})
+        if widget_obj:
+            # setattr(widget_obj, 'column', kwargs['column'])
+            widget_obj.column = kwargs['column']
+            widget_obj.position = kwargs['position']
+            session.add(widget_obj)
+        else:
+            session.add(PositionModel(**kwargs))
+        old_neighbors = session.query(PositionModel)\
+                               .filter(PositionModel.column == old_column)\
+                               .all()
+        for i, old_neighbor in enumerate(old_neighbors):
+            old_neighbor.position = i
+        transaction.commit()
+    return {'result': 'ok'}
+
+
+class WidgetPositionObject(object):
+    def __init__(self, title, tables):
+        self.title = title
+        self.tables = tables
+
+
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
-    return {'tables': get_settings_param(request, 'sacrud.models')}
+    tables = get_settings_param(request, 'sacrud.models')
+    sacrud_dashboard_columns = request.registry.settings\
+                                      .get('sacrud_dashboard_columns', 3)
+    context = {'dashboard_columns': sacrud_dashboard_columns}
+    position_model_path = request.registry.settings\
+                                 .get('sacrud_dashboard_position_model')
+    if position_model_path:
+        parts = position_model_path.split(':')
+        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
+        PositionModel = getattr(temp, parts[1])
+        items_list = {}
+        for column in range(sacrud_dashboard_columns):
+            widgets = request.dbsession.query(PositionModel.widget)\
+                                       .filter(PositionModel.column == column,
+                                               PositionModel.widget.in_(tables.keys()))\
+                                       .order_by(PositionModel.column,
+                                                 PositionModel.position)\
+                                       .all()
+            # widgets = [w[0] for w in widgets]
+            items_list.update({column: [], })
+            for widget_item in widgets:
+                if widget_item[0] in tables.keys():
+                    items_list[column].append(
+                        WidgetPositionObject(widget_item[0],
+                                             tables[widget_item[0]]['tables'])
+                    )
+        context.update({'new_tables': items_list, })
+    else:
+        context.update({'tables': sorted(tables.iteritems(),
+                                         key=operator.itemgetter(1)), })
+    return context
 
 
 def sarow_to_json(rows):
@@ -113,7 +186,8 @@ class CRUD(object):
             action.create(self.request.dbsession, self.table,
                           self.request.params.dict_of_lists())
             self.flash_message("You created new object of %s" % self.tname)
-            return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+            return HTTPFound(location=self.request.route_url('sa_list',
+                                                             table=self.tname))
         resp = action.create(self.request.dbsession, self.table)
         return {'sa_crud': resp,
                 'relationships': self.relationships,
@@ -129,19 +203,23 @@ class CRUD(object):
     @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
     def sa_update(self):
         if 'form.submitted' in self.request.params:
-            action.update(self.request.dbsession, self.table, self.id, self.params)
+            action.update(self.request.dbsession, self.table, self.id,
+                          self.params)
             self.flash_message("You updated object of %s" % self.tname)
-            return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+            return HTTPFound(location=self.request.route_url('sa_list',
+                                                             table=self.tname))
         resp = action.update(self.request.dbsession, self.table, self.id)
         return {'sa_crud': resp,
                 'relationships': self.relationships,
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_update', id=self.id)}
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_update',
+                                           id=self.id)}
 
     @view_config(route_name='sa_delete')
     def sa_delete(self):
         action.delete(self.request.dbsession, self.table, self.id)
         self.flash_message("You have removed object of %s" % self.tname)
-        return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+        return HTTPFound(location=self.request.route_url('sa_list',
+                                                         table=self.tname))
 
 
 @view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')
@@ -150,7 +228,8 @@ def sa_paste(request):
     id = request.matchdict['id']
     target_id = request.matchdict['target_id']
 
-    source_obj = action.read(request.dbsession, get_table(tname, request), id)['obj']
+    source_obj = action.read(request.dbsession, get_table(tname, request),
+                             id)['obj']
     pos_name = source_obj.__mapper_args__['order_by']
     action.update(request.dbsession, get_table(tname, request), target_id,
                   {pos_name: [getattr(source_obj, pos_name)]})
