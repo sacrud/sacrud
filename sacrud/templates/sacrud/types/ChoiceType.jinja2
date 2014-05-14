@@ -1,0 +1,19 @@
+{% extends "sacrud/types/SacrudBase.jinja2" %}
+
+{% block sacrud_column %}
+  <select type="text"
+        class="choices choices_type_string {{ css_styles }}"
+        id="choices_{{ col.name }}"
+        name="{{ col.name }}"
+        />
+  {% for k, v in col.type.choices.iteritems() %}
+    <option value="{{ v }}"
+      {% if obj %}
+          {% if value==v %}
+              selected
+          {% endif %}
+      {% endif %}>
+      {{ k }}</option>
+  {% endfor %}
+  </select>
+{% endblock %}

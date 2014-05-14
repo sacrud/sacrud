@@ -16,6 +16,7 @@ from sqlalchemy.types import (
     CHAR,
     VARCHAR,
     Unicode,
+    String,
     TypeDecorator,
 )
 
@@ -93,3 +94,31 @@ class ElfinderString(TypeDecorator):
 
     def __repr__(self):
         return self.path
+
+
+class ChoiceType(TypeDecorator):
+
+    impl = String
+
+    def __init__(self, choices, **kw):
+        self.choices = dict(choices)
+        super(ChoiceType, self).__init__(**kw)
+
+    def process_bind_param(self, value, dialect):
+        val = [k for k, v in self.choices.iteritems() if k == value or v == value]
+        if val:
+            return val[0]
+        return ''
+
+    def process_result_value(self, value, dialect):
+        return self.choices[value]
+
+
+class SlugType(TypeDecorator):
+
+    impl = String
+
+    def __init__(self, input_id, reflection=True, **kw):
+        self.input_id = input_id
+        self.reflection = reflection
+        super(SlugType, self).__init__(**kw)
