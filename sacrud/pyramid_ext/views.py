@@ -45,7 +45,6 @@ def get_relationship(tname, request):
         lambda p: isinstance(p, sa.orm.properties.RelationshipProperty),
         sa.orm.class_mapper(obj).iterate_properties
     )
-    # related_tables = [prop.target for prop in relation_properties]
     related_classes = [{'cls': prop.mapper.class_,
                         'col': list(prop.local_columns)[0]}
                        for prop in relation_properties]

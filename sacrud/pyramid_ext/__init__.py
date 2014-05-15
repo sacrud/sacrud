@@ -70,5 +70,4 @@ def includeme(config):
                       'sacrud_ver': __version__,
                       'get_field_template': get_field_template}
     set_jinja2_globals(config, jinja2_globals)
-    # config.add_jinja2_extension('jinja2.ext.with_')
     config.scan()
