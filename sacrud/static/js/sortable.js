@@ -7,7 +7,7 @@ $(function() {
             $('.widget_placeholder').append(ui.item.html());
             // $('.widget_placeholder').append(ui.item.context.outerHTML);
         },
-        stop: function(event, ui) {
+        receive: function(event, ui) {
             var widget = ui.item.attr('name'),
                 column = ui.item.parent().data('number'),
                 position = $('.dashboard__column[data-number="'+column+'"]  .widget').index(ui.item),
@@ -17,17 +17,13 @@ $(function() {
                 type: "POST",
                 url: 'save_position',
                 data: data,
-                // success: function(result){
-                // },
-                // error: function (xhr, textStatus, errorThrown) {
-                // }
+                // success: function(result){},
+                error: function (xhr, textStatus, errorThrown) {
+                    ui.sender.sortable("cancel");
+                }
             });
         },
-        /*
-        change: function(event, ui) {
-        },
-        receive: function(event, ui) {
-        },
-        */
+        // stop: function(event, ui) {},
+        // change: function(event, ui) {},
     }).disableSelection();
 });

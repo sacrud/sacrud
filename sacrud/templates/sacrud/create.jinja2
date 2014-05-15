@@ -3,3 +3,13 @@
 {% block sa_body %}
     {% include 'sacrud/forms/create.jinja2' %}
 {% endblock %}
+
+{% block sa_head_js %} {# extrascript #}
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script>
+{% endblock %}
+
+{% block extrascript %}
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/checkbox.js') }}"></script>
+{% endblock %}

@@ -64,26 +64,46 @@ def sa_save_position(request):
         temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
         PositionModel = getattr(temp, parts[1])
         # getattr(PositionModel, 'widget')
-        widget_obj = session.query(PositionModel)\
-                            .filter(PositionModel.widget == kwargs['widget'])\
-                            .first()
+        widget_obj = session.query(PositionModel).filter(PositionModel.widget == kwargs['widget']).first()
         old_column = getattr(widget_obj, 'column', 0)
-        session.query(PositionModel)\
-               .filter(PositionModel.column == kwargs['column'],
-                       PositionModel.position >= kwargs['position'])\
-               .update({'position': PositionModel.position+1})
+        old_position = getattr(widget_obj, 'position', 0)
+
         if widget_obj:
             # setattr(widget_obj, 'column', kwargs['column'])
-            widget_obj.column = kwargs['column']
-            widget_obj.position = kwargs['position']
-            session.add(widget_obj)
+            widget_obj.column = int(kwargs['column'])
+            widget_obj.position = int(kwargs['position'])
         else:
-            session.add(PositionModel(**kwargs))
-        old_neighbors = session.query(PositionModel)\
-                               .filter(PositionModel.column == old_column)\
-                               .all()
-        for i, old_neighbor in enumerate(old_neighbors):
-            old_neighbor.position = i
+            widget_obj = PositionModel(**kwargs)
+        session.add(widget_obj)
+
+        if old_column == widget_obj.column:
+            if old_position < widget_obj.position:
+                session.query(PositionModel)\
+                   .filter(PositionModel.id != widget_obj.id,
+                           PositionModel.column == kwargs['column'],
+                           PositionModel.position <= kwargs['position'],
+                           PositionModel.position > old_position)\
+                   .update({'position': PositionModel.position-1})
+            else:
+                session.query(PositionModel)\
+                   .filter(PositionModel.id != widget_obj.id,
+                           PositionModel.column == kwargs['column'],
+                           PositionModel.position >= kwargs['position'],
+                           PositionModel.position < old_position)\
+                   .update({'position': PositionModel.position+1})
+        else:
+            old_neighbors = session.query(PositionModel)\
+                                   .filter(PositionModel.column == old_column)\
+                                   .all()
+            for i, old_neighbor in enumerate(old_neighbors):
+                old_neighbor.position = i
+
+            session.query(PositionModel)\
+                   .filter(PositionModel.id != widget_obj.id,
+                           PositionModel.column == kwargs['column'],
+                           PositionModel.position >= kwargs['position'])\
+                   .update({'position': PositionModel.position+1})
+
         transaction.commit()
     return {'result': 'ok'}
 
