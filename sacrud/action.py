@@ -139,6 +139,7 @@ def update(session, table, pk, request=''):
         session.add(obj)
         transaction.commit()
         return
+
     col_list = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
     return {'obj': obj,
             'pk': pk_name,

@@ -78,18 +78,18 @@ def sa_save_position(request):
         if old_column == widget_obj.column:
             if old_position < widget_obj.position:
                 session.query(PositionModel)\
-                   .filter(PositionModel.id != widget_obj.id,
-                           PositionModel.column == kwargs['column'],
-                           PositionModel.position <= kwargs['position'],
-                           PositionModel.position > old_position)\
-                   .update({'position': PositionModel.position-1})
+                    .filter(PositionModel.id != widget_obj.id,
+                            PositionModel.column == kwargs['column'],
+                            PositionModel.position <= kwargs['position'],
+                            PositionModel.position > old_position)\
+                    .update({'position': PositionModel.position-1})
             else:
                 session.query(PositionModel)\
-                   .filter(PositionModel.id != widget_obj.id,
-                           PositionModel.column == kwargs['column'],
-                           PositionModel.position >= kwargs['position'],
-                           PositionModel.position < old_position)\
-                   .update({'position': PositionModel.position+1})
+                    .filter(PositionModel.id != widget_obj.id,
+                            PositionModel.column == kwargs['column'],
+                            PositionModel.position >= kwargs['position'],
+                            PositionModel.position < old_position)\
+                    .update({'position': PositionModel.position+1})
         else:
             old_neighbors = session.query(PositionModel)\
                                    .filter(PositionModel.column == old_column)\
