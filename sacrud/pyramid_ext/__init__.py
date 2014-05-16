@@ -52,10 +52,7 @@ def includeme(config):
         orm.sessionmaker(extension=ZopeTransactionExtension()))
     DBSession.configure(bind=engine)
 
-    def get_db(request):
-        return DBSession
-
-    config.set_request_property(get_db, 'dbsession', reify=True)
+    config.set_request_property(lambda x: DBSession, 'dbsession', reify=True)
     config.include(add_routes)
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("sacrud:templates")
