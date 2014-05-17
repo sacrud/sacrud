@@ -81,9 +81,9 @@ def get_settings_param(request, name):
     return settings[name]
 
 
-def get_dashboard_position_model(request):
+def get_obj_from_settings(request, name):
     position_model = request.registry.settings\
-        .get('sacrud.dashboard_position_model')
+        .get(name)
     if isinstance(position_model, basestring):
         return import_from_string(position_model)
     return position_model

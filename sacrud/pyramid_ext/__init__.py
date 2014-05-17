@@ -16,7 +16,7 @@ import sqlalchemy.orm as orm
 from pyramid.path import AssetResolver
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common.pyramid_helpers import (get_dashboard_position_model,
+from sacrud.common.pyramid_helpers import (get_obj_from_settings,
                                            pkg_prefix, set_jinja2_globals,
                                            set_jinja2_silent_none)
 from sacrud.version import __version__
@@ -51,8 +51,9 @@ def includeme(config):
     DBSession.configure(bind=engine)
 
     config.set_request_property(lambda x: DBSession, 'dbsession', reify=True)
-    config.set_request_property(get_dashboard_position_model,
-                                'sacrud_dashboard_position_model', reify=True)
+    config.set_request_property(
+        lambda x: get_obj_from_settings(x, 'sacrud.dashboard_position_model'),
+        'sacrud_dashboard_position_model', reify=True)
     config.include(add_routes)
     config.include('pyramid_jinja2')
     config.add_jinja2_search_path("sacrud:templates")
