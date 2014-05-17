@@ -56,13 +56,9 @@ def get_relationship(tname, request):
 def sa_save_position(request):
     kwargs = dict(request.POST)
     session = request.dbsession
-    position_model_path = request.registry.settings\
-                                 .get('sacrud_dashboard_position_model')
-    if position_model_path:
-        parts = position_model_path.split(':')
-        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
-        PositionModel = getattr(temp, parts[1])
-        # getattr(PositionModel, 'widget')
+    PositionModel = request.sacrud_dashboard_position_model
+
+    if PositionModel:
         widget_obj = session.query(PositionModel).filter(PositionModel.widget == kwargs['widget']).first()
         old_column = getattr(widget_obj, 'column', 0)
         old_position = getattr(widget_obj, 'position', 0)
@@ -119,12 +115,9 @@ def sa_home(request):
     sacrud_dashboard_columns = request.registry.settings\
                                       .get('sacrud_dashboard_columns', 3)
     context = {'dashboard_columns': sacrud_dashboard_columns}
-    position_model_path = request.registry.settings\
-                                 .get('sacrud_dashboard_position_model')
-    if position_model_path:
-        parts = position_model_path.split(':')
-        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
-        PositionModel = getattr(temp, parts[1])
+    PositionModel = request.sacrud_dashboard_position_model
+
+    if PositionModel:
         items_list = {}
         for column in range(sacrud_dashboard_columns):
             widgets = request.dbsession.query(PositionModel.widget)\

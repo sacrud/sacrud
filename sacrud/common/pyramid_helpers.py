@@ -9,6 +9,7 @@
 """
 Any helpers for Pyramid
 """
+from sacrud.common import import_from_string
 
 
 def pkg_prefix(config):
@@ -78,3 +79,11 @@ def get_settings_param(request, name):
         print '\033[93m' + message + '\033[0m'
         raise Exception(message)
     return settings[name]
+
+
+def get_dashboard_position_model(request):
+    position_model = request.registry.settings\
+        .get('sacrud.dashboard_position_model')
+    if isinstance(position_model, basestring):
+        return import_from_string(position_model)
+    return position_model
