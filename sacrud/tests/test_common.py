@@ -15,6 +15,8 @@ import unittest
 from pyramid.testing import DummyRequest
 from webhelpers.paginate import PageURL_WebOb
 
+from sacrud.tests.test_models import User
+from sacrud.common import import_from_string
 from sacrud.common.paginator import get_current_page, get_paginator
 from sacrud.common.custom import horizontal_field
 
@@ -70,3 +72,10 @@ class CustomTest(BaseTest):
                                    'sacrud_position': 'inline',
                                    'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
                           'sacrud_name': '', 'name': '', 'horizontal_columns': ()})
+
+
+class CommonTest(BaseTest):
+
+    def test_import_from_string(self):
+        self.assertEqual(User,
+                         import_from_string('sacrud.tests.test_models:User'))
