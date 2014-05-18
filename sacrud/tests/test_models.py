@@ -67,7 +67,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     fullname = Column(String)
-    password = Column(String)
+    password = Column(String, info={'verbose_name': 'user password'})
     position = Column(Integer, default=0)
     sex = Column(Enum('male',
                       'female',
