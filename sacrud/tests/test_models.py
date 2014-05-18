@@ -20,6 +20,7 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
 from zope.sqlalchemy import ZopeTransactionExtension
 
+from sacrud.common.sa_helpers import TableProperty
 from sacrud.exttype import FileStore
 from sacrud.position import before_insert
 
@@ -44,14 +45,6 @@ def user_add(session):
     return user
 
 
-def profile_add(session, user):
-    profile = Profile(user=user)
-    session.add(profile)
-    transaction.commit()
-    profile = session.query(Profile).first()
-    return profile
-
-
 def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
     engine = create_engine(url)
     Base.metadata.create_all(engine)
@@ -74,17 +67,16 @@ class User(Base):
                       'alien',
                       'unknown', name="sex"))
 
+    @TableProperty
+    def foo(cls):
+        return cls.name
+
     def __init__(self, name, fullname, password, position=0, sex='unknown'):
         self.name = name
         self.fullname = fullname
         self.password = password
         self.position = position
         self.sex = sex
-
-    def __repr__(self):
-        return "<User('%s','%s', '%s')>" % (self.name,
-                                            self.fullname,
-                                            self.password)
 
 
 listen(User, "before_insert", before_insert)
@@ -110,9 +102,3 @@ class Profile(Base):
         self.cv = cv
         self.married = married
         self.salary = salary
-
-    def __repr__(self):
-        return "<Profile of user '%s'" % ((self.user, ))
-
-    def set_photo(self, value):
-        self.photo = value
