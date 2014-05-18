@@ -46,7 +46,11 @@ def _silent_none(value):
     ''
     >>> _silent_none(False)
     ''
-
+    >>> class Foo(object):
+    ...   def __bool__(self):
+    ...     return False
+    >>> _silent_none(Foo)
+    <class 'sacrud.common.pyramid_helpers.Foo'>
     """
     if type(value) == int:
         return value
@@ -73,11 +77,6 @@ def set_jinja2_globals(config, hashes):
 
 def get_settings_param(request, name):
     settings = request.registry.settings
-    if 'sacrud_models' in settings:
-        message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
-                  ' This new requirements for sacrud >= 0.1.1 version"'
-        print '\033[93m' + message + '\033[0m'
-        raise Exception(message)
     return settings[name]
 
 
