@@ -15,6 +15,7 @@ import unittest
 
 from pyramid import testing
 
+from sacrud.pyramid_ext import get_field_template
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
 from sacrud.tests.test_models import (_initTestingDB, DB_FILE, Profile,
@@ -83,7 +84,18 @@ class BreadCrumbsTest(BaseTest):
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
 
 
+class CommonTest(BaseTest):
+
+    def test_get_field_template(self):
+        self.assertEqual('sacrud/types/String.jinja2',
+                         get_field_template('foo'))
+        enum = get_field_template('Enum')
+        self.assertIn('sacrud/types/Enum.jinja2', enum)
+        self.assertTrue(os.path.exists(enum))
+
+
 class ViewsTest(BaseTest):
+
     def _include_sacrud(self):
         request = testing.DummyRequest()
         config = testing.setUp(request=request)
