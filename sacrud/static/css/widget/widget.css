@@ -16,6 +16,16 @@
 		position: relative;
 		min-height: 15px;
 	}
+	.widget_type_single .widget-title
+	{
+		font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+		font-weight: 300;
+		color: #000000;
+		font-size: 1.6em;
+		text-transform: uppercase;
+		padding: 0 0 0.5em 0;
+		background: none;
+	}
 		.widget-title_state_switch
 		{
 			float: right;
