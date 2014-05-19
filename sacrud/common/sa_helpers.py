@@ -17,6 +17,14 @@ import uuid
 import sqlalchemy
 
 
+class TableProperty(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, inst, cls):
+        return self.func(cls.__table__)
+
+
 def get_attrname_by_colname(instance, name):
     """ Get value from SQLAlchemy instance by column name
 

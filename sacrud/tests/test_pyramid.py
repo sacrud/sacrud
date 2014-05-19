@@ -15,11 +15,13 @@ import unittest
 
 from pyramid import testing
 
+from sacrud.common.pyramid_helpers import get_obj_from_settings
+from sacrud.pyramid_ext import get_field_template
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
-from sacrud.tests.test_models import (_initTestingDB, DB_FILE, Profile,
-                                      TEST_DATABASE_CONNECTION_STRING, User,
-                                      user_add)  # , profile_add)
+from sacrud.tests.test_models import (_initTestingDB, DB_FILE,
+                                      Profile, TEST_DATABASE_CONNECTION_STRING,
+                                      User, user_add)
 
 
 class BaseTest(unittest.TestCase):
@@ -47,35 +49,35 @@ class BaseTest(unittest.TestCase):
 class BreadCrumbsTest(BaseTest):
 
     def test_get_crumb(self):
-        crumb = get_crumb('Home', True, 'sa_home', {'table': 'foo'})
-        self.assertEqual(crumb, {'visible': True, 'name': 'Home',
+        crumb = get_crumb('Dashboard', True, 'sa_home', {'table': 'foo'})
+        self.assertEqual(crumb, {'visible': True, 'name': 'Dashboard',
                                  'param': {'table': 'foo'},
                                  'view': 'sa_home'})
 
     def test_breadcrumbs(self):
         bc = breadcrumbs('foo', 'sa_list')
         self.assertEqual(bc,
-                         [{'visible': True, 'name': 'Home',
+                         [{'visible': True, 'name': 'Dashboard',
                            'param': {'table': 'foo'},
                            'view': 'sa_home'},
                           {'visible': True, 'name': 'foo',
                            'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_create')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': 'create',
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_read')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': None,
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_union')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
@@ -83,7 +85,29 @@ class BreadCrumbsTest(BaseTest):
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
 
 
+class CommonTest(BaseTest):
+
+    def test_get_field_template(self):
+        self.assertEqual('sacrud/types/String.jinja2',
+                         get_field_template('foo'))
+        enum = get_field_template('Enum')
+        self.assertIn('sacrud/types/Enum.jinja2', enum)
+        self.assertTrue(os.path.exists(enum))
+
+    def test_get_obj_from_settings(self):
+        request = testing.DummyRequest()
+        config = testing.setUp(request=request)
+        config.registry.settings['foo.User'] = 'sacrud.tests.test_models:User'
+        obj = get_obj_from_settings(request, 'foo.User')
+        self.assertEqual(obj, User)
+
+        config.registry.settings['foo.User'] = User
+        obj = get_obj_from_settings(request, 'foo.User')
+        self.assertEqual(obj, User)
+
+
 class ViewsTest(BaseTest):
+
     def _include_sacrud(self):
         request = testing.DummyRequest()
         config = testing.setUp(request=request)

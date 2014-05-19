@@ -12,10 +12,10 @@ Any instruments for customizing Models
 
 
 def get_name(column):
-    if column.name:
-        return column.name
     if 'verbose_name' in column.info:
         return column.info['verbose_name']
+    if column.name:
+        return column.name
     return ''
 
 

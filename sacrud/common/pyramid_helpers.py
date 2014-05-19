@@ -9,6 +9,7 @@
 """
 Any helpers for Pyramid
 """
+from sacrud.common import import_from_string
 
 
 def pkg_prefix(config):
@@ -45,7 +46,11 @@ def _silent_none(value):
     ''
     >>> _silent_none(False)
     ''
-
+    >>> class Foo(object):
+    ...   def __bool__(self):
+    ...     return False
+    >>> _silent_none(Foo)
+    <class 'sacrud.common.pyramid_helpers.Foo'>
     """
     if type(value) == int:
         return value
@@ -72,9 +77,12 @@ def set_jinja2_globals(config, hashes):
 
 def get_settings_param(request, name):
     settings = request.registry.settings
-    if 'sacrud_models' in settings:
-        message = 'WARNING: Use "sacrud.models" key setting instead "sacrud_models !!!' +\
-                  ' This new requirements for sacrud >= 0.1.1 version"'
-        print '\033[93m' + message + '\033[0m'
-        raise Exception(message)
     return settings[name]
+
+
+def get_obj_from_settings(request, name):
+    position_model = request.registry.settings\
+        .get(name)
+    if isinstance(position_model, basestring):
+        return import_from_string(position_model)
+    return position_model

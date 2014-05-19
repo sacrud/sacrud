@@ -56,13 +56,9 @@ def get_relationship(tname, request):
 def sa_save_position(request):
     kwargs = dict(request.POST)
     session = request.dbsession
-    position_model_path = request.registry.settings\
-                                 .get('sacrud_dashboard_position_model')
-    if position_model_path:
-        parts = position_model_path.split(':')
-        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
-        PositionModel = getattr(temp, parts[1])
-        # getattr(PositionModel, 'widget')
+    PositionModel = request.sacrud_dashboard_position_model
+
+    if PositionModel:
         widget_obj = session.query(PositionModel).filter(PositionModel.widget == kwargs['widget']).first()
         old_column = getattr(widget_obj, 'column', 0)
         old_position = getattr(widget_obj, 'position', 0)
@@ -78,18 +74,18 @@ def sa_save_position(request):
         if old_column == widget_obj.column:
             if old_position < widget_obj.position:
                 session.query(PositionModel)\
-                   .filter(PositionModel.id != widget_obj.id,
-                           PositionModel.column == kwargs['column'],
-                           PositionModel.position <= kwargs['position'],
-                           PositionModel.position > old_position)\
-                   .update({'position': PositionModel.position-1})
+                    .filter(PositionModel.id != widget_obj.id,
+                            PositionModel.column == kwargs['column'],
+                            PositionModel.position <= kwargs['position'],
+                            PositionModel.position > old_position)\
+                    .update({'position': PositionModel.position-1})
             else:
                 session.query(PositionModel)\
-                   .filter(PositionModel.id != widget_obj.id,
-                           PositionModel.column == kwargs['column'],
-                           PositionModel.position >= kwargs['position'],
-                           PositionModel.position < old_position)\
-                   .update({'position': PositionModel.position+1})
+                    .filter(PositionModel.id != widget_obj.id,
+                            PositionModel.column == kwargs['column'],
+                            PositionModel.position >= kwargs['position'],
+                            PositionModel.position < old_position)\
+                    .update({'position': PositionModel.position+1})
         else:
             old_neighbors = session.query(PositionModel)\
                                    .filter(PositionModel.column == old_column)\
@@ -121,14 +117,9 @@ def sa_home(request):
     sacrud_dashboard_columns = request.registry.settings\
                                       .get('sacrud_dashboard_columns', 3)
     context = {'dashboard_columns': sacrud_dashboard_columns}
-    position_model_path = request.registry.settings\
-                                 .get('sacrud_dashboard_position_model')
-    items_list = {}
-    if position_model_path:
-        parts = position_model_path.split(':')
-        temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
-        PositionModel = getattr(temp, parts[1])
-
+    PositionModel = request.sacrud_dashboard_position_model
+    if PositionModel:
+        items_list = {}
         for column in range(sacrud_dashboard_columns):
             widgets = request.dbsession.query(PositionModel.widget)\
                                        .filter(PositionModel.column == column,
