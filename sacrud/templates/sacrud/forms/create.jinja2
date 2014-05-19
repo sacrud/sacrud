@@ -18,14 +18,23 @@
             <div class="sacrud-grid__toolbar">
                 <div class="toolbar clear-fix">
                     <div class="toolbar-button">
-                        <div class="toolbar-button__item toolbar-button__item_state_disable">
+<<<<<<< HEAD
+                        {# toolbar-button__item_state_disable #}
+=======
+>>>>>>> af4a860580f673d710cae431fade7f1cb5718830
+                        <div class="toolbar-button__item">
                              <button type="submit" name="form.submitted" class="toolbar-button__item-button">Save</button>
                         </div>
                         <div class="toolbar-button__item toolbar-button__item_type_red">
                             <div class="toolbar-button__item-name">Delete</div>
                         </div>
+<<<<<<< HEAD
                         <div class="toolbar-button__item">
+                            <a href="{{ request.route_url('sa_list', table=obj_cls.__tablename__) }}" class="toolbar-button__item-link">Cancel</a>
+=======
+                        <div class="toolbar-button__item toolbar-button__item_state_disable">
                             <a href="#" class="toolbar-button__item-link">Cancel</a>
+>>>>>>> af4a860580f673d710cae431fade7f1cb5718830
                         </div>
                     </div>
                 </div>
@@ -39,7 +48,10 @@
                                 <tbody class="sacrud-grid-content-grid__body">
                                     <tr class="sacrud-grid-content-grid__body-row sacrud-grid-content-grid__body-row_type_group">
                                         <td class="sacrud-grid-content-grid__body-item" colspan="2">
-                                            {{ group }}
+                                            <div class="sacrud-grid-content-grid__body-row_type_group-title">
+                                                {{ group }}
+                                            </div>
+                                            <div class="sacrud-grid-content-grid__body-row_type_group-toogle">&nbsp;</div>
                                         </td>
                                     </tr>
                                     {% for col in columns %}
@@ -74,9 +86,10 @@
                                                 {% else %}
                                                     {% include get_field_template(col.type.__class__.__name__) %}
                                                 {% endif %}
-                                                <br />
                                                 {% if col.info['description'] %}
-                                                  {{ col.info['description'] }}
+                                                    <div class="sacrud-grid-content-grid__body-item-desc">
+                                                        {{ col.info['description']|safe }}
+                                                    </div>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -84,6 +97,21 @@
                                 </tbody>
                             </table>
                         {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="sacrud-grid__toolbar">
+                <div class="toolbar clear-fix">
+                    <div class="toolbar-button">
+                        <div class="toolbar-button__item toolbar-button__item_state_disable">
+                             <button type="submit" name="form.submitted" class="toolbar-button__item-button">Save</button>
+                        </div>
+                        <div class="toolbar-button__item toolbar-button__item_type_red">
+                            <div class="toolbar-button__item-name">Delete</div>
+                        </div>
+                        <div class="toolbar-button__item">
+                            <a href="#" class="toolbar-button__item-link">Cancel</a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ import transaction
 from pyramid.testing import DummyRequest
 from sqlalchemy import create_engine
 
-from sacrud.action import list as row_list
+from sacrud.action import rows_list
 from sacrud.action import create, delete, read, update
 from sacrud.common.sa_helpers import delete_fileobj, get_pk, get_relations
 from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
@@ -87,7 +87,7 @@ class SacrudTest(BaseSacrudTest):
         self.session.add(user)
         transaction.commit()
 
-        result = row_list(self.session, User)
+        result = rows_list(self.session, User)
         user = self.session.query(User).get(1)
 
         self.assertEqual(result['pk'], 'id')

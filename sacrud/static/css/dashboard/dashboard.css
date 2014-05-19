@@ -24,6 +24,10 @@
 		border: solid 1px #fff;
 		min-height: 300px;
 	}
+	.dashboard__column_state_active
+	{
+		border: dashed 1px #ccc;
+	}
 	.dashboard__column:last-child {
 		margin: 0;
 	}

@@ -49,35 +49,35 @@ class BaseTest(unittest.TestCase):
 class BreadCrumbsTest(BaseTest):
 
     def test_get_crumb(self):
-        crumb = get_crumb('Home', True, 'sa_home', {'table': 'foo'})
-        self.assertEqual(crumb, {'visible': True, 'name': 'Home',
+        crumb = get_crumb('Dashboard', True, 'sa_home', {'table': 'foo'})
+        self.assertEqual(crumb, {'visible': True, 'name': 'Dashboard',
                                  'param': {'table': 'foo'},
                                  'view': 'sa_home'})
 
     def test_breadcrumbs(self):
         bc = breadcrumbs('foo', 'sa_list')
         self.assertEqual(bc,
-                         [{'visible': True, 'name': 'Home',
+                         [{'visible': True, 'name': 'Dashboard',
                            'param': {'table': 'foo'},
                            'view': 'sa_home'},
                           {'visible': True, 'name': 'foo',
                            'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_create')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': 'create',
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_read')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': None,
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_union')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},

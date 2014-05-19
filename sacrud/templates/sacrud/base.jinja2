@@ -69,21 +69,26 @@
 </head>
 
 <body>
-    <div class="wrapper">
-        <div class="wrapper__inner">
-            {% block sa_menu %}
-                <div class="header">
-                    <div class="header__inner clear-fix">
-                        <div class="logo">
-                            <div class="logo__text">
-                                <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
-                            </div>
-                        </div>
-                        <div class="header__inner-menu">&nbsp;</div>
+
+    {% block sa_menu %}
+        <div class="header">
+            <div class="header__inner clear-fix">
+                <div class="logo">
+                    <div class="logo__text">
+                        <a href="/admin/" class="logo__text-link">SACRUD v: {{ sacrud_ver }}</a>
                     </div>
                 </div>
-            {% endblock %}
+                <div class="header__inner-menu">&nbsp;</div>
+                <div class="header__user">
+                    {% block sa_auth %}
+                    {% endblock sa_auth %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
 
+    <div class="wrapper">
+        <div class="wrapper__inner">
             {% block breadcrumbs %}
                 {% if breadcrumbs %}
                     <div class="nav">
