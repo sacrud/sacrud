@@ -164,40 +164,15 @@ def delete(session, table, pk):
     pk_name = get_pk_hook(table)
     try:
         if isinstance(pk, list):
-            # obj = session.query(table).filter(getattr(table, pk_name).in_(pk)).delete(synchronize_session=False)
             query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
             for obj in query_obj.all():
                 check_type('', table, obj=obj)
-            query_obj.delete(synchronize_session=False)
         else:
-            obj = session.query(table).filter(getattr(table, pk_name) == pk)\
-                                      .one()
-            check_type('', table, obj=obj)
-            session.delete(obj)
+            query_obj = session.query(table).filter(getattr(table, pk_name) == pk)
+            # obj = query_obj.one()
+            check_type('', table, obj=query_obj.one())
+            # session.delete(obj)
+        query_obj.delete(synchronize_session=False)
         transaction.commit()
     except NoResultFound:
         pass
-
-
-def hide(session, table, pk):
-    """
-    Set 0 to visible column in row by pk.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-
-    pk_name = get_pk_hook(table)
-
-    if 'visible' in table.__table__.columns \
-            and isinstance(table.__table__.columns['visible'].type, Boolean):
-        if isinstance(pk, list):
-            session.query(table).filter(getattr(table, pk_name).in_(pk))\
-                                .update({'visible': False}, synchronize_session=False)
-        else:
-            session.query(table).filter(getattr(table, pk_name) == pk)\
-                                .update({'visible': False})
-        transaction.commit()
