@@ -165,7 +165,37 @@ class ViewsTest(BaseTest):
         self.failUnless('view user' in res.body)
         self.testapp.get('/admin/user/delete/1', status=302)
 
-    def test_sa_save_position(self):
-        res = self.testapp.post_json(
-            '/admin/save_position', {'column': 1, 'position': 3})
-        print '\n%s\n' % res
+
+# def _callFUT(self, request):
+#         from sacrud_pages.views import page_visible
+#         return page_visible(request)
+
+#     def test_it(self):
+#         request = testing.DummyRequest()
+#         request.set_property(lambda x: MPTTPages, 'sacrud_pages_model', reify=True)
+#         request.set_property(mock_dbsession, 'dbsession', reify=True)
+#         request.matchdict['node'] = 12
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': False})
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': True})
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': False})
+
+
+
+    # def test_sa_save_position(self):
+    #     request = testing.DummyRequest()
+    #     equest.set_property(mock_dbsession, 'dbsession', reify=True)
+        # res = self.testapp.post_json(
+        #     '/admin/save_position',
+        #     {'column': 1, 'position': 3, 'widget': 'not_exists'})
+        # self.assertEqual(res.json, None)
+
+        # res = self.testapp.post_json(
+        #     '/admin/save_position',
+        #     {'column': 1, 'position': 3, 'widget': 'Pages'})
+        # self.assertDictEqual(res.json, {"result": "ok"})
