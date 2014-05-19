@@ -18,12 +18,21 @@
 	}
 	.sacrud-grid__toolbar
 	{
-		margin: 0 0 20px 0;
+		width: 100%;
+		margin: 1em 0 20px 0;
+		clear: both;
 	}
 	.sacrud-grid-content
 	{
 		width: 100%;
 		padding: 0;
+		zoom: 1;
+	}
+	.sacrud-grid-content:after
+	{
+		display: block;
+		clear: both;
+		content: "";
 	}
 		.sacrud-grid-content__left
 		{
@@ -92,22 +101,54 @@
 				{
 					color: #444;
 					border: 1px #eaeaea solid;
+					background: #fff;
+					-webkit-transition: background-color 500ms ease-out 3ms;
+					-moz-transition: background-color 500ms ease-out 3ms;
+					-o-transition: background-color 500ms ease-out 3ms;
+					transition: background-color 500ms ease-out 3ms;
 				}
 				.sacrud-grid-content-grid__body-row_type_group
 				{
-					font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
-					font-weight: 300;
-					color: #fff;
-					font-size: 1.1em;
-					text-transform: uppercase;
-					padding: 0.5em 0.7em;
 					border: 1px solid #eaeaea;
 					border-bottom: none;
 					background: #7AA8D6;
+					position: relative;
 				}
 					.sacrud-grid-content-grid__body-row_type_group .sacrud-grid-content-grid__body-item
 					{
 						text-align: left !important;
+					}
+					.sacrud-grid-content-grid__body-row_type_group-title
+					{
+						font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+						font-weight: 300;
+						color: #fff;
+						font-size: 1.1em;
+						text-transform: uppercase;
+						padding: 0.2em 0.4em;
+					}
+					.sacrud-grid-content-grid__body-row_type_group-toogle
+					{
+						right: 0.6em;
+						top: 0.6em;
+						cursor: pointer;
+						position: absolute;
+						border: solid 1px none;
+						padding: 0.6em;
+						line-height: 0;
+					}
+					.sacrud-grid-content-grid__body-row_type_group-toogle:after
+					{
+						width: 0;
+						height: 0;
+						border-style: solid;
+						border-width: 7px 5px 0 5px;
+						border-color: #eeeeee transparent transparent transparent;
+						line-height: 0px;
+						_border-color: #eeeeee #000000 #000000 #000000;
+						_filter: progid:DXImageTransform.Microsoft.Chroma(color='#eeeeee');
+						content: "";
+						display: block;
 					}
 				.sacrud-grid-content-grid__body-row_type_group:hover
 				{
@@ -121,12 +162,23 @@
 				.sacrud-grid-content-grid__body-row:hover
 				{
 					background: #F4F9FE;
+					-webkit-transition: background-color 500ms ease-out 3ms;
+					-moz-transition: background-color 500ms ease-out 3ms;
+					-o-transition: background-color 500ms ease-out 3ms;
+					transition: background-color 500ms ease-out 3ms;
 				}
 					.sacrud-grid-content-grid__body-item
 					{
 						padding: 1em;
 						vertical-align: top;
 						font: 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+						zoom: 1;
+					}
+					.sacrud-grid-content-grid__body-item:after
+					{
+						display: block;
+						clear: both;
+						content: "";
 					}
 					.sacrud-grid-content-grid__body-item:first-child
 					{
@@ -145,6 +197,13 @@
 						.sacrud-grid-content-grid__body-item-link:hover
 						{
 							color: #444;
+						}
+						.sacrud-grid-content-grid__body-item-desc
+						{
+							width: 500px;
+							font: italic 0.9em 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+							color: #777;
+							padding: 0.5em 0 0 0;
 						}
 			.sacrud-grid-content__paginator
 			{
@@ -204,3 +263,22 @@
     background-image: none, linear-gradient(to bottom, rgba(0, 0, 0, 0.13) 0px, rgba(0, 0, 0, 0.08) 100%) !important;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.15) inset !important;
 }
+
+
+.sacrud-grid-field
+{
+
+	display: table;
+	white-space: nowrap;
+	float: left;
+	margin: 0 1.5em 0 0;
+}
+	.sacrud-grid-field__item
+	{
+		display: inline-block;
+	}
+	.sacrud-grid-field__name
+	{
+		display: inline-block;
+		padding: 0.2em 0 0 0.2em;
+	}
