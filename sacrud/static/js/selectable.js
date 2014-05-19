@@ -1,7 +1,7 @@
 $(function() {
 
     var options = {
-        'tr_selected_class': 'table-tr-selected-class',
+        'tr_selected_class': 'sacrud-grid-content-grid__body-row_state_active',
         'state_disable_class': 'toolbar-button__item_state_disable',
         'all_checkboxes_button': '#selected_all_item',
         'table_checkboxes': 'input[name="selected_item"]',
