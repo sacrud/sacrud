@@ -8,55 +8,28 @@
 		<div class="dashboard">
 			<div class="dashboard-title">Dashboard</div>
 			<div class="dashboard__inner clear-fix">
-				{% if new_tables %}
-					{% for column, widgets_list in new_tables.iteritems() %}
-						<div class="dashboard__column sortable" data-number="{{column}}">
-							{% for widget_obj in widgets_list %}
-								<div class="widget widget_type_drag" name="{{ widget_obj.title }}">
-									<div class="widget-title">
-										{{ widget_obj.title }}
-										<span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
-									</div>
-									<div class="widget-content">
-										{% for table in widget_obj.tables %}
-											<div class="widget-row">
-												{% set tname = table.__tablename__ %}
-												<div class="widget-row__item">
-													<a href="{{ request.route_url('sa_list', table=tname) }}" class="widget-row__item-link" id="id_{{ tname }}" >{{ table.verbose_name or tname }}</a>
-												</div>
-											</div>
-										{% endfor %}
-									</div>
+				{% for column, widgets_list in tables.iteritems() %}
+					<div class="dashboard__column sortable" data-number="{{column}}">
+						{% for widget_obj in widgets_list %}
+							<div class="widget widget_type_drag" name="{{ widget_obj.title }}">
+								<div class="widget-title">
+									{{ widget_obj.title }}
+									<span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
 								</div>
-							{% endfor %}
-						</div>
-					{% endfor %}
-				{% else %}
-					{% for column in range(dashboard_columns) %}
-						<div class="dashboard__column sortable" data-number="{{column}}">
-							{% for group, table_obj in tables %} {# .iteritems() #}
-								{% if table_obj.column == column %}
-									<div class="widget widget_type_drag" name="{{ group }}">
-										<div class="widget-title">
-											{{ group }}
-											<span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
+								<div class="widget-content">
+									{% for table in widget_obj.tables %}
+										<div class="widget-row">
+											{% set tname = table.__tablename__ %}
+											<div class="widget-row__item">
+												<a href="{{ request.route_url('sa_list', table=tname) }}" class="widget-row__item-link" id="id_{{ tname }}" >{{ table.verbose_name or tname }}</a>
+											</div>
 										</div>
-										<div class="widget-content">
-											{% for table in table_obj.tables %}
-												<div class="widget-row">
-													{% set tname = table.__tablename__ %}
-													<div class="widget-row__item">
-														<a href="{{ request.route_url('sa_list', table=tname) }}" class="widget-row__item-link" id="id_{{ tname }}" >{{ table.verbose_name or tname }}</a>
-													</div>
-												</div>
-											{% endfor %}
-										</div>
-									</div>
-								{% endif %}
-							{% endfor %}
-						</div>
-					{% endfor %}
-				{% endif %}
+									{% endfor %}
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>

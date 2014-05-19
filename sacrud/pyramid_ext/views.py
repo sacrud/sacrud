@@ -115,17 +115,20 @@ class WidgetPositionObject(object):
 
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
+    import datetime
+    t1 = datetime.datetime.now()
     tables = get_settings_param(request, 'sacrud.models')
     sacrud_dashboard_columns = request.registry.settings\
                                       .get('sacrud_dashboard_columns', 3)
     context = {'dashboard_columns': sacrud_dashboard_columns}
     position_model_path = request.registry.settings\
                                  .get('sacrud_dashboard_position_model')
+    items_list = {}
     if position_model_path:
         parts = position_model_path.split(':')
         temp = __import__(parts[0], globals(), locals(), [parts[1], ], 0)
         PositionModel = getattr(temp, parts[1])
-        items_list = {}
+
         for column in range(sacrud_dashboard_columns):
             widgets = request.dbsession.query(PositionModel.widget)\
                                        .filter(PositionModel.column == column,
@@ -141,10 +144,17 @@ def sa_home(request):
                         WidgetPositionObject(widget_item[0],
                                              tables[widget_item[0]]['tables'])
                     )
-        context.update({'new_tables': items_list, })
     else:
-        context.update({'tables': sorted(tables.iteritems(),
-                                         key=operator.itemgetter(1)), })
+        for column in range(sacrud_dashboard_columns):
+            items_list.update({column: [], })
+            for group, table_obj in sorted(tables.iteritems(), key=operator.itemgetter(1)):
+                if 'column' not in table_obj:
+                    table_obj['column'] = 0
+                    items_list[0].append(WidgetPositionObject(group, table_obj['tables']))
+                elif table_obj['column'] == column:
+                    items_list[column].append(WidgetPositionObject(group, table_obj['tables']))
+
+    context.update({'tables': items_list})
     return context
 
 
@@ -171,19 +181,35 @@ def sa_list(request):
     tname = request.matchdict['table']
     order_by = request.params.get('order_by', False)
     table = get_table(tname, request)
+
+    # If method POST, do action
+    if 'selected_action' in request.POST:
+        selected_action = request.POST.get('selected_action')
+        items_list = request.POST.getall('selected_item')
+        if selected_action == 'delete':
+            action.delete(request.dbsession, table, items_list)
+        if selected_action == 'hide':
+            action.hide(request.dbsession, table, items_list)
+
     args = [request.dbsession, table]
 
     if order_by:
         args.append(order_by)
 
     items_per_page = getattr(table, 'items_per_page', 10)
-    resp = action.list(*args, paginator=get_paginator(request, items_per_page))
+    resp = action.rows_list(*args, paginator=get_paginator(request, items_per_page))
 
     # if URL like /sacrud/tablename?json=on return json
     if request.GET.get('json', None):
         request.override_renderer = 'json'
         return sarow_to_json(resp['row'])
     return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
+
+
+# @view_config(route_name='sa_del_selected', renderer='/sacrud/list.jinja2', request_method='POST')
+# def sa_del_selected(request):
+#     return sa_list(request)
+    # return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
 
 
 class CRUD(object):

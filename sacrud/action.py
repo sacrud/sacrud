@@ -13,6 +13,8 @@ import inspect
 
 import transaction
 from webhelpers.paginate import Page
+from sqlalchemy import Boolean
+from sqlalchemy.orm.exc import NoResultFound
 
 from sacrud.common.sa_helpers import (check_type, get_pk, get_relations,
                                       set_instance_name)
@@ -23,7 +25,7 @@ prefix = 'crud'
 get_pk_hook = lambda x: get_pk(x)[0].name
 
 
-def list(session, table, paginator=None, order_by=None):
+def rows_list(session, table, paginator=None, order_by=None):
     """
     Return a list of table rows.
 
@@ -159,7 +161,42 @@ def delete(session, table, pk):
     """
 
     pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    check_type('', table, obj=obj)
-    session.delete(obj)
-    transaction.commit()
+    try:
+        if isinstance(pk, list):
+            # obj = session.query(table).filter(getattr(table, pk_name).in_(pk)).delete(synchronize_session=False)
+            query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
+            for obj in query_obj.all():
+                check_type('', table, obj=obj)
+            query_obj.delete(synchronize_session=False)
+        else:
+            obj = session.query(table).filter(getattr(table, pk_name) == pk)\
+                                      .one()
+            check_type('', table, obj=obj)
+            session.delete(obj)
+        transaction.commit()
+    except NoResultFound:
+        pass
+
+
+def hide(session, table, pk):
+    """
+    Set 0 to visible column in row by pk.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `pk`: primary key value.
+    """
+
+    pk_name = get_pk_hook(table)
+
+    if 'visible' in table.__table__.columns \
+            and isinstance(table.__table__.columns['visible'].type, Boolean):
+        if isinstance(pk, list):
+            session.query(table).filter(getattr(table, pk_name).in_(pk))\
+                                .update({'visible': False}, synchronize_session=False)
+        else:
+            session.query(table).filter(getattr(table, pk_name) == pk)\
+                                .update({'visible': False})
+        transaction.commit()
