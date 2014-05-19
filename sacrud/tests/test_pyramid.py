@@ -49,7 +49,7 @@ class BaseTest(unittest.TestCase):
 class BreadCrumbsTest(BaseTest):
 
     def test_get_crumb(self):
-        crumb = get_crumb('Home', True, 'sa_home', {'table': 'foo'})
+        crumb = get_crumb('Dashboard', True, 'sa_home', {'table': 'foo'})
         self.assertEqual(crumb, {'visible': True, 'name': 'Home',
                                  'param': {'table': 'foo'},
                                  'view': 'sa_home'})
