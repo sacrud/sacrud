@@ -164,3 +164,8 @@ class ViewsTest(BaseTest):
         res = self.testapp.get('/admin/user/read/1', status=200)
         self.failUnless('view user' in res.body)
         self.testapp.get('/admin/user/delete/1', status=302)
+
+    def test_sa_save_position(self):
+        res = self.testapp.post_json(
+            '/admin/save_position', {'column': 1, 'position': 3})
+        print '\n%s\n' % res
