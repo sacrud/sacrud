@@ -13,7 +13,6 @@ import inspect
 
 import transaction
 from webhelpers.paginate import Page
-from sqlalchemy import Boolean
 from sqlalchemy.orm.exc import NoResultFound
 
 from sacrud.common.sa_helpers import (check_type, get_pk, get_relations,
