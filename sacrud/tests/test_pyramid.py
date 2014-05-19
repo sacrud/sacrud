@@ -49,35 +49,35 @@ class BaseTest(unittest.TestCase):
 class BreadCrumbsTest(BaseTest):
 
     def test_get_crumb(self):
-        crumb = get_crumb('Home', True, 'sa_home', {'table': 'foo'})
-        self.assertEqual(crumb, {'visible': True, 'name': 'Home',
+        crumb = get_crumb('Dashboard', True, 'sa_home', {'table': 'foo'})
+        self.assertEqual(crumb, {'visible': True, 'name': 'Dashboard',
                                  'param': {'table': 'foo'},
                                  'view': 'sa_home'})
 
     def test_breadcrumbs(self):
         bc = breadcrumbs('foo', 'sa_list')
         self.assertEqual(bc,
-                         [{'visible': True, 'name': 'Home',
+                         [{'visible': True, 'name': 'Dashboard',
                            'param': {'table': 'foo'},
                            'view': 'sa_home'},
                           {'visible': True, 'name': 'foo',
                            'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_create')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': 'create',
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_read')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
                               {'visible': False, 'name': None,
                                'param': {'table': 'foo'}, 'view': 'sa_list'}])
         bc = breadcrumbs('foo', 'sa_union')
-        self.assertEqual(bc, [{'visible': True, 'name': 'Home',
+        self.assertEqual(bc, [{'visible': True, 'name': 'Dashboard',
                                'param': {'table': 'foo'}, 'view': 'sa_home'},
                               {'visible': True, 'name': 'foo',
                                'param': {'table': 'foo'}, 'view': 'sa_list'},
@@ -164,3 +164,38 @@ class ViewsTest(BaseTest):
         res = self.testapp.get('/admin/user/read/1', status=200)
         self.failUnless('view user' in res.body)
         self.testapp.get('/admin/user/delete/1', status=302)
+
+
+# def _callFUT(self, request):
+#         from sacrud_pages.views import page_visible
+#         return page_visible(request)
+
+#     def test_it(self):
+#         request = testing.DummyRequest()
+#         request.set_property(lambda x: MPTTPages, 'sacrud_pages_model', reify=True)
+#         request.set_property(mock_dbsession, 'dbsession', reify=True)
+#         request.matchdict['node'] = 12
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': False})
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': True})
+#         response = self._callFUT(request)
+#         request.dbsession.commit()
+#         self.assertEqual(response, {'visible': False})
+
+
+
+    # def test_sa_save_position(self):
+    #     request = testing.DummyRequest()
+    #     equest.set_property(mock_dbsession, 'dbsession', reify=True)
+        # res = self.testapp.post_json(
+        #     '/admin/save_position',
+        #     {'column': 1, 'position': 3, 'widget': 'not_exists'})
+        # self.assertEqual(res.json, None)
+
+        # res = self.testapp.post_json(
+        #     '/admin/save_position',
+        #     {'column': 1, 'position': 3, 'widget': 'Pages'})
+        # self.assertDictEqual(res.json, {"result": "ok"})

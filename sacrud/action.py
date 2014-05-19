@@ -13,6 +13,8 @@ import inspect
 
 import transaction
 from webhelpers.paginate import Page
+from sqlalchemy import Boolean
+from sqlalchemy.orm.exc import NoResultFound
 
 from sacrud.common.sa_helpers import (check_type, get_pk, get_relations,
                                       set_instance_name)
@@ -23,7 +25,7 @@ prefix = 'crud'
 get_pk_hook = lambda x: get_pk(x)[0].name
 
 
-def list(session, table, paginator=None, order_by=None):
+def rows_list(session, table, paginator=None, order_by=None):
     """
     Return a list of table rows.
 
@@ -160,7 +162,17 @@ def delete(session, table, pk):
     """
 
     pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    check_type('', table, obj=obj)
-    session.delete(obj)
-    transaction.commit()
+    try:
+        if isinstance(pk, list):
+            query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
+            for obj in query_obj.all():
+                check_type('', table, obj=obj)
+        else:
+            query_obj = session.query(table).filter(getattr(table, pk_name) == pk)
+            # obj = query_obj.one()
+            check_type('', table, obj=query_obj.one())
+            # session.delete(obj)
+        query_obj.delete(synchronize_session=False)
+        transaction.commit()
+    except NoResultFound:
+        pass

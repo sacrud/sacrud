@@ -12,7 +12,7 @@ Action
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: sacrud.action
-.. autofunction:: sacrud.action.list
+.. autofunction:: sacrud.action.rows_list
 .. autofunction:: sacrud.action.create
 .. autofunction:: sacrud.action.read
 .. autofunction:: sacrud.action.update

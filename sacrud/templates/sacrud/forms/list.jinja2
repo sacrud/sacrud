@@ -25,12 +25,14 @@
                         Add a new {{ table.__tablename__ }}
                     </a>
                 </div>
-                <div class="toolbar-button__item toolbar-button__item_state_disable">
+                <div class="action_button toolbar-button__item toolbar-button__item_state_disable" data-status="delete">
                     <div class="toolbar-button__item-name">Delete</div>
                 </div>
-                <div class="toolbar-button__item toolbar-button__item_state_disable">
+                {#
+                <div class="action_button toolbar-button__item toolbar-button__item_state_disable" data-status="hide">
                     <div class="toolbar-button__item-name">Hide</div>
                 </div>
+                #}
             </div>
             <div class="toolbar-search">
                 <div class="toolbar-search__inner">
@@ -49,62 +51,57 @@
     <div class="sacrud-grid-content">
         <div class="sacrud-grid-content__left">
             <div class="sacrud-grid-content__left-inner">
-                <table class="sacrud-grid-content-grid" id="sa_index">
-                    {% if sa_crud %}
-                        <thead class="sacrud-grid-content-grid__header">
-                            <tr class="sacrud-grid-content-grid__header-row">
-                                <th class="sacrud-grid-content-grid__header-item">
-                                    <input type="checkbox" />
-                                </th>
-                                {% for col in visible_columns %}
+                <form id="sacrud-form" method="post" action="">
+                    <table class="sacrud-grid-content-grid" id="sa_index">
+                        {% if sa_crud %}
+                            <thead class="sacrud-grid-content-grid__header">
+                                <tr class="sacrud-grid-content-grid__header-row">
                                     <th class="sacrud-grid-content-grid__header-item">
-                                        <a href="#" class="sacrud-grid-content-grid__header-item-link">
-                                            {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
-                                        </a>
+                                        <input id="selected_all_item" type="checkbox" />
                                     </th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody class="sacrud-grid-content-grid__body">
-                            <tr class="sacrud-grid-content-grid__body-row sacrud-grid-content-grid__body-row_state_active">
-                                <td class="sacrud-grid-content-grid__body-item"><input type="checkbox"></td>
-                                <td class="sacrud-grid-content-grid__body-item">0</td>
-                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>
-                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio,</td>
-                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>
-                                <td class="sacrud-grid-content-grid__body-item">&lt;p&gt;Dapibus auctor nonummy hymenaeos tempor mollis etiam, parturient hendrerit maecenas lectus dictum, vehicula primis accumsan tortor posuere lorem, facilisis. Tellus tortor nisi dignissim odio, ...</td>
-                            </tr>
-                            {% for row in sa_crud['row'] %}
-                                {% set row_id = row[sa_crud['pk']] %}
-                                <tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}"
-                                    class="sacrud-grid-content-grid__body-row">
-                                    <td class="sacrud-grid-content-grid__body-item">
-                                        <input type="checkbox" />
-                                    </td>
                                     {% for col in visible_columns %}
-                                        <td class="sacrud-grid-content-grid__body-item">
-                                            {% if col.__class__.__name__ == 'Column' %}
-                                                {% set col_value=row.__getattribute__(col.instance_name) %}
-                                            {% endif %}
-                                            {% if col.info['sacrud_list_template'] %}
-                                                {% include col.info['sacrud_list_template'] %}
-                                            {% else %}
-                                                {{ col_value|string|truncate(200) }}
-                                            {% endif %}
-                                        </td>
+                                        <th class="sacrud-grid-content-grid__header-item">
+                                            <a href="#" class="sacrud-grid-content-grid__header-item-link">
+                                                {{ col.info.verbose_name or col.name or col.sacrud_name or None }}
+                                            </a>
+                                        </th>
                                     {% endfor %}
-                                    <td style="display:none">
-                                        {% include 'sacrud/forms/actions.jinja2' with context %}
-                                    </td>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    {% else %}
-                        <tr>
-                            <td>There are no open objects</td>
-                        </tr>
-                    {% endif %}
-                </table>
+                            </thead>
+                            <tbody class="sacrud-grid-content-grid__body">
+                                {% for row in sa_crud['row'] %}
+                                    {% set row_id = row[sa_crud['pk']] %}
+                                    <tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}"
+                                        class="sacrud-grid-content-grid__body-row">
+                                        <td class="sacrud-grid-content-grid__body-item">
+                                            <input type="checkbox" name="selected_item" value="{{row.id}}" />
+                                        </td>
+                                        {% for col in visible_columns %}
+                                            <td class="sacrud-grid-content-grid__body-item">
+                                                {% if col.__class__.__name__ == 'Column' %}
+                                                    {% set col_value=row.__getattribute__(col.instance_name) %}
+                                                {% endif %}
+                                                {% if col.info['sacrud_list_template'] %}
+                                                    {% include col.info['sacrud_list_template'] %}
+                                                {% else %}
+                                                    {{ col_value|string|truncate(200) }}
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                        <td style="display:none">
+                                            {% include 'sacrud/forms/actions.jinja2' with context %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        {% else %}
+                            <tr>
+                                <td>There are no open objects</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                    <input class="selected-action" type="hidden" value="0" name="selected_action" />
+                </form>
                 {% if 'row' in sa_crud %}
                     <div class="sacrud-grid-content__paginator">
                         {% set paginator = sa_crud['row'] %}
