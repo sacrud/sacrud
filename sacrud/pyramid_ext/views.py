@@ -118,8 +118,8 @@ def sa_home(request):
                                       .get('sacrud_dashboard_columns', 3)
     context = {'dashboard_columns': sacrud_dashboard_columns}
     PositionModel = request.sacrud_dashboard_position_model
+    items_list = {}
     if PositionModel:
-        items_list = {}
         for column in range(sacrud_dashboard_columns):
             widgets = request.dbsession.query(PositionModel.widget)\
                                        .filter(PositionModel.column == column,
