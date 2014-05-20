@@ -162,15 +162,11 @@ def delete(session, table, pk):
 
     pk_name = get_pk_hook(table)
     try:
-        if isinstance(pk, list):
-            query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
-            for obj in query_obj.all():
-                check_type('', table, obj=obj)
-        else:
-            query_obj = session.query(table).filter(getattr(table, pk_name) == pk)
-            # obj = query_obj.one()
-            check_type('', table, obj=query_obj.one())
-            # session.delete(obj)
+        if not isinstance(pk, list):
+            pk = [pk]
+        query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
+        for obj in query_obj.all():
+            check_type('', table, obj=obj)
         query_obj.delete(synchronize_session=False)
         transaction.commit()
     except NoResultFound:
