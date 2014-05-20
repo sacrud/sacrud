@@ -111,6 +111,8 @@ class ChoiceType(TypeDecorator):
         return ''
 
     def process_result_value(self, value, dialect):
+        if not value:
+            return None
         return self.choices[value]
 
 
