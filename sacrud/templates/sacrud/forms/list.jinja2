@@ -1,15 +1,3 @@
-{% set table=sa_crud['table'] %}
-
-{% if hasattr(table, 'sacrud_list_col') %}
-    {% set visible_columns=table.sacrud_list_col %}
-{% else %}
-    {% set visible_columns=sa_crud['col'] %}
-{% endif %}
-
-{% if hasattr(sa_crud['table'], '__mapper_args__') %}
-    {% set isdnd=sa_crud['table'].__mapper_args__.order_by %}
-{% endif %}
-
 <div class="sacrud-grid">
     <div class="sacrud-grid__title">
         {{ sa_crud['table'].__tablename__ }} administration
@@ -19,12 +7,7 @@
     <div class="sacrud-grid__toolbar">
         <div class="toolbar clear-fix">
             <div class="toolbar-button">
-                <div class="toolbar-button__item">
-                    <a href="{{ request.route_url('sa_create', table=table.__tablename__) }}"
-                       class="toolbar-button__item-link">
-                        Add a new {{ table.__tablename__ }}
-                    </a>
-                </div>
+                {% include "sacrud/forms/actions/add.jinja2" %}
                 <div class="action_button toolbar-button__item toolbar-button__item_state_disable" data-status="delete">
                     <div class="toolbar-button__item-name">Delete</div>
                 </div>
