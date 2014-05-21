@@ -106,7 +106,26 @@ $(function() {
     });
 
     $(document).on('click', options.div_action_button, function () {
+        // $(options.input_selected_action).val($(this).data('status'));
+        // $('#sacrud-form').submit();
+        $('.popup').css('display', 'table');
+        $('.popup').css('position', 'absolute');
+    });
+
+
+    $(document).on('click', '.popup-inner__content-delete-confirm', function () {
         $(options.input_selected_action).val($(this).data('status'));
         $('#sacrud-form').submit();
     });
+
+    $(document).on('click', '.popup-inner__content-delete-cancel', function () {
+        $('.popup').hide();
+    });
+
+    // $(document).on('click', function (e) {
+    //     if (!($(e.target).closest('.popup-inner').length) && $('.popup').is(':visible')) {
+    //         $('.popup').hide();
+    //     }
+    // });
+
 });

@@ -1,5 +1,28 @@
 {% extends "/sacrud/redefineme.jinja2" %}
 
+{% block sa_popup %}
+    <div class="popup">
+        <div class="popup-background">&nbsp;</div>
+        <div class="popup-inner">
+            <div class="popup-inner__ie">
+                <div class="popup-inner__content">
+                    <div class="popup-inner__content-delete">
+                        <div>Вы уверены, что хотите удалить следующие объекты:</div>
+                        <div class="popup-inner__content-delete-text"></div>
+                        <div>Все связанные с ними элементы будут удалены.</div>
+                        <div class="popup-inner__content-delete-confirm" data-status="delete">
+                            <div class="popup-inner__content-delete-confirm-text">OK</div>
+                        </div>
+                        <div class="popup-inner__content-delete-cancel">
+                            <span class="popup-inner__content-delete-cancel-text">Cancel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block sa_body %}
     {% set table=sa_crud['table'] %}
     {% if hasattr(table, 'sacrud_list_col') %}
@@ -20,6 +43,11 @@
     </div>
 {% endblock %}
 
+{% block sa_head_css %}
+    {{ super() }}
+    <link href="{{ request.static_url('sacrud:static/css/popup/popup.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block sa_head_js %}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
 {% endblock %}
@@ -27,4 +55,5 @@
 {% block extrascript %}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/selectable.js') }}"></script>
+    {# <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/popup.js') }}"></script> #}
 {% endblock %}
