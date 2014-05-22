@@ -10,7 +10,7 @@
                     <div class="popup-inner__content-delete">
                         <div>Вы уверены, что хотите удалить объект?</div>
                         <div class="popup-inner__content-delete-text"></div>
-                        <div>Все связанные с ними элементы будут удалены.</div>
+                        <div>Все связанные с ним элементы будут удалены.</div>
                         <div class="popup-inner__content-delete-confirm" data-status="delete">
                             <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}" class="popup-inner__content-delete-confirm-link">OK</a>
                         </div>

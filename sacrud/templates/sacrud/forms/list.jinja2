@@ -50,6 +50,7 @@
                                             </a>
                                         </th>
                                     {% endfor %}
+                                    <th class="sacrud-grid-content-grid__header-item"></th>
                                 </tr>
                             </thead>
                             <tbody class="sacrud-grid-content-grid__body">
@@ -66,13 +67,14 @@
                                                     {% set col_value=row.__getattribute__(col.instance_name) %}
                                                 {% endif %}
                                                 {% if col.info['sacrud_list_template'] %}
+                                                    {# col.info['sacrud_list_template'] <br> #}
                                                     {% include col.info['sacrud_list_template'] %}
                                                 {% else %}
                                                     {{ col_value|string|truncate(200) }}
                                                 {% endif %}
                                             </td>
                                         {% endfor %}
-                                        <td style="display:none">
+                                        <td class="sacrud-grid-content-grid__body-item">
                                             {% include 'sacrud/forms/actions.jinja2' with context %}
                                         </td>
                                     </tr>
