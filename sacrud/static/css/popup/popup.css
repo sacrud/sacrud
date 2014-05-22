@@ -61,77 +61,97 @@
 				}
 					.popup-inner__content-link-text
 					{
-						font: 0.7em Arial;
+						font: 0.8em Arial;
 						color: #000;
 						cursor: pointer;
 						border-bottom: dashed 1px #000;
+						text-decoration: none;
 					}
 				.popup-inner__content-link:hover .popup-inner__content-link-text
 				{
 					color: #FF6702;
 					border-bottom: dashed 1px #FF6702;
 				}
+				.popup-inner__content-title
+				{
+					font-family: 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+					font-weight: 300;
+					color: #fff;
+					font-size: 1.2em;
+					text-transform: uppercase;
+					padding: 0.5em 1em;
+				}
 				.popup-inner__content-content
 				{
 
 				}
-				.popup-inner__content-form
-				{
-					padding: 1.5em 2.1em 2.4em 1.1em;
-					width: 600px;
-					background: #fff;
-					-webkit-box-shadow:0px 0px 30px 0px #555555;
-					-moz-box-shadow:0px 0px 30px 0px #555555;
-					box-shadow:0px 0px 30px 0px #555555;
-					border-radius: 10px;
-					-webkit-border-radius:10px;
-					-moz-border-radius:10px;
-					-khtml-border-radius:10px;
-				}
-				.popup-inner__content-gallery
-				{
-					padding: 1.5em 1.1em 2.4em 1.1em;
-					width: 860px;
-					background: #fff;
-					-webkit-box-shadow:0px 0px 30px 0px #555555;
-					-moz-box-shadow:0px 0px 30px 0px #555555;
-					box-shadow:0px 0px 30px 0px #555555;
-					display: none;
-					min-height: 570px;
-					border-radius: 10px;
-					-webkit-border-radius:10px;
-					-moz-border-radius:10px;
-					-khtml-border-radius:10px;
-				}
+.popup_type_message .popup-inner__content
+{
+	border: 1px solid #eaeaea;
+	padding: 1.5em 1.2em 1.5em 1.2em;
+	width: 600px;
+	background: #fff;
+	-webkit-box-shadow:5px 5px 2px 0px #eaeaea;
+	-moz-box-shadow:5px 5px 2px 0px #eaeaea;
+	box-shadow:5px 5px 2px 0px #eaeaea;
+}
+.popup_type_message-delete .popup-inner__content-title
+{
+	background: #E73212;
+}
 
-				.popup-inner__content-gallery-desc
-				{
-					float: left;
-					padding: 0.5em 0 0.5em 0;
-				}
-				.popup-inner__content-gallery-link
-				{
-					font: 0.7em Arial;
-					float: left;
-					color: #777;
-					padding: 0.5em 0 0 0;
-				}
-				.popup-inner__content-gallery-link:hover .popup-inner__content-gallery-link-text
-				{
-					color: #000;
-				}
-					.popup-inner__content-gallery-link-text
-					{
-						color: #777;
-					}
-					.popup-inner__content-gallery-link-info
-					{
-						display: block;
-					}
-				.popup-inner__content-gallery-count
-				{
-					float: right;
-					font: 0.75em Arial;
-					color: #000;
-					padding: 0.5em 0 0 0;
-				}
+.popup-button
+{
+	margin: 0 auto;
+	text-align: center;
+}
+	.popup-button__item
+	{
+		width: 100px;
+		display: inline-block;
+		text-align: center;
+		cursor: pointer;
+		border: 1px solid #ccc;
+		margin: 0 0.5em;
+	}
+		.popup-button__item-name
+		{
+			display: inline-block;
+			font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+			vertical-align: middle;
+			padding: 10px 15px;
+			color: #444;
+		}
+		.popup-button__item-link
+		{
+			display: inline-block;
+			font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+			vertical-align: middle;
+			padding: 10px 15px;
+			color: #444;
+			text-decoration: none;
+		}
+		.popup-button__item-button
+		{
+			width: 100%;
+			border: solid 0 #fff;
+			padding: 0;
+			margin: 0;
+			display: inline-block;
+			font: 0.8em 'Segoe UI Light_', 'Open Sans Light', Verdana, Arial, Helvetica, sans-serif;
+			vertical-align: middle;
+			padding: 10px 15px;
+			color: #444;
+			text-decoration: none;
+			background: none;
+			}
+	.popup-button__item:hover
+	{
+		background: #4183c4;
+	}
+	.popup-button__item:hover .popup-button__item-name,
+	.popup-button__item:hover .popup-button__item-link,
+	.popup-button__item:hover .popup-button__item-button
+	{
+		color: #fff;
+	}

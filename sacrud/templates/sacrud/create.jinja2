@@ -1,28 +1,31 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
 {% block sa_popup %}
-  {% if sa_crud['obj'] %}
-    <div class="popup">
-        <div class="popup-background">&nbsp;</div>
-        <div class="popup-inner">
-            <div class="popup-inner__ie">
-                <div class="popup-inner__content">
-                    <div class="popup-inner__content-delete">
-                        <div>Вы уверены, что хотите удалить объект?</div>
-                        <div class="popup-inner__content-delete-text"></div>
-                        <div>Все связанные с ним элементы будут удалены.</div>
-                        <div class="popup-inner__content-delete-confirm" data-status="delete">
-                            <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}" class="popup-inner__content-delete-confirm-link">OK</a>
+    {% if sa_crud['obj'] %}
+        <div class="popup popup_type_message popup_type_message-delete">
+            <div class="popup-background">&nbsp;</div>
+            <div class="popup-inner">
+                <div class="popup-inner__ie">
+                    <div class="popup-inner__content">
+                        <div class="popup-inner__content-link">
+                            <a href="#" class="popup-inner__content-link-text">close</a>
                         </div>
-                        <div class="popup-inner__content-delete-cancel">
-                            <span class="popup-inner__content-delete-cancel-text">Cancel</span>
+                        <div class="popup-inner__content-title">Are you sure you want to delete an object?</div>
+                        <div>ЗДЕСЬ СПИСОК ЭЛЕМЕНТОВ ЕСЛИ ИХ НЕТ НЕ ПИШЕШЬ НИЧЕГО</div>
+                        <div class="popup-button">
+                            <div class="popup-button__item" data-status="delete">
+                                <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}"
+                                   class="popup-button__item-link">Confirm</a>
+                            </div>
+                            <div class="popup-button__item">
+                                <span class="popup-button__item-name">Cancel</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-  {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block sa_body %}
