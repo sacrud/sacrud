@@ -6,7 +6,7 @@
         // return false;
     });
 
-    $(document).on('click', '.popup-inner__content-delete-cancel', function () {
+    $(document).on('click', '.popup-inner__content-delete-cancel, .popup-inner__content-link-text', function () {
         $('.popup').hide();
     });
 
