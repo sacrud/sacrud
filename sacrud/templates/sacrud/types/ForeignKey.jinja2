@@ -25,4 +25,14 @@
             {% endif %}
       {% endfor %}
     {% endfor %}
+
+    <script>
+        $(document).ready(function () {
+            $("#sacrud_fk_{{ col.name }}").chosen({
+                width: "200px",
+                no_results_text: "Не найдено",
+            });
+        });
+    </script>
+
 {% endblock %}

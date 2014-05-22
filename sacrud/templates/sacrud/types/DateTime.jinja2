@@ -7,13 +7,23 @@
         name="{{ col.name }}"
         value="{{ value }}"
         />
+
     <script>
         $(document).ready(function () {
-            var target = sacrud_datetime_{{ col.name }};
-            $(target).kendoDateTimePicker({
-                value: new Date(),
-                format: "yyyy-MM-dd"
+            $('#sacrud_datetime_{{ col.name }}').datetimepicker({
+                stepMinute: 10,
+                dateFormat: "yy-mm-dd",
+                // timeOnlyTitle: 'Выберите время',
+                // timeText: 'Время',
+                // hourText: 'Часы',
+                // minuteText: 'Минуты',
+                // secondText: 'Секунды',
+                // closeText: 'Закрыть',
+                // minDate: 0,
+                // hourMin: 8,
+                // hourMax: 20
             });
         });
     </script>
+
 {% endblock %}

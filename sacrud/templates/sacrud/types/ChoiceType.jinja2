@@ -16,4 +16,13 @@
       {{ k }}</option>
   {% endfor %}
   </select>
+
+  <script>
+      $(document).ready(function () {
+          $("#choices_{{ col.name }}").chosen({
+              width: "200px",
+              no_results_text: "Не найдено",
+          });
+      });
+  </script>
 {% endblock %}

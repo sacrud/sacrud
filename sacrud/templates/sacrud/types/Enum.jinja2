@@ -13,10 +13,10 @@
     </select>
 
     <script>
-        $(document).ready(function() {
-            var target = sacrud_enum_{{ col.name }};
-            $(target).kendoComboBox({
-                suggest: true
+        $(document).ready(function () {
+            $("#sacrud_enum_{{ col.name }}").chosen({
+                width: "200px",
+                no_results_text: "Не найдено",
             });
         });
     </script>

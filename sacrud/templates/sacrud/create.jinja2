@@ -32,15 +32,18 @@
 {% block sa_head_css %}
     {{ super() }}
     <link href="{{ request.static_url('sacrud:static/css/popup/popup.css') }}" rel="stylesheet">
+    <link href="{{ request.static_url('sacrud:static/css/chosen/chosen.min.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block sa_head_js %} {# extrascript #}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-timepicker-addon.js') }}"></script>
+    {# <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script> #}
 {% endblock %}
 
 {% block extrascript %}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/checkbox.js') }}"></script>
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/create.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/chosen/chosen.jquery.min.js') }}" ></script>
 {% endblock %}
