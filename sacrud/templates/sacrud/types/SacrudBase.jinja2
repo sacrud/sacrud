@@ -1,5 +1,6 @@
 {% if obj %}
-  {% set value=obj.__getattribute__(col.instance_name) %}
+	{% set value=obj.__getattribute__(col.instance_name) %}
 {% endif %}
 
-{% block sacrud_column %}{% endblock %}
+{% block sacrud_column %}
+{% endblock %}

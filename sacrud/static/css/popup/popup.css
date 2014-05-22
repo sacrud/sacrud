@@ -95,6 +95,16 @@
 	-moz-box-shadow:5px 5px 2px 0px #eaeaea;
 	box-shadow:5px 5px 2px 0px #eaeaea;
 }
+.popup_type_elfinder .popup-inner__content
+{
+	border: 1px solid #eaeaea;
+	padding: 1.5em 1.2em 1.5em 1.2em;
+	width: 800px;
+	background: #fff;
+	-webkit-box-shadow:5px 5px 2px 0px #eaeaea;
+	-moz-box-shadow:5px 5px 2px 0px #eaeaea;
+	box-shadow:5px 5px 2px 0px #eaeaea;
+}
 .popup_type_message-delete .popup-inner__content-title
 {
 	background: #E73212;

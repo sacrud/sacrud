@@ -2,53 +2,50 @@
 
 {% block sacrud_column %}
 
-{% include 'elfinder/elfinderhead.html' %}
-{##}
-  <script>
-    function load_elfinder($id) {
-        $('.popup').css('display', 'table');
-        $('.popup').css('position', 'absolute');
-
-        $('#elfinder_{{ col.name }}').elfinder({
-            url : "{{ request.route_url('connector') }}",
-            transport : new elFinderSupportVer1(),
-            lang : 'ru',
-            // dialog : { width : 900, modal : true },
-            height: 490,
-            commandsOptions : { getfile : {oncomplete : ''}, },
-            commands : [
-              'open', 'reload', 'home', 'up', 'back', 'forward', 'getfile',
-              'quicklook', 'rm', 'rename', 'mkdir', 'upload', 'copy', 'cut',
-              'paste', 'extract', 'archive', 'info', 'view', 'help',
-              'resize', 'sort'
-              //'download', 'duplicate', 'mkfile', 'edit', 'search',
-            ],
-            getFileCallback: function(file) { // editor callback
-                // actually file.url - doesnt work for me, but file does. (elfinder 2.0-rc1)
-                document.getElementById($id).value = file.url;
-                $('.popup').hide();
-            },
-        })
-    }
-  </script>
-
-  <div class="popup">
-    <div class="popup-background">&nbsp;</div>
-    <div class="popup-inner">
-      <div class="popup-inner__ie">
-        <div class="popup-inner__content">
-          <a href="#" class="popup-inner__content-link">
-            <span class="popup-inner__content-link-text">закрыть</span>
-          </a>
-          <div class="popup-inner__content-elfinder">
-            <div id="elfinder_{{ col.name }}"></div>
-          </div>
+    <div class="popup popup_type_elfinder">
+        <div class="popup-background">&nbsp;</div>
+        <div class="popup-inner">
+            <div class="popup-inner__ie">
+                <div class="popup-inner__content">
+                    <div class="popup-inner__content-link">
+                        <a href="#" class="popup-inner__content-link-text">close</a>
+                    </div>
+                    <div id="elfinder_{{ col.name }}"></div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <a href="#" onclick="load_elfinder('sacrud_unicode_{{ col.name }}');">Browse</a>
+    {% include 'elfinder/elfinderhead.html' %}
+    <script>
+        function load_elfinder($id) {
+            $('.popup_type_elfinder').css('display', 'table');
+            $('.popup_type_elfinder').css('position', 'absolute');
+
+            $('#elfinder_{{ col.name }}').elfinder({
+                url : "{{ request.route_url('connector') }}",
+                transport : new elFinderSupportVer1(),
+                lang : 'ru',
+                // dialog : { width : 900, modal : true },
+                height: 490,
+                commandsOptions : { getfile : {oncomplete : ''}, },
+                commands : [
+                  'open', 'reload', 'home', 'up', 'back', 'forward', 'getfile',
+                  'quicklook', 'rm', 'rename', 'mkdir', 'upload', 'copy', 'cut',
+                  'paste', 'extract', 'archive', 'info', 'view', 'help',
+                  'resize', 'sort'
+                  //'download', 'duplicate', 'mkfile', 'edit', 'search',
+                ],
+                getFileCallback: function(file) { // editor callback
+                    // actually file.url - doesnt work for me, but file does. (elfinder 2.0-rc1)
+                    document.getElementById($id).value = file.url;
+                    $('.popup_type_elfinder').hide();
+                },
+            })
+        }
+    </script>
+
+    <a href="#" onclick="load_elfinder('sacrud_unicode_{{ col.name }}');">Browse</a>
 
   <input type="text"
          class="sacrud_unicode {{ css_styles }}"

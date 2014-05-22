@@ -28,6 +28,7 @@
 {% endblock sa_head_extra_css %}
 
 {% block sa_head_js %}
+    {{ super() }}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
     {# <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script> #}
 {% endblock %}
