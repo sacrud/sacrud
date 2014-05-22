@@ -1,47 +1,34 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
-{% block sa_popup %}
+{% block sa_popup_content %}
     {% if sa_crud['obj'] %}
-        <div class="popup popup_type_message popup_type_message-delete">
-            <div class="popup-background">&nbsp;</div>
-            <div class="popup-inner">
-                <div class="popup-inner__ie">
-                    <div class="popup-inner__content">
-                        <div class="popup-inner__content-link">
-                            <a href="#" class="popup-inner__content-link-text">close</a>
-                        </div>
-                        <div class="popup-inner__content-title">Are you sure you want to delete an object?</div>
-                        <div>ЗДЕСЬ СПИСОК ЭЛЕМЕНТОВ ЕСЛИ ИХ НЕТ НЕ ПИШЕШЬ НИЧЕГО</div>
-                        <div class="popup-button">
-                            <div class="popup-button__item" data-status="delete">
-                                <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}"
-                                   class="popup-button__item-link">Confirm</a>
-                            </div>
-                            <div class="popup-button__item">
-                                <span class="popup-button__item-name">Cancel</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="popup-inner__content-link">
+            <a href="#" class="popup-inner__content-link-text">close</a>
+        </div>
+        <div class="popup-inner__content-title">Are you sure you want to delete an object?</div>
+        <div>ЗДЕСЬ СПИСОК ЭЛЕМЕНТОВ ЕСЛИ ИХ НЕТ НЕ ПИШЕШЬ НИЧЕГО</div>
+        <div class="popup-button">
+            <div class="popup-button__item" data-status="delete">
+                <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}"
+                   class="popup-button__item-link">Confirm</a>
+            </div>
+            <div class="popup-button__item">
+                <span class="popup-button__item-name">Cancel</span>
             </div>
         </div>
     {% endif %}
-{% endblock %}
+{% endblock sa_popup_content %}
 
 {% block sa_body %}
     {% include 'sacrud/forms/create.jinja2' %}
 {% endblock %}
 
-{% block sa_head_css %}
-    {{ super() }}
-    <link href="{{ request.static_url('sacrud:static/css/popup/popup.css') }}" rel="stylesheet">
+{% block sa_head_extra_css %}
     <link href="{{ request.static_url('sacrud:static/css/chosen/chosen.min.css') }}" rel="stylesheet">
-{% endblock %}
+{% endblock sa_head_extra_css %}
 
-{% block sa_head_js %} {# extrascript #}
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
+{% block sa_head_js %}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-
     {# <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script> #}
 {% endblock %}
 

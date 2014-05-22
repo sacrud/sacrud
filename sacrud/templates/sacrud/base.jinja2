@@ -37,6 +37,7 @@
         <link href="{{ request.static_url('sacrud:static/css/paginator/paginator.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/message/message.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/toolbar/toolbar.css') }}" rel="stylesheet">
+        <link href="{{ request.static_url('sacrud:static/css/popup/popup.css') }}" rel="stylesheet">
 
         <noscript>
             <link href="{# request.static_url('css/no-js.css') #}" rel="stylesheet" type="text/css" />
@@ -60,7 +61,10 @@
         <![endif]-->
     {% endblock %}
 
+    {% block sa_head_extra_css %}{% endblock sa_head_extra_css %}
+
     {% block sa_head_js %}
+        <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
     {% endblock %}
 
     {% block userspace %}
@@ -71,6 +75,17 @@
 <body>
 
     {% block sa_popup %}
+        <div class="popup popup_type_message popup_type_message-delete">
+            <div class="popup-background">&nbsp;</div>
+            <div class="popup-inner">
+                <div class="popup-inner__ie">
+                    <div class="popup-inner__content">
+                        {% block sa_popup_content %}
+                        {% endblock sa_popup_content %}
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endblock %}
 
     {% block sa_menu %}
@@ -134,9 +149,6 @@
             <div class="footer">&nbsp;</div>
         </div>
     </div>
-
-    {% block sa_body_js %}
-    {% endblock %}
 
     {% block extrascript %}
     {% endblock extrascript %}

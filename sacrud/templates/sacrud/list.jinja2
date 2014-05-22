@@ -1,27 +1,20 @@
 {% extends "/sacrud/redefineme.jinja2" %}
 
-{% block sa_popup %}
-    <div class="popup">
-        <div class="popup-background">&nbsp;</div>
-        <div class="popup-inner">
-            <div class="popup-inner__ie">
-                <div class="popup-inner__content">
-                    <div class="popup-inner__content-delete">
-                        <div>Вы уверены, что хотите удалить следующие объекты:</div>
-                        <div class="popup-inner__content-delete-text"></div>
-                        <div>Все связанные с ними элементы будут удалены.</div>
-                        <div class="popup-inner__content-delete-confirm" data-status="delete">
-                            <div class="popup-inner__content-delete-confirm-text">OK</div>
-                        </div>
-                        <div class="popup-inner__content-delete-cancel">
-                            <span class="popup-inner__content-delete-cancel-text">Cancel</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% block sa_popup_content %}
+    <div class="popup-inner__content-link">
+        <a href="#" class="popup-inner__content-link-text">close</a>
+    </div>
+    <div class="popup-inner__content-title">Are you sure you want to delete an object?</div>
+    <div>ЗДЕСЬ СПИСОК ЭЛЕМЕНТОВ ЕСЛИ ИХ НЕТ НЕ ПИШЕШЬ НИЧЕГО</div>
+    <div class="popup-button">
+        <div class="popup-button__item" data-status="delete">
+            <span class="popup-button__item-name">Confirm</span>
+        </div>
+        <div class="popup-button__item">
+            <span class="popup-button__item-name">Cancel</span>
         </div>
     </div>
-{% endblock %}
+{% endblock sa_popup_content %}
 
 {% block sa_body %}
     {% set table=sa_crud['table'] %}
@@ -41,15 +34,6 @@
         {% include '/sacrud/forms/list.jinja2' with context %}
       {% endif %}
     </div>
-{% endblock %}
-
-{% block sa_head_css %}
-    {{ super() }}
-    <link href="{{ request.static_url('sacrud:static/css/popup/popup.css') }}" rel="stylesheet">
-{% endblock %}
-
-{% block sa_head_js %}
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
 {% endblock %}
 
 {% block extrascript %}
