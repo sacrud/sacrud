@@ -52,7 +52,7 @@ Install from github (now is broken, fixes with 0.1.3 release):
 
     pip install git+http://github.com/ITCase/sacrud.git
     
-curent develop version
+current develop version
 
     pip install git+http://github.com/ITCase/sacrud.git@develop
 
