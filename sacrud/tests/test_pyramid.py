@@ -132,7 +132,7 @@ class ViewsTest(BaseTest):
         self.assertEqual(foo, None)
         bar = get_relationship('user', request)
         self.assertEqual(len(bar), 1)
-        self.assertEqual(bar, [{'col': User.id, 'cls': Profile}])
+        self.assertIn(Profile.__table__.columns.user_id, bar[0].remote_side)
 
     def test_sa_home(self):
         res = self.testapp.get('/admin/', status=200)

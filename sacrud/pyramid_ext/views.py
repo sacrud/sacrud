@@ -11,10 +11,11 @@ Views for Pyramid frontend
 """
 import itertools
 import operator
+
 import transaction
-import sqlalchemy as sa
 from pyramid.httpexceptions import HTTPFound
 from pyramid.view import view_config
+from sqlalchemy import inspect
 
 from sacrud import action
 from sacrud.common.paginator import get_paginator
@@ -37,18 +38,11 @@ def get_table(tname, request):
 
 
 def get_relationship(tname, request):
-    obj = get_table(tname, request)
-    if not obj:
+    table = get_table(tname, request)
+    if not table:
         return None
-    # Build a list of only relationship properties
-    relation_properties = filter(
-        lambda p: isinstance(p, sa.orm.properties.RelationshipProperty),
-        sa.orm.class_mapper(obj).iterate_properties
-    )
-    related_classes = [{'cls': prop.mapper.class_,
-                        'col': list(prop.local_columns)[0]}
-                       for prop in relation_properties]
-    return related_classes
+    relations = inspect(table).relationships
+    return [rel for rel in relations]
 
 
 @view_config(route_name='sa_save_position', request_method='POST',
@@ -111,8 +105,7 @@ class WidgetPositionObject(object):
 
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
-    import datetime
-    t1 = datetime.datetime.now()
+    # XXX: C901
     tables = get_settings_param(request, 'sacrud.models')
     sacrud_dashboard_columns = request.registry.settings\
                                       .get('sacrud_dashboard_columns', 3)

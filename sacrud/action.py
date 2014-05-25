@@ -12,11 +12,10 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 import inspect
 
 import transaction
-from webhelpers.paginate import Page
 from sqlalchemy.orm.exc import NoResultFound
+from webhelpers.paginate import Page
 
-from sacrud.common.sa_helpers import (check_type, get_pk, get_relations,
-                                      set_instance_name)
+from sacrud.common.sa_helpers import check_type, get_pk, set_instance_name
 
 prefix = 'crud'
 
@@ -105,8 +104,7 @@ def read(session, table, pk):
             'pk': pk_name,
             'col': col,
             'table': table,
-            'prefix': prefix,
-            'rel': get_relations(obj)}
+            'prefix': prefix}
 
 
 def update(session, table, pk, request=''):

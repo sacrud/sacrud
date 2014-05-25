@@ -9,9 +9,8 @@ import transaction
 from pyramid.testing import DummyRequest
 from sqlalchemy import create_engine
 
-from sacrud.action import rows_list
-from sacrud.action import create, delete, read, update
-from sacrud.common.sa_helpers import delete_fileobj, get_pk, get_relations
+from sacrud.action import create, delete, read, rows_list, update
+from sacrud.common.sa_helpers import delete_fileobj, get_pk
 from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
 
 
@@ -59,17 +58,6 @@ class BaseSacrudTest(unittest.TestCase):
 
 
 class SacrudTest(BaseSacrudTest):
-
-    def test_relations(self):
-        user = self.user_add()
-        self.profile_add(user)
-        user = self.session.query(User).get(1)
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(get_relations(user), [('profile', [profile, ])])
-        self.session.delete(profile)
-        self.session.delete(user)
-        transaction.commit()
 
     def test_get_pk(self):
         # class
@@ -152,7 +140,6 @@ class SacrudTest(BaseSacrudTest):
         self.assertEqual(result['pk'], "id")
         self.assertEqual(result['prefix'], "crud")
         self.assertEqual(result['table'], User)
-        self.assertEqual(result['rel'], [('profile', [])])
 
     def test_update(self):
 

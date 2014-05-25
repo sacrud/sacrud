@@ -103,32 +103,6 @@ def get_pk(obj):
     return pk_list
 
 
-def get_relations(obj):
-    """
-    :Examples:
-
-    >>> from sqlalchemy import Column, Integer, ForeignKey
-    >>> from sqlalchemy.ext.declarative import declarative_base
-    >>> from sqlalchemy.orm import relationship, backref
-    >>> Base = declarative_base()
-    >>> class User(Base):
-    ...    __tablename__ = 'users'
-    ...    id = Column(Integer, primary_key=True)
-    ...
-    >>> class Address(Base):
-    ...    __tablename__ = 'addresses'
-    ...    id = Column(Integer, primary_key=True)
-    ...    user_id = Column(Integer, ForeignKey('users.id'))
-    ...    user = relationship("User", backref=backref('addresses', order_by=id))
-    >>> get_relations(User())
-    [('addresses', [])]
-
-    """
-    return [(n, getattr(obj, n)) for n in dir(obj)
-            if isinstance(getattr(obj, n),
-                          sqlalchemy.orm.collections.InstrumentedList)]
-
-
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
