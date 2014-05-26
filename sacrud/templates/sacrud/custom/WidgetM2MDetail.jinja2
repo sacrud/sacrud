@@ -1,13 +1,13 @@
-{% with column = col['column'] %}
-  {{ obj.group }}
+{% with column = col['column'], name=col['name'], rel_objs=getattr(obj, name) %}
+  {{ rel_objs }}
   <hr/>
   {{ column }}
   <hr/>
-  <select size="3" multiple name="hero[]">
+  <select size="3" multiple name="{{ name }}[]">
     <option disabled>Choise objects</option>
     {% for row in session.query(column.property.mapper).all() %}
       <option value="{{ row.id }}"
-      {% if row in obj.group %}
+      {% if row in rel_objs %}
         selected
       {% endif %}>{{ row }}</option>
     {% endfor %}
