@@ -1,8 +1,7 @@
-{% with column = col['column'], name=col['name'], rel_objs=getattr(obj, name) %}
-  {{ rel_objs }}
-  <hr/>
-  {{ column }}
-  <hr/>
+{% with column = col['column'], name=col['name'] %}
+  {% if obj %}
+    {% set rel_objs = getattr(obj, name)  %}
+  {% endif %}
   <select size="3" multiple name="{{ name }}[]">
     <option disabled>Choise objects</option>
     {% for row in session.query(column.property.mapper).all() %}
