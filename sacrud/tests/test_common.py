@@ -16,7 +16,7 @@ from pyramid.testing import DummyRequest
 from webhelpers.paginate import PageURL_WebOb
 
 from sacrud.common import import_from_string
-from sacrud.common.custom import as_link, get_name, horizontal_field
+from sacrud.common.custom import widget_link, get_name, widget_horizontal
 from sacrud.common.paginator import get_current_page, get_paginator
 from sacrud.tests.test_models import User
 
@@ -54,23 +54,24 @@ class PaginatorTest(BaseTest):
 class CustomTest(BaseTest):
 
     def test_horizontal_field(self):
-        widget = horizontal_field(sacrud_name='foo')
+        widget = widget_horizontal(sacrud_name='foo')
+        self.maxDiff = None
         self.assertEqual(widget,
-                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                         {'info': {'sacrud_list_template': 'sacrud/custom/WidgetHorizontalList.jinja2',
                                    'sacrud_position': 'inline',
-                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
-                          'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ()})
-        widget = horizontal_field('a', 'b', sacrud_name='foo')
+                                   'sacrud_template': 'sacrud/custom/WidgetHorizontalDetail.jinja2'},
+                          'sacrud_name': 'foo', 'name': 'foo', 'horizontal_columns': ()})
+        widget = widget_horizontal('a', 'b', sacrud_name='foo')
         self.assertEqual(widget,
-                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                         {'info': {'sacrud_list_template': 'sacrud/custom/WidgetHorizontalList.jinja2',
                                    'sacrud_position': 'inline',
-                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
-                          'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ('a', 'b')})
-        widget = horizontal_field()
+                                   'sacrud_template': 'sacrud/custom/WidgetHorizontalDetail.jinja2'},
+                          'sacrud_name': 'foo', 'name': 'foo', 'horizontal_columns': ('a', 'b')})
+        widget = widget_horizontal()
         self.assertEqual(widget,
-                         {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                         {'info': {'sacrud_list_template': 'sacrud/custom/WidgetHorizontalList.jinja2',
                                    'sacrud_position': 'inline',
-                                   'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'},
+                                   'sacrud_template': 'sacrud/custom/WidgetHorizontalDetail.jinja2'},
                           'sacrud_name': '', 'name': '', 'horizontal_columns': ()})
 
     def test_get_name(self):
@@ -84,18 +85,18 @@ class CustomTest(BaseTest):
         foo.name = ''
         self.assertEqual('', get_name(foo))
 
-    def test_as_link(self):
-        link = as_link(User.sex)
+    def test_widget_link(self):
+        link = widget_link(column=User.sex)
         self.assertEqual(link['info'],
-                         {'sacrud_list_template': 'sacrud/custom/AsLinkList.jinja2',
+                         {'sacrud_list_template': 'sacrud/custom/WidgetLinkList.jinja2',
                           'sacrud_position': 'inline'})
         self.assertEqual(link['column'], User.sex)
         self.assertEqual(link['name'], 'sex')
-        self.assertEqual(link['sacrud_name'], '')
+        self.assertEqual(link['sacrud_name'], 'sex')
 
-        link = as_link(User.sex, sacrud_name=u'foo bar баз')
+        link = widget_link(column=User.sex, sacrud_name=u'foo bar баз')
         self.assertEqual(link['info'],
-                         {'sacrud_list_template': 'sacrud/custom/AsLinkList.jinja2',
+                         {'sacrud_list_template': 'sacrud/custom/WidgetLinkList.jinja2',
                           'sacrud_position': 'inline'})
         self.assertEqual(link['column'], User.sex)
         self.assertEqual(link['name'], 'sex')

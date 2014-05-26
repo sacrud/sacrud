@@ -56,8 +56,13 @@ def _silent_none(value):
         return value
     if hasattr(value, '__bool__'):
         return value
-    if not value or str(value) == 'None':
+    if not value:
         return ''
+    try:
+        if str(value) == 'None':
+            return ''
+    except UnicodeEncodeError:
+        pass
     return value
 
 
