@@ -19,39 +19,55 @@ def get_name(column):
     return ''
 
 
-def horizontal_field(*args, **kwargs):
+def widget(fun):
+    def wrapped(*args, **kwargs):
+        sacrud_name = ''
+        if 'sacrud_name' in kwargs:
+            sacrud_name = kwargs['sacrud_name']
+        elif 'column' in kwargs:
+            if hasattr(kwargs['column'], 'property'):
+                sacrud_name = kwargs['column'].property.key
+        params = {'sacrud_name': sacrud_name, 'name': sacrud_name}
+        response = fun(*args, **kwargs)
+        params.update(response)
+        return params
+    return wrapped
+
+
+@widget
+def widget_horizontal(*args, **kwargs):
     """
     :Examples:
 
-    >>> horizontal_field(sacrud_name='foo')
+    >>> widget_horizontal(sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ()}
-    >>> horizontal_field('a', 'b', sacrud_name='foo')
+    >>> widget_horizontal('a', 'b', sacrud_name='foo')
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': 'foo', 'name': '', 'horizontal_columns': ('a', 'b')}
-    >>> horizontal_field()
+    >>> widget_horizontal()
     {'info': {'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2', 'sacrud_position': 'inline', 'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2'}, 'sacrud_name': '', 'name': '', 'horizontal_columns': ()}
 
     """
-    sacrud_name = ''
-    if 'sacrud_name' in kwargs:
-        sacrud_name = kwargs['sacrud_name']
     return {'info': {'sacrud_position': 'inline',
-                     'sacrud_template': 'sacrud/custom/HorizontalFieldsDetail.jinja2',
-                     'sacrud_list_template': 'sacrud/custom/HorizontalFieldsList.jinja2',
+                     'sacrud_template': 'sacrud/custom/WidgetHorizontalDetail.jinja2',
+                     'sacrud_list_template': 'sacrud/custom/WidgetHorizontalList.jinja2',
                      },
             'horizontal_columns': args,
-            'sacrud_name': sacrud_name,
-            'name': '',
             }
 
 
-def as_link(column, *args, **kwargs):
-    sacrud_name = ''
-    if 'sacrud_name' in kwargs:
-        sacrud_name = kwargs['sacrud_name']
+@widget
+def widget_link(*args, **kwargs):
     return {'info': {'sacrud_position': 'inline',
-                     'sacrud_list_template': 'sacrud/custom/AsLinkList.jinja2',
+                     'sacrud_list_template': 'sacrud/custom/WidgetLinkList.jinja2',
                      },
-            'column': column,
-            'sacrud_name': sacrud_name,
-            'name': get_name(column),
+            'column': kwargs['column'],
+            'name': get_name(kwargs['column']),
+            }
+
+
+@widget
+def widget_m2m(*args, **kwargs):
+    return {'info': {'sacrud_template': 'sacrud/custom/WidgetM2MDetail.jinja2',
+                     },
+            'column': kwargs['column'],
             }

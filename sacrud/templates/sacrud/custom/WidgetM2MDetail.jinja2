@@ -1,0 +1,15 @@
+{% with column = col['column'] %}
+  {{ obj.group }}
+  <hr/>
+  {{ column }}
+  <hr/>
+  <select size="3" multiple name="hero[]">
+    <option disabled>Choise objects</option>
+    {% for row in session.query(column.property.mapper).all() %}
+      <option value="{{ row.id }}"
+      {% if row in obj.group %}
+        selected
+      {% endif %}>{{ row }}</option>
+    {% endfor %}
+  </select>
+{% endwith %}
