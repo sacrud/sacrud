@@ -24,6 +24,20 @@ prefix = 'crud'
 get_pk_hook = lambda x: get_pk(x)[0].name
 
 
+def get_m2m_objs(session, relation, ids):
+    pk = relation.primary_key[0]
+    return session.query(relation).filter(pk.in_(ids)).all()
+
+
+def set_m2m_value(session, request, obj):
+    m2m_request = {k: v for k, v in request.iteritems() if k[-2:] == '[]'}
+    for k, v in m2m_request.iteritems():
+        key = k[:-2]
+        relation = getattr(obj.__class__, key)
+        value = get_m2m_objs(session, relation.mapper, v)
+        setattr(obj, key, value)
+
+
 def rows_list(session, table, paginator=None, order_by=None, search=None):
     """
     Return a list of table rows.
@@ -81,6 +95,9 @@ def create(session, table, request=''):
                 continue
             value = check_type(request, table, key)
             obj.__setattr__(key, value)
+
+        # save m2m relationships
+        set_m2m_value(session, request, obj)
         session.add(obj)
         transaction.commit()
         return
@@ -132,11 +149,15 @@ def update(session, table, pk, request=''):
                 continue
             if getattr(obj, col.instance_name, col.name) == request[col.name][0]:
                 continue
+            # XXX: not good
             if col.type.__class__.__name__ == 'FileStore':
                 if not hasattr(request[col.name][0], 'filename'):
                     continue
             value = check_type(request, table, col.name, obj)
             setattr(obj, col.name, value)
+
+        # save m2m relationships
+        set_m2m_value(session, request, obj)
         session.add(obj)
         transaction.commit()
         return

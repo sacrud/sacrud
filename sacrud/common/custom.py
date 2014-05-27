@@ -22,12 +22,14 @@ def get_name(column):
 def widget(fun):
     def wrapped(*args, **kwargs):
         sacrud_name = ''
-        if 'sacrud_name' in kwargs:
-            sacrud_name = kwargs['sacrud_name']
-        elif 'column' in kwargs:
+        params = {}
+        if 'column' in kwargs:
             if hasattr(kwargs['column'], 'property'):
                 sacrud_name = kwargs['column'].property.key
-        params = {'sacrud_name': sacrud_name, 'name': sacrud_name}
+            params.update({'column': kwargs['column']})
+        if 'sacrud_name' in kwargs:
+            sacrud_name = kwargs['sacrud_name']
+        params.update({'sacrud_name': sacrud_name, 'name': sacrud_name})
         response = fun(*args, **kwargs)
         params.update(response)
         return params
@@ -60,7 +62,6 @@ def widget_link(*args, **kwargs):
     return {'info': {'sacrud_position': 'inline',
                      'sacrud_list_template': 'sacrud/custom/WidgetLinkList.jinja2',
                      },
-            'column': kwargs['column'],
             'name': get_name(kwargs['column']),
             }
 
@@ -69,5 +70,4 @@ def widget_link(*args, **kwargs):
 def widget_m2m(*args, **kwargs):
     return {'info': {'sacrud_template': 'sacrud/custom/WidgetM2MDetail.jinja2',
                      },
-            'column': kwargs['column'],
             }
