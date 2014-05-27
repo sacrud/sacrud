@@ -183,10 +183,10 @@ class CRUD(object):
         get_params = {'order_by': order_by, 'search': search}
 
         # Make url for table headrow links to order_by
-        if order_by:
-            for col in table.sacrud_list_col:
-                head_url_list = []
-                column_name = col['column'].name if isinstance(col, dict) else col.name
+        for col in table.sacrud_list_col:
+            head_url_list = []
+            column_name = col['column'].name if isinstance(col, dict) else col.name
+            if order_by:
                 if column_name not in order_by.replace('-', '').split('.'):
                     head_url_list.append(column_name)
 
@@ -197,10 +197,12 @@ class CRUD(object):
                         head_url_list.insert(0, '%s%s' % (new_pfx, col_name))
                     else:
                         head_url_list.append('%s%s' % (pfx, col_name))
+            else:
+                head_url_list.append(column_name)
 
-                full_params = ['%s=%s' % (param, value) for param, value in get_params.items() if param != 'order_by' and value]
-                full_params.append('order_by=%s' % '.'.join(head_url_list))
-                update_difference_object(col, 'head_url', '&'.join(full_params))
+            full_params = ['%s=%s' % (param, value) for param, value in get_params.items() if param != 'order_by' and value]
+            full_params.append('order_by=%s' % '.'.join(head_url_list))
+            update_difference_object(col, 'head_url', '&'.join(full_params))
 
         # If method POST, do action
         if 'selected_action' in request.POST:
