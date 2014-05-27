@@ -206,13 +206,12 @@ class CRUD(object):
             update_difference_object(col, 'head_url', '&'.join(full_params))
 
         # If method POST, do action
-        if 'selected_action' in request.POST:
-            selected_action = request.POST.get('selected_action')
-            items_list = request.POST.getall('selected_item')
-            if selected_action == 'delete':
-                action.delete(request.dbsession, table, items_list)
-            if selected_action == 'hide':
-                action.hide(request.dbsession, table, items_list)
+        selected_action = request.POST.get('selected_action')
+        items_list = request.POST.getall('selected_item')
+        if selected_action == 'delete':
+            for item in items_list:
+                # FIXME: add Multi-Column pk
+                action.CRUD(request.dbsession, table, pk={'id': item}).delete()
 
         items_per_page = getattr(table, 'items_per_page', 10)
         resp = action.CRUD(request.dbsession, table)\
