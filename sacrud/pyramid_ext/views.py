@@ -160,11 +160,42 @@ def sarow_to_json(rows):
     return json_list
 
 
+def update_difference_object(obj, key, value):
+    if isinstance(obj, dict):
+        obj.update({key: value})
+    else:
+        setattr(obj, key, value)
+    # return obj
+
+
 @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
 def sa_list(request):
     tname = request.matchdict['table']
-    order_by = request.params.get('order_by', False)
     table = get_table(tname, request)
+    order_by = request.params.get('order_by', False)
+    search = request.GET.get('search')
+    get_params = {'order_by': order_by, 'search': search}
+    ordering_columns = {}
+
+    # Make url for table headrow links to order_by
+    if order_by:
+        for col in table.sacrud_list_col:
+            head_url_list = []
+            column_name = col['column'].name if isinstance(col, dict) else col.name
+            if column_name not in order_by.replace('-', '').split('.'):
+                head_url_list.append(column_name)
+
+            for value in order_by.split('.'):
+                none, pfx, col_name = value.rpartition('-')
+                if column_name == col_name:
+                    new_pfx = {'': '-', '-': ''}[pfx]
+                    head_url_list.insert(0, '%s%s' % (new_pfx, col_name))
+                else:
+                    head_url_list.append('%s%s' % (pfx, col_name))
+
+            full_params = ['%s=%s' % (param, value) for param, value in get_params.items() if param != 'order_by' and value]
+            full_params.append('order_by=%s' % '.'.join(head_url_list))
+            update_difference_object(col, 'head_url', '&'.join(full_params))
 
     # If method POST, do action
     if 'selected_action' in request.POST:
@@ -176,24 +207,19 @@ def sa_list(request):
             action.hide(request.dbsession, table, items_list)
 
     args = [request.dbsession, table]
-
-    if order_by:
-        args.append(order_by)
-
     items_per_page = getattr(table, 'items_per_page', 10)
-    resp = action.rows_list(*args, paginator=get_paginator(request, items_per_page))
-
+    kwargs = {
+        'paginator': get_paginator(request, items_per_page),
+        'order_by': order_by,
+        'search': search,
+    }
+    resp = action.rows_list(*args, **kwargs)
     # if URL like /sacrud/tablename?json=on return json
     if request.GET.get('json', None):
         request.override_renderer = 'json'
         return sarow_to_json(resp['row'])
-    return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
-
-
-# @view_config(route_name='sa_del_selected', renderer='/sacrud/list.jinja2', request_method='POST')
-# def sa_del_selected(request):
-#     return sa_list(request)
-    # return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
+    return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list'),
+            'get_params': get_params}
 
 
 class CRUD(object):

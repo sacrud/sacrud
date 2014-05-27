@@ -2,17 +2,18 @@ $(function() {
 
     var rows_state_unselecting,
         current_rows,
-        first_selected_row,
-        options = {
-            'tr_selected_class': 'sacrud-grid-content-grid__body-row_state_active',
-            'state_disable_class': 'toolbar-button__item_state_disable',
-            'all_checkboxes_button': '#selected_all_item',
-            'table_checkboxes': 'input[name="selected_item"]',
-            'table_checkboxes_checked': 'input[name="selected_item"]:checked',
-            'table_checkboxes_not_checked': 'input[name="selected_item"]:not(:checked)',
-            'input_selected_action': 'input[name="selected_action"]',
-            'div_action_button': '.action_button',
-        };
+        first_selected_row;
+
+    options = {
+        'tr_selected_class': 'sacrud-grid-content-grid__body-row_state_active',
+        'state_disable_class': 'toolbar-button__item_state_disable',
+        'all_checkboxes_button': '#selected_all_item',
+        'table_checkboxes': 'input[name="selected_item"]',
+        'table_checkboxes_checked': 'input[name="selected_item"]:checked',
+        'table_checkboxes_not_checked': 'input[name="selected_item"]:not(:checked)',
+        'input_selected_action': 'input[name="selected_action"]',
+        'div_action_button': '.action_button',
+    };
 
     $('table > tbody').selectable({
         filter: 'tr', // :not(td)
@@ -104,28 +105,4 @@ $(function() {
     $(document).on('change', options.all_checkboxes_button , function () {
         $(options.table_checkboxes).prop('checked', $(this).prop('checked')).change();
     });
-
-    $(document).on('click', options.div_action_button, function () {
-        // $(options.input_selected_action).val($(this).data('status'));
-        // $('#sacrud-form').submit();
-        $('.popup').css('display', 'table');
-        $('.popup').css('position', 'absolute');
-    });
-
-
-    $(document).on('click', '.popup-inner__content-delete-confirm', function () {
-        $(options.input_selected_action).val($(this).data('status'));
-        $('#sacrud-form').submit();
-    });
-
-    $(document).on('click', '.popup-inner__content-delete-cancel', function () {
-        $('.popup').hide();
-    });
-
-    // $(document).on('click', function (e) {
-    //     if (!($(e.target).closest('.popup-inner').length) && $('.popup').is(':visible')) {
-    //         $('.popup').hide();
-    //     }
-    // });
-
 });

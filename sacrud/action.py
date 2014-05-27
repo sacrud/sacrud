@@ -12,6 +12,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 import inspect
 
 import transaction
+from sqlalchemy import or_, desc
 from sqlalchemy.orm.exc import NoResultFound
 from webhelpers.paginate import Page
 
@@ -23,7 +24,7 @@ prefix = 'crud'
 get_pk_hook = lambda x: get_pk(x)[0].name
 
 
-def rows_list(session, table, paginator=None, order_by=None):
+def rows_list(session, table, paginator=None, order_by=None, search=None):
     """
     Return a list of table rows.
 
@@ -34,23 +35,28 @@ def rows_list(session, table, paginator=None, order_by=None):
         - `order_by`: name ordered row.
         - `paginator`: see sacrud.common.paginator.get_paginator.
     """
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
+    col = [c for c in getattr(table, 'sacrud_list_col',
+                              table.__table__.columns)]
     pk_name = get_pk_hook(table)
     query = session.query(table)
+    if search:
+        search_filter_group = [search_col.like('%%%s%%' % search)
+                               for search_col in table.sacrud_search_col]
+        query = query.filter(or_(*search_filter_group))
     if order_by:
-        query = query.order_by(order_by)
+        order_filter_group = []
+        for value in order_by.split('.'):
+            none, pfx, col_name = value.rpartition('-')
+            order_filter_group.append(desc(col_name) if pfx == '-' else col_name)
+        query = query.order_by(*order_filter_group)
     row = query.all()
     if paginator:
         row = Page(row, **paginator)
     if row:
         col = set_instance_name(row[0], col)
 
-    return {'row': row,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix,
-            }
+    return {'row': row, 'pk': pk_name, 'col': col, 'table': table,
+            'prefix': prefix}
 
 
 def create(session, table, request=''):
@@ -80,11 +86,9 @@ def create(session, table, request=''):
         return
 
     pk_name = get_pk_hook(table)
-    col = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
-    return {'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix}
+    col = [c for c in getattr(table, 'sacrud_detail_col',
+                              [('', table.__table__.columns)])]
+    return {'pk': pk_name, 'col': col, 'table': table, 'prefix': prefix}
 
 
 def read(session, table, pk):
@@ -99,11 +103,9 @@ def read(session, table, pk):
     """
     pk_name = get_pk_hook(table)
     obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
+    col = [c for c in getattr(table, 'sacrud_list_col',
+                              table.__table__.columns)]
+    return {'obj': obj, 'pk': pk_name, 'col': col, 'table': table,
             'prefix': prefix}
 
 
@@ -139,11 +141,9 @@ def update(session, table, pk, request=''):
         transaction.commit()
         return
 
-    col_list = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col_list,
-            'table': table,
+    col_list = [c for c in getattr(table, 'sacrud_detail_col',
+                                   [('', table.__table__.columns)])]
+    return {'obj': obj, 'pk': pk_name, 'col': col_list, 'table': table,
             'prefix': prefix}
 
 

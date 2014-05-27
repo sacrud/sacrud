@@ -12,7 +12,7 @@
                 <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}"
                    class="popup-button__item-link">Confirm</a>
             </div>
-            <div class="popup-button__item">
+            <div class="popup-button__item" data-status="cancel">
                 <span class="popup-button__item-name">Cancel</span>
             </div>
         </div>
@@ -36,6 +36,6 @@
 {% block extrascript %}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-timepicker-addon.js') }}"></script>
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/checkbox.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/create.js') }}"></script>
+    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/popup.js') }}"></script>
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/chosen/chosen.jquery.min.js') }}" ></script>
 {% endblock %}
