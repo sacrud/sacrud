@@ -73,13 +73,15 @@
 </head>
 
 <body>
-
     {% block sa_popup %}
         <div class="popup popup_type_message popup_type_message-delete">
             <div class="popup-background">&nbsp;</div>
             <div class="popup-inner">
                 <div class="popup-inner__ie">
-                    <div class="popup-inner__content">&nbsp;</div>
+                    <div class="popup-inner__content">
+                        {% block sa_popup_content %}
+                        {% endblock sa_popup_content %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -149,6 +151,5 @@
 
     {% block extrascript %}
     {% endblock extrascript %}
-
 </body>
 </html>

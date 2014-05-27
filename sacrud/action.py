@@ -12,6 +12,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 import inspect
 
 import transaction
+from sqlalchemy import desc, or_
 from sqlalchemy.orm.exc import NoResultFound
 from webhelpers.paginate import Page
 
@@ -59,19 +60,14 @@ def create(session, table, request=''):
                 continue
             value = check_type(request, table, key)
             obj.__setattr__(key, value)
-
-        # save m2m relationships
-        set_m2m_value(session, request, obj)
         session.add(obj)
         transaction.commit()
         return
 
     pk_name = get_pk_hook(table)
-    col = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
-    return {'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix}
+    col = [c for c in getattr(table, 'sacrud_detail_col',
+                              [('', table.__table__.columns)])]
+    return {'pk': pk_name, 'col': col, 'table': table, 'prefix': prefix}
 
 
 class CRUD(object):
@@ -87,7 +83,7 @@ class CRUD(object):
                 obj = obj.filter(getattr(table, item.name) == pk[item.name])
             self.obj = obj.one()
 
-    def rows_list(self, paginator=None, order_by=None):
+    def rows_list(self, paginator=None, order_by=None, search=None):
         """
         Return a list of table rows.
 
@@ -100,8 +96,17 @@ class CRUD(object):
         session = self.session
         col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
         query = session.query(table)
+        if search:
+            search_filter_group = [search_col.like('%%%s%%' % search)
+                                   for search_col in table.sacrud_search_col]
+            query = query.filter(or_(*search_filter_group))
+
         if order_by:
-            query = query.order_by(order_by)
+            order_filter_group = []
+            for value in order_by.split('.'):
+                none, pfx, col_name = value.rpartition('-')
+                order_filter_group.append(desc(col_name) if pfx == '-' else col_name)
+            query = query.order_by(*order_filter_group)
         row = query.all()
         if paginator:
             row = Page(row, **paginator)
@@ -160,6 +165,66 @@ class CRUD(object):
                 'col': columns,
                 'table': self.table,
                 'prefix': prefix}
+
+
+def read(session, table, pk):
+    """
+    Select row by pk.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `pk`: primary key value.
+    """
+    pk_name = get_pk_hook(table)
+    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
+    col = [c for c in getattr(table, 'sacrud_list_col',
+                              table.__table__.columns)]
+    return {'obj': obj, 'pk': pk_name, 'col': col, 'table': table,
+            'prefix': prefix}
+
+
+def update(session, table, pk, request=''):
+    """
+    Update row of table.
+
+    :Parameters:
+
+        - `session`: DBSession.
+        - `table`: table instance.
+        - `request`: webob format request.
+    """
+
+    pk_name = get_pk_hook(table)
+    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
+    col_list = [c for c in table.__table__.columns]
+    if obj:
+        col = set_instance_name(obj, col_list)
+
+    if request:
+        for col in col_list:
+            if col.name not in request:
+                continue
+            if getattr(obj, col.instance_name, col.name) == request[col.name][0]:
+                continue
+            # XXX: not good
+            if col.type.__class__.__name__ == 'FileStore':
+                if not hasattr(request[col.name][0], 'filename'):
+                    continue
+            value = check_type(request, table, col.name, obj)
+            setattr(obj, col.name, value)
+
+        # save m2m relationships
+        set_m2m_value(session, request, obj)
+        session.add(obj)
+        transaction.commit()
+        return
+
+    col_list = [c for c in getattr(table, 'sacrud_detail_col',
+                                   [('', table.__table__.columns)])]
+    return {'obj': obj, 'pk': pk_name, 'col': col_list, 'table': table,
+            'prefix': prefix}
 
 
 def delete(session, table, pk):

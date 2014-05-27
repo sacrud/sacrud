@@ -142,6 +142,14 @@ def sa_home(request):
     return context
 
 
+def update_difference_object(obj, key, value):
+    if isinstance(obj, dict):
+        obj.update({key: value})
+    else:
+        setattr(obj, key, value)
+    # return obj
+
+
 class CRUD(object):
 
     def __init__(self, request):
@@ -168,9 +176,31 @@ class CRUD(object):
 
     @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
     def sa_list(self):
-        order_by = self.request.params.get('order_by', None)
         table = self.table
         request = self.request
+        order_by = request.params.get('order_by', False)
+        search = request.GET.get('search')
+        get_params = {'order_by': order_by, 'search': search}
+
+        # Make url for table headrow links to order_by
+        if order_by:
+            for col in table.sacrud_list_col:
+                head_url_list = []
+                column_name = col['column'].name if isinstance(col, dict) else col.name
+                if column_name not in order_by.replace('-', '').split('.'):
+                    head_url_list.append(column_name)
+
+                for value in order_by.split('.'):
+                    none, pfx, col_name = value.rpartition('-')
+                    if column_name == col_name:
+                        new_pfx = {'': '-', '-': ''}[pfx]
+                        head_url_list.insert(0, '%s%s' % (new_pfx, col_name))
+                    else:
+                        head_url_list.append('%s%s' % (pfx, col_name))
+
+                full_params = ['%s=%s' % (param, value) for param, value in get_params.items() if param != 'order_by' and value]
+                full_params.append('order_by=%s' % '.'.join(head_url_list))
+                update_difference_object(col, 'head_url', '&'.join(full_params))
 
         # If method POST, do action
         if 'selected_action' in request.POST:
@@ -184,11 +214,12 @@ class CRUD(object):
         items_per_page = getattr(table, 'items_per_page', 10)
         resp = action.CRUD(request.dbsession, table)\
             .rows_list(paginator=get_paginator(request, items_per_page),
-                       order_by=order_by)
+                       order_by=order_by, search=search)
 
         return {'sa_crud': resp,
                 'pk_to_list': self.pk_to_list,
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_list')}
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_list'),
+                'get_params': get_params}
 
     @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
     def sa_create(self):
