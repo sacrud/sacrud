@@ -260,7 +260,7 @@ class CRUD(object):
 
     @view_config(route_name='sa_delete')
     def sa_delete(self):
-        action.delete(self.request.dbsession, self.table, self.id)
+        action.CRUD(self.request.dbsession, self.table, pk=self.pk).delete()
         self.flash_message("You have removed object of %s" % self.tname)
         return HTTPFound(location=self.request.route_url('sa_list',
                                                          table=self.tname))

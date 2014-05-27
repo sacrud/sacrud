@@ -13,7 +13,6 @@ import inspect
 
 import transaction
 from sqlalchemy import desc, or_
-from sqlalchemy.orm.exc import NoResultFound
 from webhelpers.paginate import Page
 
 from sacrud.common.sa_helpers import check_type, get_pk, set_instance_name
@@ -166,6 +165,13 @@ class CRUD(object):
                 'table': self.table,
                 'prefix': prefix}
 
+    def delete(self):
+        """ Delete row by pk.
+        """
+        # check_type('', table, obj=obj)
+        self.session.delete(self.obj)
+        transaction.commit()
+
 
 def read(session, table, pk):
     """
@@ -183,27 +189,3 @@ def read(session, table, pk):
                               table.__table__.columns)]
     return {'obj': obj, 'pk': pk_name, 'col': col, 'table': table,
             'prefix': prefix}
-
-
-def delete(session, table, pk):
-    """
-    Delete row by pk.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-
-    pk_name = get_pk_hook(table)
-    try:
-        if not isinstance(pk, list):
-            pk = [pk]
-        query_obj = session.query(table).filter(getattr(table, pk_name).in_(pk))
-        for obj in query_obj.all():
-            check_type('', table, obj=obj)
-        query_obj.delete(synchronize_session=False)
-        transaction.commit()
-    except NoResultFound:
-        pass
