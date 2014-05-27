@@ -174,6 +174,7 @@ class CRUD(object):
         if hasattr(self.request, 'session'):
             self.request.session.flash([message, status])
 
+    # XXX: C901
     @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
     def sa_list(self):
         table = self.table

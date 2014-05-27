@@ -185,48 +185,6 @@ def read(session, table, pk):
             'prefix': prefix}
 
 
-def update(session, table, pk, request=''):
-    """
-    Update row of table.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `request`: webob format request.
-    """
-
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col_list = [c for c in table.__table__.columns]
-    if obj:
-        col = set_instance_name(obj, col_list)
-
-    if request:
-        for col in col_list:
-            if col.name not in request:
-                continue
-            if getattr(obj, col.instance_name, col.name) == request[col.name][0]:
-                continue
-            # XXX: not good
-            if col.type.__class__.__name__ == 'FileStore':
-                if not hasattr(request[col.name][0], 'filename'):
-                    continue
-            value = check_type(request, table, col.name, obj)
-            setattr(obj, col.name, value)
-
-        # save m2m relationships
-        set_m2m_value(session, request, obj)
-        session.add(obj)
-        transaction.commit()
-        return
-
-    col_list = [c for c in getattr(table, 'sacrud_detail_col',
-                                   [('', table.__table__.columns)])]
-    return {'obj': obj, 'pk': pk_name, 'col': col_list, 'table': table,
-            'prefix': prefix}
-
-
 def delete(session, table, pk):
     """
     Delete row by pk.
