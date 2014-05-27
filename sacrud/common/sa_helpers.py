@@ -73,7 +73,8 @@ def set_instance_name(instance, cols):
     """
     for col in cols:
         if isinstance(col, sqlalchemy.Column):
-            setattr(col, "instance_name", get_attrname_by_colname(instance, col.name))
+            setattr(col, "instance_name", get_attrname_by_colname(instance,
+                                                                  col.name))
     return cols
 
 

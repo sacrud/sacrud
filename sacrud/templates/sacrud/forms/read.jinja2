@@ -13,7 +13,11 @@
       {% set obj=sa_crud['obj'] %}
       {% for col in sa_crud['col'] %}
         <td>
-          {{ obj.__getattribute__(col.instance_name) }}
+          {% if obj and hasattr(col, 'instance_name') %}
+            {{ obj.__getattribute__(col.instance_name) }}
+          {% elif obj and hasattr(col, 'name') %}
+            {{ obj.__getattribute__(col.name) }}
+          {% endif %}
         </td>
       {% endfor %}
       <td>
@@ -28,7 +32,7 @@
         <!--edit-->
         <div class="inline">
         <form action="{{ request.route_url('sa_update', table=sa_crud['table'].__tablename__,
-              id=obj[sa_crud['pk']]) }}"
+              pk=('id', obj[sa_crud['pk']])) }}"
               method='POST'>
           <input id="button_other" type="submit" value="edit">
         </form>

@@ -37,36 +37,6 @@ def set_m2m_value(session, request, obj):
         setattr(obj, key, value)
 
 
-def rows_list(session, table, paginator=None, order_by=None):
-    """
-    Return a list of table rows.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `order_by`: name ordered row.
-        - `paginator`: see sacrud.common.paginator.get_paginator.
-    """
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    pk_name = get_pk_hook(table)
-    query = session.query(table)
-    if order_by:
-        query = query.order_by(order_by)
-    row = query.all()
-    if paginator:
-        row = Page(row, **paginator)
-    if row:
-        col = set_instance_name(row[0], col)
-
-    return {'row': row,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix,
-            }
-
-
 def create(session, table, request=''):
     """
     Insert row to table.
@@ -104,68 +74,92 @@ def create(session, table, request=''):
             'prefix': prefix}
 
 
-def read(session, table, pk):
-    """
-    Select row by pk.
+class CRUD(object):
+    def __init__(self, session, table, pk=None, request=None):
+        self.pk = get_pk(table)
+        self.table = table
+        self.request = request
+        self.session = session
+        self.obj = None
+        if pk:
+            obj = session.query(table)
+            for item in self.pk:
+                obj = obj.filter(getattr(table, item.name) == pk[item.name])
+            self.obj = obj.one()
 
-    :Parameters:
+    def rows_list(self, paginator=None, order_by=None):
+        """
+        Return a list of table rows.
 
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix}
+        :Parameters:
 
+            - `order_by`: name ordered row.
+            - `paginator`: see sacrud.common.paginator.get_paginator.
+        """
+        table = self.table
+        session = self.session
+        col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
+        query = session.query(table)
+        if order_by:
+            query = query.order_by(order_by)
+        row = query.all()
+        if paginator:
+            row = Page(row, **paginator)
+        if row:
+            col = set_instance_name(row[0], col)
 
-def update(session, table, pk, request=''):
-    """
-    Update row of table.
+        return {'row': row,
+                'pk': self.pk,
+                'col': col,
+                'table': table,
+                'prefix': prefix,
+                }
 
-    :Parameters:
+    def read(self):
+        """ Select row by pk.
+        """
+        columns = [c for c in getattr(self.table, 'sacrud_list_col', self.table.__table__.columns)]
+        return {'obj': self.obj,
+                'pk': self.pk,
+                'col': columns,
+                'table': self.table,
+                'prefix': prefix}
 
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `request`: webob format request.
-    """
+    def update(self):
+        """ Update row of table.
+        """
+        columns = [c for c in self.table.__table__.columns]
+        set_instance_name(self.obj, columns)
 
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col_list = [c for c in table.__table__.columns]
-    if obj:
-        col = set_instance_name(obj, col_list)
-
-    if request:
-        for col in col_list:
-            if col.name not in request:
-                continue
-            if getattr(obj, col.instance_name, col.name) == request[col.name][0]:
-                continue
-            # XXX: not good
-            if col.type.__class__.__name__ == 'FileStore':
-                if not hasattr(request[col.name][0], 'filename'):
+        if self.request:
+            for col in columns:
+                if col.name not in self.request:
                     continue
-            value = check_type(request, table, col.name, obj)
-            setattr(obj, col.name, value)
+                if getattr(self.obj, col.instance_name,
+                           col.name) == self.request[col.name][0]:
+                    continue
+                # XXX: not good
+                if col.type.__class__.__name__ == 'FileStore':
+                    if not hasattr(self.request[col.name][0], 'filename'):
+                        continue
+                value = check_type(self.request, self.table,
+                                   col.name, self.obj)
+                setattr(self.obj, col.name, value)
 
-        # save m2m relationships
-        set_m2m_value(session, request, obj)
-        session.add(obj)
-        transaction.commit()
-        return
+            # save m2m relationships
+            set_m2m_value(self.session, self.request, self.obj)
+            self.session.add(self.obj)
+            transaction.commit()
+            return
 
-    col_list = [c for c in getattr(table, 'sacrud_detail_col', [('', table.__table__.columns)])]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col_list,
-            'table': table,
-            'prefix': prefix}
+        columns = [c for c in getattr(self.table,
+                                      'sacrud_detail_col',
+                                      [('', self.table.__table__.columns)])]
+        return {'obj': self.obj,
+                'pk': self.pk,
+                'col': columns,
+                'table': self.table,
+                'prefix': prefix}
 
 
 def delete(session, table, pk):

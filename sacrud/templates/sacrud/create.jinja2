@@ -9,7 +9,8 @@
         <div>ЗДЕСЬ СПИСОК ЭЛЕМЕНТОВ ЕСЛИ ИХ НЕТ НЕ ПИШЕШЬ НИЧЕГО</div>
         <div class="popup-button">
             <div class="popup-button__item" data-status="delete">
-                <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__, id=getattr(sa_crud['obj'], sa_crud['pk'])) }}"
+                <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
+                            pk=pk_to_list(sa_crud['obj'], sa_crud['pk'])) }}"
                    class="popup-button__item-link">Confirm</a>
             </div>
             <div class="popup-button__item">
@@ -30,7 +31,6 @@
 {% block sa_head_js %}
     {{ super() }}
     <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-    {# <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.ui.datepicker-ru.js') }}"></script> #}
 {% endblock %}
 
 {% block extrascript %}

@@ -16,8 +16,8 @@ import sqlalchemy.orm as orm
 from pyramid.path import AssetResolver
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common.pyramid_helpers import (get_obj_from_settings,
-                                           pkg_prefix, set_jinja2_globals,
+from sacrud.common.pyramid_helpers import (get_obj_from_settings, pkg_prefix,
+                                           set_jinja2_globals,
                                            set_jinja2_silent_none)
 from sacrud.version import __version__
 
@@ -36,12 +36,9 @@ def add_routes(config):
     config.add_route('sa_save_position',  prefix + 'save_position')
     config.add_route('sa_list',           prefix + '{table}')
     config.add_route('sa_create',         prefix + '{table}/create')
-    config.add_route('sa_read',           prefix + '{table}/read/{id}')
-    config.add_route('sa_update',         prefix + '{table}/update/{id}')
-    config.add_route('sa_delete',         prefix + '{table}/delete/{id}')
-    config.add_route('sa_paste',          prefix + '{table}/paste/{id}/' +
-                                                   '{target_id}')
-    config.add_route('sa_paste_tmp',      prefix + '{table}/paste/{id}')
+    config.add_route('sa_read',           prefix + '{table}/read/*pk')
+    config.add_route('sa_update',         prefix + '{table}/update/*pk')
+    config.add_route('sa_delete',         prefix + '{table}/delete/*pk')
 
 
 def includeme(config):

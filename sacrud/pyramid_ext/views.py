@@ -142,60 +142,6 @@ def sa_home(request):
     return context
 
 
-def sarow_to_json(rows):
-    def serializator(x):
-        def serialize_date(value):
-            import json
-            if not value or isinstance(value, basestring):
-                return value
-            try:
-                json.dump(value)
-            except TypeError:
-                return str(value)
-            return value
-        return {k: serialize_date(v) for k, v in x.items()}
-    json_list = [x.__dict__ for x in rows.items]
-    map(lambda x: x.pop("_sa_instance_state", None), json_list)
-    json_list = map(lambda x: serializator(x), json_list)
-    return json_list
-
-
-@view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
-def sa_list(request):
-    tname = request.matchdict['table']
-    order_by = request.params.get('order_by', False)
-    table = get_table(tname, request)
-
-    # If method POST, do action
-    if 'selected_action' in request.POST:
-        selected_action = request.POST.get('selected_action')
-        items_list = request.POST.getall('selected_item')
-        if selected_action == 'delete':
-            action.delete(request.dbsession, table, items_list)
-        if selected_action == 'hide':
-            action.hide(request.dbsession, table, items_list)
-
-    args = [request.dbsession, table]
-
-    if order_by:
-        args.append(order_by)
-
-    items_per_page = getattr(table, 'items_per_page', 10)
-    resp = action.rows_list(*args, paginator=get_paginator(request, items_per_page))
-
-    # if URL like /sacrud/tablename?json=on return json
-    if request.GET.get('json', None):
-        request.override_renderer = 'json'
-        return sarow_to_json(resp['row'])
-    return {'sa_crud': resp, 'breadcrumbs': breadcrumbs(tname, 'sa_list')}
-
-
-# @view_config(route_name='sa_del_selected', renderer='/sacrud/list.jinja2', request_method='POST')
-# def sa_del_selected(request):
-#     return sa_list(request)
-    # return HTTPFound(location=self.request.route_url('sa_list', table=self.tname))
-
-
 class CRUD(object):
 
     def __init__(self, request):
@@ -203,12 +149,46 @@ class CRUD(object):
         self.tname = request.matchdict['table']
         self.table = get_table(self.tname, self.request)
         self.relationships = get_relationship(self.tname, self.request)
-        self.id = request.matchdict.get('id')
         self.params = request.params.dict_of_lists()
+        pk = request.matchdict.get('pk')
+        self.pk = None
+        if pk and len(pk) % 2 == 0:
+            self.pk = dict(zip(pk[::2], pk[1::2]))
+
+    def pk_to_list(self, primary_keys, obj):
+        pk_list = []
+        for item in primary_keys:
+            pk_list.append(item.name)
+            pk_list.append(getattr(obj, item.name))
+        return pk_list
 
     def flash_message(self, message, status="success"):
         if hasattr(self.request, 'session'):
             self.request.session.flash([message, status])
+
+    @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
+    def sa_list(self):
+        order_by = self.request.params.get('order_by', None)
+        table = self.table
+        request = self.request
+
+        # If method POST, do action
+        if 'selected_action' in request.POST:
+            selected_action = request.POST.get('selected_action')
+            items_list = request.POST.getall('selected_item')
+            if selected_action == 'delete':
+                action.delete(request.dbsession, table, items_list)
+            if selected_action == 'hide':
+                action.hide(request.dbsession, table, items_list)
+
+        items_per_page = getattr(table, 'items_per_page', 10)
+        resp = action.CRUD(request.dbsession, table)\
+            .rows_list(paginator=get_paginator(request, items_per_page),
+                       order_by=order_by)
+
+        return {'sa_crud': resp,
+                'pk_to_list': self.pk_to_list,
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_list')}
 
     @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
     def sa_create(self):
@@ -225,24 +205,26 @@ class CRUD(object):
 
     @view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
     def sa_read(self):
-        resp = action.read(self.request.dbsession,
-                           get_table(self.tname, self.request), self.id)
-        return {'sa_crud': resp,
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_read', id=self.id)}
+        resp = action.CRUD(self.request.dbsession,
+                           get_table(self.tname, self.request), pk=self.pk)
+        return {'sa_crud': resp.read(),
+                'breadcrumbs': breadcrumbs(self.tname, 'sa_read', id=self.pk)}
 
     @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
     def sa_update(self):
+        resp = action.CRUD(self.request.dbsession, self.table, self.pk)
+
         if 'form.submitted' in self.request.params:
-            action.update(self.request.dbsession, self.table, self.id,
-                          self.params)
+            resp.request = self.params
+            resp.update()
             self.flash_message("You updated object of %s" % self.tname)
             return HTTPFound(location=self.request.route_url('sa_list',
                                                              table=self.tname))
-        resp = action.update(self.request.dbsession, self.table, self.id)
-        return {'sa_crud': resp,
+        return {'sa_crud': resp.update(),
+                'pk_to_list': self.pk_to_list,
                 'relationships': self.relationships,
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_update',
-                                           id=self.id)}
+                                           id=self.pk)}
 
     @view_config(route_name='sa_delete')
     def sa_delete(self):
@@ -250,18 +232,3 @@ class CRUD(object):
         self.flash_message("You have removed object of %s" % self.tname)
         return HTTPFound(location=self.request.route_url('sa_list',
                                                          table=self.tname))
-
-
-@view_config(route_name='sa_paste', renderer='/sacrud/list.jinja2')
-def sa_paste(request):
-    tname = request.matchdict['table']
-    id = request.matchdict['id']
-    target_id = request.matchdict['target_id']
-
-    source_obj = action.read(request.dbsession, get_table(tname, request),
-                             id)['obj']
-    pos_name = source_obj.__mapper_args__['order_by']
-    action.update(request.dbsession, get_table(tname, request), target_id,
-                  {pos_name: [getattr(source_obj, pos_name)]})
-
-    return HTTPFound(location=request.route_url('sa_list', table=tname))
