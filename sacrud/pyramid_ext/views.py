@@ -184,7 +184,7 @@ class CRUD(object):
         get_params = {'order_by': order_by, 'search': search}
 
         # Make url for table headrow links to order_by
-        for col in table.sacrud_list_col:
+        for col in getattr(table, 'sacrud_list_col', []):
             head_url_list = []
             column_name = col['column'].name if isinstance(col, dict) else col.name
             if order_by:
