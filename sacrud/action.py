@@ -97,7 +97,7 @@ class CRUD(object):
         query = session.query(table)
         if search:
             search_filter_group = [search_col.like('%%%s%%' % search)
-                                   for search_col in table.sacrud_search_col]
+                                   for search_col in getattr(table, 'sacrud_search_col', [])]
             query = query.filter(or_(*search_filter_group))
 
         if order_by:
