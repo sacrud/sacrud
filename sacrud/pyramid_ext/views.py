@@ -180,29 +180,30 @@ class CRUD(object):
         table = self.table
         request = self.request
         order_by = request.params.get('order_by', False)
-        search = request.GET.get('search')
+        search = request.params.get('search')
         get_params = {'order_by': order_by, 'search': search}
 
         # Make url for table headrow links to order_by
         for col in getattr(table, 'sacrud_list_col', table.__table__.columns):
-            head_url_list = []
+            order_param_list = []
             column_name = col['column'].name if isinstance(col, dict) else col.name
             if order_by:
                 if column_name not in order_by.replace('-', '').split('.'):
-                    head_url_list.append(column_name)
+                    order_param_list.append(column_name)
 
                 for value in order_by.split('.'):
                     none, pfx, col_name = value.rpartition('-')
                     if column_name == col_name:
                         new_pfx = {'': '-', '-': ''}[pfx]
-                        head_url_list.insert(0, '%s%s' % (new_pfx, col_name))
+                        order_param_list.insert(0, '%s%s' % (new_pfx, col_name))
                     else:
-                        head_url_list.append('%s%s' % (pfx, col_name))
+                        order_param_list.append('%s%s' % (pfx, col_name))
             else:
-                head_url_list.append(column_name)
+                order_param_list.append(column_name)
 
-            full_params = ['%s=%s' % (param, value) for param, value in get_params.items() if param != 'order_by' and value]
-            full_params.append('order_by=%s' % '.'.join(head_url_list))
+            full_params = ['%s=%s' % (param, value) for param, value in get_params.items()
+                           if param != 'order_by' and value]
+            full_params.append('order_by=%s' % '.'.join(order_param_list))
             update_difference_object(col, 'head_url', '&'.join(full_params))
 
         # If method POST, do action
@@ -211,8 +212,6 @@ class CRUD(object):
             items_list = request.POST.getall('selected_item')
             if selected_action == 'delete':
                 action.delete(request.dbsession, table, items_list)
-            if selected_action == 'hide':
-                action.hide(request.dbsession, table, items_list)
 
         items_per_page = getattr(table, 'items_per_page', 10)
         resp = action.CRUD(request.dbsession, table)\
