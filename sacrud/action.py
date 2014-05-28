@@ -9,8 +9,6 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
-import inspect
-
 import transaction
 from sqlalchemy import desc, or_
 from webhelpers.paginate import Page
@@ -103,20 +101,23 @@ class CRUD(object):
         columns = [c for c in self.table.__table__.columns]
 
         if self.request:
-            args = {}
-            # FIXME: я чувствую здесь диссонанс
-            for arg in inspect.getargspec(self.table.__init__).args[1:]:
-                args[arg] = None
+            params = self.request
 
-            if not self.obj:
-                self.obj = self.table(**args)
-
-            for key, value in self.request.items():
-                # chek columns exist
+            # filter request params for object
+            for key, value in params.items():
+                # chek if columns not exist
                 if key not in self.table.__table__.columns:
+                    params.pop(key, None)
                     continue
-                value = check_type(self.request, self.table, key)
-                self.obj.__setattr__(key, value)
+                params[key] = check_type(self.request, self.table, key)
+
+            # for create
+            if not self.obj:
+                self.obj = self.table(**params)
+            # for update
+            else:
+                for key, value in params.iteritems():
+                    self.obj.__setattr__(key, value)
             # save m2m relationships
             set_m2m_value(self.session, self.request, self.obj)
             self.session.add(self.obj)
