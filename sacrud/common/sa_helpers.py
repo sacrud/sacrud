@@ -11,6 +11,7 @@ SQLAlchemy helpers
 """
 import ast
 import inspect
+import json
 import os
 import uuid
 
@@ -104,12 +105,14 @@ def get_pk(obj):
     return pk_list
 
 
-def pk_to_list(obj):
+def pk_to_list(obj, as_json=False):
     pk_list = []
     primary_keys = get_pk(obj)
     for item in primary_keys:
         pk_list.append(item.name)
         pk_list.append(getattr(obj, item.name))
+    if as_json:
+        return json.dumps(pk_list)
     return pk_list
 
 

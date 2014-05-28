@@ -61,7 +61,7 @@
                                     <tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}"
                                         class="sacrud-grid-content-grid__body-row">
                                         <td class="sacrud-grid-content-grid__body-item">
-                                            <input type="checkbox" name="selected_item" value="{{row.id}}" />
+                                            <input type="checkbox" name="selected_item" value="{{pk_to_list(row, True)}}" />
                                         </td>
                                         {% for col in visible_columns %}
                                             <td class="sacrud-grid-content-grid__body-item">

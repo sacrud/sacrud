@@ -10,6 +10,7 @@
 Views for Pyramid frontend
 """
 import itertools
+import json
 import operator
 
 import transaction
@@ -151,6 +152,12 @@ def update_difference_object(obj, key, value):
     # return obj
 
 
+def pk_list_to_dict(pk_list):
+    if pk_list and len(pk_list) % 2 == 0:
+        return dict(zip(pk_list[::2], pk_list[1::2]))
+    return None
+
+
 class CRUD(object):
 
     def __init__(self, request):
@@ -163,7 +170,7 @@ class CRUD(object):
 
         pk = request.matchdict.get('pk')
         if pk and len(pk) % 2 == 0:
-            self.pk = dict(zip(pk[::2], pk[1::2]))
+            self.pk = pk_list_to_dict(pk)
         elif pk or pk == ():
             raise HTTPNotFound
 
@@ -208,8 +215,9 @@ class CRUD(object):
         items_list = request.POST.getall('selected_item')
         if selected_action == 'delete':
             for item in items_list:
-                # FIXME: add Multi-Column pk
-                action.CRUD(request.dbsession, table, pk={'id': item}).delete()
+                pk_list = json.loads(item)
+                pk = pk_list_to_dict(pk_list)
+                action.CRUD(request.dbsession, table, pk=pk).delete()
 
         items_per_page = getattr(table, 'items_per_page', 10)
         resp = action.CRUD(request.dbsession, table)\
