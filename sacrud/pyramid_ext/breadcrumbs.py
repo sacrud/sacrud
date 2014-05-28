@@ -14,7 +14,10 @@ Breadcrumbs for sacrud pyramid extension.
 def get_crumb(name, visible, view, params):
     crumb = name
     if isinstance(name, dict):
-        #  category_id=1, group_id=1
+        """ {'category_id': 1, 'group_id': 1}
+        to
+            category_id=1, group_id=1
+        """
         crumb = ""
         for k, v in name.iteritems():
             crumb = crumb + " " + k + "=" + v + ","
