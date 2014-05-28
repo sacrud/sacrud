@@ -1,7 +1,12 @@
 $(function() {
     $(document).on('click', '.action_button', function () {
-        $('.popup').css('display', 'table');
-        $('.popup').css('position', 'absolute');
+        // $('.popup').css('display', 'table');
+        // $('.popup').css('position', 'absolute');
+        $('.popup').show();
+    });
+
+    $(document).on('click', '.popup-inner__content-link-text', function () {
+        $('.popup').hide();
     });
 
     $(document).on('click', '.popup-button__item', function () {
