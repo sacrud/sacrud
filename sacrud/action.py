@@ -82,16 +82,6 @@ class CRUD(object):
                 'prefix': prefix,
                 }
 
-    def read(self):
-        """ Select row by pk.
-        """
-        columns = [c for c in getattr(self.table, 'sacrud_list_col', self.table.__table__.columns)]
-        return {'obj': self.obj,
-                'pk': self.pk,
-                'col': columns,
-                'table': self.table,
-                'prefix': prefix}
-
     def add(self):
         """ Update row of table.
         """
