@@ -19,7 +19,7 @@
                 {% endfor %}
             </select>
             {% break %}
-        {% else %}
+        {% elif loop.last %}
           {{ value }}
         {% endif %}
     {% endfor %}
