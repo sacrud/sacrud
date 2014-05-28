@@ -13,13 +13,14 @@ import itertools
 import operator
 
 import transaction
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from sqlalchemy import inspect
 
 from sacrud import action
 from sacrud.common.paginator import get_paginator
 from sacrud.common.pyramid_helpers import get_settings_param
+from sacrud.common.sa_helpers import pk_to_list
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs
 
 
@@ -153,22 +154,18 @@ def update_difference_object(obj, key, value):
 class CRUD(object):
 
     def __init__(self, request):
+        self.pk = None
         self.request = request
         self.tname = request.matchdict['table']
         self.table = get_table(self.tname, self.request)
         self.relationships = get_relationship(self.tname, self.request)
         self.params = request.params.dict_of_lists()
+
         pk = request.matchdict.get('pk')
-        self.pk = None
         if pk and len(pk) % 2 == 0:
             self.pk = dict(zip(pk[::2], pk[1::2]))
-
-    def pk_to_list(self, primary_keys, obj):
-        pk_list = []
-        for item in primary_keys:
-            pk_list.append(item.name)
-            pk_list.append(getattr(obj, item.name))
-        return pk_list
+        elif pk or pk == ():
+            raise HTTPNotFound
 
     def flash_message(self, message, status="success"):
         if hasattr(self.request, 'session'):
@@ -206,12 +203,13 @@ class CRUD(object):
             full_params.append('order_by=%s' % '.'.join(order_param_list))
             update_difference_object(col, 'head_url', '&'.join(full_params))
 
-        # If method POST, do action
-        if 'selected_action' in request.POST:
-            selected_action = request.POST.get('selected_action')
-            items_list = request.POST.getall('selected_item')
-            if selected_action == 'delete':
-                action.delete(request.dbsession, table, items_list)
+        # Some actions with objects in grid
+        selected_action = request.POST.get('selected_action')
+        items_list = request.POST.getall('selected_item')
+        if selected_action == 'delete':
+            for item in items_list:
+                # FIXME: add Multi-Column pk
+                action.CRUD(request.dbsession, table, pk={'id': item}).delete()
 
         items_per_page = getattr(table, 'items_per_page', 10)
         resp = action.CRUD(request.dbsession, table)\
@@ -219,7 +217,7 @@ class CRUD(object):
                        order_by=order_by, search=search)
 
         return {'sa_crud': resp,
-                'pk_to_list': self.pk_to_list,
+                'pk_to_list': pk_to_list,
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_list'),
                 'get_params': get_params}
 
@@ -254,7 +252,7 @@ class CRUD(object):
             return HTTPFound(location=self.request.route_url('sa_list',
                                                              table=self.tname))
         return {'sa_crud': resp.update(),
-                'pk_to_list': self.pk_to_list,
+                'pk_to_list': pk_to_list,
                 'relationships': self.relationships,
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_update',
                                            id=self.pk)}

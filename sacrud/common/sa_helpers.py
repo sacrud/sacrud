@@ -104,6 +104,15 @@ def get_pk(obj):
     return pk_list
 
 
+def pk_to_list(obj):
+    pk_list = []
+    primary_keys = get_pk(obj)
+    for item in primary_keys:
+        pk_list.append(item.name)
+        pk_list.append(getattr(obj, item.name))
+    return pk_list
+
+
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
