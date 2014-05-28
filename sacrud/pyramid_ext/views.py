@@ -229,13 +229,6 @@ class CRUD(object):
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_list'),
                 'get_params': get_params}
 
-    @view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
-    def sa_read(self):
-        resp = action.CRUD(self.request.dbsession,
-                           get_table(self.tname, self.request), pk=self.pk)
-        return {'sa_crud': resp.read(),
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_read', id=self.pk)}
-
     @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
     @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
     def sa_add(self):

@@ -17,9 +17,6 @@ from sacrud.common.sa_helpers import check_type, get_pk, set_instance_name
 
 prefix = 'crud'
 
-# FIXME: rewrite it
-get_pk_hook = lambda x: get_pk(x)[0].name
-
 
 def get_m2m_objs(session, relation, ids):
     pk = relation.primary_key[0]
@@ -139,21 +136,3 @@ class CRUD(object):
         # check_type('', table, obj=obj)
         self.session.delete(self.obj)
         transaction.commit()
-
-
-def read(session, table, pk):
-    """
-    Select row by pk.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in getattr(table, 'sacrud_list_col',
-                              table.__table__.columns)]
-    return {'obj': obj, 'pk': pk_name, 'col': col, 'table': table,
-            'prefix': prefix}
