@@ -26,7 +26,7 @@ def get_crumb(name, visible, view, params):
     return {'name': crumb, 'visible': visible, 'view': view, 'param': params}
 
 
-def breadcrumbs(tname,  view, id=None):
+def breadcrumbs(tname, view, id=None):
     bc = {}
     bc['sa_list'] = [get_crumb('Dashboard', True, 'sa_home', {'table': tname}),
                      get_crumb(tname, True, 'sa_list', {'table': tname})]

@@ -37,38 +37,6 @@ def set_m2m_value(session, request, obj):
         setattr(obj, key, value)
 
 
-def create(session, table, request=''):
-    """
-    Insert row to table.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `request`: webob format request.
-    """
-    if request:
-        args = {}
-        # FIXME: я чувствую здесь диссонанс
-        for arg in inspect.getargspec(table.__init__).args[1:]:
-            args[arg] = None
-        obj = table(**args)
-        for key, value in request.items():
-            # chek columns exist
-            if key not in table.__table__.columns:
-                continue
-            value = check_type(request, table, key)
-            obj.__setattr__(key, value)
-        session.add(obj)
-        transaction.commit()
-        return
-
-    pk_name = get_pk_hook(table)
-    col = [c for c in getattr(table, 'sacrud_detail_col',
-                              [('', table.__table__.columns)])]
-    return {'pk': pk_name, 'col': col, 'table': table, 'prefix': prefix}
-
-
 class CRUD(object):
     def __init__(self, session, table, pk=None, request=None):
         self.pk = get_pk(table)
@@ -129,27 +97,26 @@ class CRUD(object):
                 'table': self.table,
                 'prefix': prefix}
 
-    def update(self):
+    def add(self):
         """ Update row of table.
         """
         columns = [c for c in self.table.__table__.columns]
-        set_instance_name(self.obj, columns)
 
         if self.request:
-            for col in columns:
-                if col.name not in self.request:
-                    continue
-                if getattr(self.obj, col.instance_name,
-                           col.name) == self.request[col.name][0]:
-                    continue
-                # XXX: not good
-                if col.type.__class__.__name__ == 'FileStore':
-                    if not hasattr(self.request[col.name][0], 'filename'):
-                        continue
-                value = check_type(self.request, self.table,
-                                   col.name, self.obj)
-                setattr(self.obj, col.name, value)
+            args = {}
+            # FIXME: я чувствую здесь диссонанс
+            for arg in inspect.getargspec(self.table.__init__).args[1:]:
+                args[arg] = None
 
+            if not self.obj:
+                self.obj = self.table(**args)
+
+            for key, value in self.request.items():
+                # chek columns exist
+                if key not in self.table.__table__.columns:
+                    continue
+                value = check_type(self.request, self.table, key)
+                self.obj.__setattr__(key, value)
             # save m2m relationships
             set_m2m_value(self.session, self.request, self.obj)
             self.session.add(self.obj)

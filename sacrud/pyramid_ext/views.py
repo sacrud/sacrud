@@ -47,6 +47,20 @@ def get_relationship(tname, request):
     return [rel for rel in relations]
 
 
+def update_difference_object(obj, key, value):
+    if isinstance(obj, dict):
+        obj.update({key: value})
+    else:
+        setattr(obj, key, value)
+    # return obj
+
+
+def pk_list_to_dict(pk_list):
+    if pk_list and len(pk_list) % 2 == 0:
+        return dict(zip(pk_list[::2], pk_list[1::2]))
+    return None
+
+
 @view_config(route_name='sa_save_position', request_method='POST',
              renderer='json')
 def sa_save_position(request):
@@ -144,20 +158,6 @@ def sa_home(request):
     return context
 
 
-def update_difference_object(obj, key, value):
-    if isinstance(obj, dict):
-        obj.update({key: value})
-    else:
-        setattr(obj, key, value)
-    # return obj
-
-
-def pk_list_to_dict(pk_list):
-    if pk_list and len(pk_list) % 2 == 0:
-        return dict(zip(pk_list[::2], pk_list[1::2]))
-    return None
-
-
 class CRUD(object):
 
     def __init__(self, request):
@@ -229,19 +229,6 @@ class CRUD(object):
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_list'),
                 'get_params': get_params}
 
-    @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
-    def sa_create(self):
-        if 'form.submitted' in self.request.params:
-            action.create(self.request.dbsession, self.table,
-                          self.request.params.dict_of_lists())
-            self.flash_message("You created new object of %s" % self.tname)
-            return HTTPFound(location=self.request.route_url('sa_list',
-                                                             table=self.tname))
-        resp = action.create(self.request.dbsession, self.table)
-        return {'sa_crud': resp,
-                'relationships': self.relationships,
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_create')}
-
     @view_config(route_name='sa_read', renderer='/sacrud/read.jinja2')
     def sa_read(self):
         resp = action.CRUD(self.request.dbsession,
@@ -250,20 +237,28 @@ class CRUD(object):
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_read', id=self.pk)}
 
     @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
-    def sa_update(self):
+    @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
+    def sa_add(self):
         resp = action.CRUD(self.request.dbsession, self.table, self.pk)
 
         if 'form.submitted' in self.request.params:
             resp.request = self.params
-            resp.update()
-            self.flash_message("You updated object of %s" % self.tname)
+            resp.add()
+            if self.pk:
+                self.flash_message("You updated object of %s" % self.tname)
+            else:
+                self.flash_message("You created new object of %s" % self.tname)
             return HTTPFound(location=self.request.route_url('sa_list',
                                                              table=self.tname))
-        return {'sa_crud': resp.update(),
+
+        bc = breadcrumbs(self.tname, 'sa_create')
+        if self.pk:
+            bc = breadcrumbs(self.tname, 'sa_update', id=self.pk)
+
+        return {'sa_crud': resp.add(),
                 'pk_to_list': pk_to_list,
                 'relationships': self.relationships,
-                'breadcrumbs': breadcrumbs(self.tname, 'sa_update',
-                                           id=self.pk)}
+                'breadcrumbs': bc}
 
     @view_config(route_name='sa_delete')
     def sa_delete(self):
