@@ -10,7 +10,7 @@
         <div class="popup-button">
             <div class="popup-button__item" data-status="delete">
                 <a href="{{ request.route_url('sa_delete', table=sa_crud['table'].__tablename__,
-                            pk=pk_to_list(sa_crud['pk'], sa_crud['obj'])) }}"
+                            pk=pk_to_list(sa_crud['obj'])) }}"
                    class="popup-button__item-link">Confirm</a>
             </div>
             <div class="popup-button__item" data-status="cancel">

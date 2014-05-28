@@ -9,7 +9,7 @@
             action="{{ request.route_url('sa_create', table=obj_cls.__tablename__) }}"
         {% else %}
             action="{{ request.route_url('sa_update', table=obj_cls.__tablename__,
-                       pk=pk_to_list(sa_crud['pk'], obj)) }}"
+                       pk=pk_to_list(obj)) }}"
         {% endif %}
     {% endif %}>
 
@@ -51,14 +51,12 @@
                                         {% set css_class=[] %}
                                         {# TODO: move to include "set_css_style.jinja2" #}
                                         {% if hasattr(obj_cls, 'sacrud_css_class') %}
-
                                             {% for key, value in obj_cls.sacrud_css_class.items() %}
                                                 {% if col in value %}
                                                     {{ css_class.append(key) }}
                                                 {% endif %}
                                             {% endfor %}
                                             {% set css_styles=' '.join(css_class) %}
-
                                         {% endif %}
 
                                         <tr class="sacrud-grid-content-grid__body-row">
@@ -102,7 +100,7 @@
                         {% if obj %}
                             <div class="toolbar-button__item toolbar-button__item_type_red">
                                 <a href="{{ request.route_url('sa_delete', table=obj_cls.__tablename__,
-                                            pk=pk_to_list(sa_crud['pk'], obj)) }}"
+                                            pk=pk_to_list(obj)) }}"
                                    class="toolbar-button__item-link">Delete</a>
                             </div>
                         {% endif %}
