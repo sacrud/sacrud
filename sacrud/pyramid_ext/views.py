@@ -20,7 +20,7 @@ from sqlalchemy import inspect
 
 from sacrud import action
 from sacrud.common.paginator import get_paginator
-from sacrud.common.pyramid_helpers import get_settings_param
+from sacrud.common.pyramid_helpers import get_settings_param, sacrud_env
 from sacrud.common.sa_helpers import pk_to_list
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs
 
@@ -179,6 +179,7 @@ class CRUD(object):
             self.request.session.flash([message, status])
 
     # XXX: C901
+    @sacrud_env
     @view_config(route_name='sa_list', renderer='/sacrud/list.jinja2')
     def sa_list(self):
         table = self.table
@@ -229,6 +230,7 @@ class CRUD(object):
                 'breadcrumbs': breadcrumbs(self.tname, 'sa_list'),
                 'get_params': get_params}
 
+    @sacrud_env
     @view_config(route_name='sa_update', renderer='/sacrud/create.jinja2')
     @view_config(route_name='sa_create', renderer='/sacrud/create.jinja2')
     def sa_add(self):

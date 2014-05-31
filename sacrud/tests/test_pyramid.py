@@ -16,7 +16,7 @@ import unittest
 from pyramid import testing
 
 from sacrud.common.pyramid_helpers import get_obj_from_settings
-from sacrud.pyramid_ext import get_field_template
+from sacrud.common.pyramid_helpers import get_field_template
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views import get_relationship, get_table
 from sacrud.tests.test_models import (_initTestingDB, DB_FILE,
@@ -111,6 +111,9 @@ class ViewsTest(BaseTest):
     def _include_sacrud(self):
         request = testing.DummyRequest()
         config = testing.setUp(request=request)
+        config.include('pyramid_jinja2')
+        config.commit()
+
         config.registry.settings['sqlalchemy.url'] = TEST_DATABASE_CONNECTION_STRING
         config.include('sacrud.pyramid_ext', route_prefix='/admin')
         settings = config.registry.settings

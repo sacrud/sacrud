@@ -20,6 +20,8 @@ def main(global_config, **settings):
     """
     session_factory = session_factory_from_settings(settings)
     config = Configurator(settings=settings, session_factory=session_factory)
+    config.include('pyramid_jinja2')
+    config.commit()
 
     # SACRUD
     config.include('sacrud.pyramid_ext', route_prefix='/admin')

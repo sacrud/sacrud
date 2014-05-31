@@ -9,6 +9,12 @@
 """
 Any helpers for Pyramid
 """
+
+import os
+import sqlalchemy
+
+from pyramid.path import AssetResolver
+
 from sacrud.common import import_from_string
 
 
@@ -73,13 +79,6 @@ def set_jinja2_silent_none(config):
     env.finalize = _silent_none
 
 
-def set_jinja2_globals(config, hashes):
-    """ add globals to context
-    """
-    env = config.get_jinja2_environment()
-    env.globals.update(hashes)
-
-
 def get_settings_param(request, name):
     settings = request.registry.settings
     return settings[name]
@@ -91,3 +90,28 @@ def get_obj_from_settings(request, name):
     if isinstance(position_model, basestring):
         return import_from_string(position_model)
     return position_model
+
+
+def get_field_template(field):
+    ar = AssetResolver()
+    path = ar.resolve('sacrud:templates/sacrud/types/%s.jinja2' % field).abspath()
+    if os.path.exists(path):
+        return path
+    return 'sacrud/types/String.jinja2'
+
+
+def sacrud_env(fun):
+    jinja2_globals = {'str': str, 'getattr': getattr, 'isinstance': isinstance,
+                      'hasattr': hasattr,
+                      'sqlalchemy': sqlalchemy,
+                      'get_field_template': get_field_template}
+
+    def wrapped(*args, **kwargs):
+        response = fun(*args, **kwargs)
+        if not isinstance(response, dict):
+            return response
+        DBSession = {'session': args[0].request.dbsession}
+        response.update(jinja2_globals)
+        response.update(DBSession)
+        return response
+    return wrapped
