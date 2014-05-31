@@ -75,8 +75,9 @@ def _silent_none(value):
 def set_jinja2_silent_none(config):
     """ if variable is None print '' instead of 'None'
     """
-    env = config.get_jinja2_environment()
-    env.finalize = _silent_none
+    config.commit()
+    jinja2_env = config.get_jinja2_environment()
+    jinja2_env.finalize = _silent_none
 
 
 def get_settings_param(request, name):

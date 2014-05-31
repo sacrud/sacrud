@@ -13,8 +13,7 @@ import sqlalchemy
 import sqlalchemy.orm as orm
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common.pyramid_helpers import (get_obj_from_settings, pkg_prefix,
-                                           set_jinja2_silent_none)
+from sacrud.common.pyramid_helpers import get_obj_from_settings, pkg_prefix
 
 
 def add_routes(config):
@@ -41,7 +40,6 @@ def includeme(config):
     # Jinja2
     config.add_jinja2_search_path("sacrud:templates")
     config.add_jinja2_extension('jinja2.ext.loopcontrols')
-    set_jinja2_silent_none(config)
 
     config.include(add_routes)
     config.add_static_view('/sa_static', 'sacrud:static')
