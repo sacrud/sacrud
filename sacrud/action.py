@@ -9,6 +9,9 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
+import inspect
+import itertools
+
 import transaction
 from sqlalchemy import desc, or_
 from webhelpers.paginate import Page
@@ -18,18 +21,30 @@ from sacrud.common.sa_helpers import check_type, get_pk, set_instance_name
 prefix = 'crud'
 
 
+def get_empty_instance(table):
+    instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
+    # list like ['name', 'group', 'visible'] to dict with empty
+    # value as {'name': None, 'group': None, 'visible': None}
+    init = dict(
+        zip(instance_defaults_params,
+            itertools.repeat(None))
+    )
+    return table(**init)
+
+
 def get_m2m_objs(session, relation, ids):
     pk = relation.primary_key[0]
     return session.query(relation).filter(pk.in_(ids)).all()
 
 
 def set_m2m_value(session, request, obj):
-    m2m_request = {k: v for k, v in request.iteritems() if k[-2:] == '[]'}
+    m2m_request = {k: v for k, v in request.items() if k[-2:] == '[]'}
     for k, v in m2m_request.iteritems():
         key = k[:-2]
         relation = getattr(obj.__class__, key)
         value = get_m2m_objs(session, relation.mapper, v)
         setattr(obj, key, value)
+    return obj
 
 
 class CRUD(object):
@@ -88,25 +103,24 @@ class CRUD(object):
         columns = [c for c in self.table.__table__.columns]
 
         if self.request:
-            params = self.request
-
-            # filter request params for object
-            for key, value in params.items():
-                # chek if columns not exist
-                if key not in self.table.__table__.columns:
-                    params.pop(key, None)
-                    continue
-                params[key] = check_type(self.request, self.table, key)
-
             # for create
             if not self.obj:
-                self.obj = self.table(**params)
-            # for update
-            else:
-                for key, value in params.iteritems():
-                    self.obj.__setattr__(key, value)
+                self.obj = get_empty_instance(self.table)
+
             # save m2m relationships
-            set_m2m_value(self.session, self.request, self.obj)
+            self.obj = set_m2m_value(self.session, self.request, self.obj)
+
+            # filter request params for object
+            for key, value in self.request.items():
+                # chek if columns not exist
+                if key not in self.table.__table__.columns:
+                    self.request.pop(key, None)
+                    continue
+                self.request[key] = check_type(self.request, self.table, key)
+
+            for key, value in self.request.iteritems():
+                self.obj.__setattr__(key, value)
+
             self.session.add(self.obj)
             transaction.commit()
             return

@@ -13,7 +13,6 @@ import os
 
 import transaction
 from sqlalchemy import create_engine, orm
-from sqlalchemy.event import listen
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -22,7 +21,6 @@ from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.common.sa_helpers import TableProperty
 from sacrud.exttype import FileStore
-from sacrud.position import before_insert
 
 Base = declarative_base()
 
@@ -55,13 +53,11 @@ def _initTestingDB(url=TEST_DATABASE_CONNECTION_STRING):
 class User(Base):
 
     __tablename__ = 'user'
-    __mapper_args__ = {'order_by': 'position'}
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
     fullname = Column(String)
     password = Column(String, info={'verbose_name': 'user password'})
-    position = Column(Integer, default=0)
     sex = Column(Enum('male',
                       'female',
                       'alien',
@@ -71,16 +67,11 @@ class User(Base):
     def foo(cls):
         return cls.name
 
-    def __init__(self, name, fullname, password, position=0, sex='unknown'):
+    def __init__(self, name, fullname, password, sex='unknown'):
         self.name = name
         self.fullname = fullname
         self.password = password
-        self.position = position
         self.sex = sex
-
-
-listen(User, "before_insert", before_insert)
-listen(User, "before_update", before_insert)
 
 
 class Profile(Base):

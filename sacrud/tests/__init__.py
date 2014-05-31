@@ -9,7 +9,7 @@ import transaction
 from pyramid.testing import DummyRequest
 from sqlalchemy import create_engine
 
-from sacrud.action import create, delete, read, rows_list, update
+from sacrud.action import CRUD
 from sacrud.common.sa_helpers import delete_fileobj, get_pk
 from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
 
@@ -75,7 +75,7 @@ class SacrudTest(BaseSacrudTest):
         self.session.add(user)
         transaction.commit()
 
-        result = rows_list(self.session, User)
+        result = CRUD(self.session, User).rows_list()
         user = self.session.query(User).get(1)
 
         self.assertEqual(result['pk'], 'id')
@@ -92,7 +92,7 @@ class SacrudTest(BaseSacrudTest):
         request['fullname'] = ["Vasya Pupkin", ]
         request['password'] = ["123", ]
 
-        create(self.session, User, request)
+        CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
 
         self.assertEqual(user.name, "Vasya")
@@ -111,7 +111,7 @@ class SacrudTest(BaseSacrudTest):
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 
-        create(self.session, Profile, request)
+        CRUD(self.session, Profile, request=request).add()
 
         profile = self.session.query(Profile).get(1)
 
@@ -129,17 +129,6 @@ class SacrudTest(BaseSacrudTest):
         transaction.commit()
 
         self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
-
-    def test_read(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        result = read(self.session, User, 1)
-        self.assertEqual(result['obj'].id, 1)
-        self.assertEqual(result['pk'], "id")
-        self.assertEqual(result['prefix'], "crud")
-        self.assertEqual(result['table'], User)
 
     def test_update(self):
 
@@ -171,7 +160,7 @@ class SacrudTest(BaseSacrudTest):
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 
-        update(self.session, Profile, 1, request)
+        CRUD(self.session, Profile, pk={'id': 1}, request=request).add()
         profile = self.session.query(Profile).get(1)
 
         self.assertEqual(profile.phone, "213123123")
@@ -198,48 +187,10 @@ class SacrudTest(BaseSacrudTest):
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 
-        create(self.session, Profile, request)
-        delete(self.session, Profile, 1)
+        CRUD(self.session, Profile, request=request).add()
+        CRUD(self.session, Profile, pk={'id': 1}).add()
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)
         # check file also deleted
         self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
-
-
-class PositionTest(BaseSacrudTest):
-
-    def test_insert(self):
-
-        self.user_add()
-        self.user_add()
-        self.user_add()
-
-        self.assertEqual(self.session.query(User).get(1).position, 2)
-        self.assertEqual(self.session.query(User).get(2).position, 1)
-        self.assertEqual(self.session.query(User).get(3).position, 0)
-
-        request = DummyRequest().environ
-        request["position"] = ["0", ]
-        update(self.session, User, 1, request)
-
-        self.assertEqual(self.session.query(User).get(1).position, 0)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
-
-        request = DummyRequest().environ
-        request["position"] = ["4", ]
-        update(self.session, User, 1, request)
-
-        self.assertEqual(self.session.query(User).get(1).position, 4)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
-
-        user = User(u'Vasya', u'Pupkin', u"123", '3')
-        self.session.add(user)
-        transaction.commit()
-
-        self.assertEqual(self.session.query(User).get(1).position, 5)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
-        self.assertEqual(self.session.query(User).get(4).position, 3)
