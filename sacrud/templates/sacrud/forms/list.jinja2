@@ -57,11 +57,10 @@
                             </thead>
                             <tbody class="sacrud-grid-content-grid__body">
                                 {% for row in sa_crud['row'] %}
-                                    {% set row_id = row[sa_crud['pk']] %}
-                                    <tr id="{{ sa_crud['table'].__tablename__ }}_{{ row_id }}"
+                                    <tr id="{{ sa_crud['table'].__tablename__ }}_{{ pk_to_list(row) }}"
                                         class="sacrud-grid-content-grid__body-row">
                                         <td class="sacrud-grid-content-grid__body-item">
-                                            <input type="checkbox" name="selected_item" value="{{pk_to_list(row, True)}}" />
+                                            <input type="checkbox" name="selected_item" value="{{ pk_to_list(row, True) }}" />
                                         </td>
                                         {% for col in visible_columns %}
                                             <td class="sacrud-grid-content-grid__body-item">

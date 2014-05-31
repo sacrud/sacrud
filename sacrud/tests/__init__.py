@@ -78,7 +78,7 @@ class SacrudTest(BaseSacrudTest):
         result = CRUD(self.session, User).rows_list()
         user = self.session.query(User).get(1)
 
-        self.assertEqual(result['pk'], 'id')
+        self.assertEqual(result['pk'], (User.__table__.c['id'],))
         self.assertEqual(result["prefix"], "crud")
         self.assertEqual(result["table"], User)
         self.assertEqual(result["row"], [user, ])
@@ -188,7 +188,7 @@ class SacrudTest(BaseSacrudTest):
         request["photo"] = [upload, ]
 
         CRUD(self.session, Profile, request=request).add()
-        CRUD(self.session, Profile, pk={'id': 1}).add()
+        CRUD(self.session, Profile, pk={'id': 1}).delete()
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)

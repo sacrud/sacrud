@@ -137,6 +137,6 @@ class CRUD(object):
     def delete(self):
         """ Delete row by pk.
         """
-        # check_type('', table, obj=obj)
+        check_type('', self.table, obj=self.obj)
         self.session.delete(self.obj)
         transaction.commit()

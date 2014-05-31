@@ -142,16 +142,12 @@ class ViewsTest(BaseTest):
 
     def test_sa_list(self):
         res = self.testapp.get('/admin/user', status=200)
-        self.failUnless('user_1' in res.body)
+        self.failUnless("user_[&#39;id&#39;, 2]" in res.body)
         res = self.testapp.get('/admin/profile', status=200)
-        self.failUnless('profile_1' not in res.body)
-
-    def test_sa_read(self):
-        res = self.testapp.get('/admin/user/read/1', status=200)
-        self.failUnless('view user' in res.body)
+        self.failUnless("profile_[&#39;id&#39;, 1]" not in res.body)
 
     def test_sa_update(self):
-        res = self.testapp.get('/admin/user/update/1', status=200)
+        res = self.testapp.get('/admin/user/update/id/1/', status=200)
         self.failUnless('Add a new user' in res.body)
 
     def test_sa_create(self):
@@ -161,41 +157,4 @@ class ViewsTest(BaseTest):
         self.failUnless('Add a new user' in res.body)
 
     def test_sa_delete(self):
-        res = self.testapp.get('/admin/user/read/1', status=200)
-        self.failUnless('view user' in res.body)
-        self.testapp.get('/admin/user/delete/1', status=302)
-
-
-# def _callFUT(self, request):
-#         from sacrud_pages.views import page_visible
-#         return page_visible(request)
-
-#     def test_it(self):
-#         request = testing.DummyRequest()
-#         request.set_property(lambda x: MPTTPages, 'sacrud_pages_model', reify=True)
-#         request.set_property(mock_dbsession, 'dbsession', reify=True)
-#         request.matchdict['node'] = 12
-#         response = self._callFUT(request)
-#         request.dbsession.commit()
-#         self.assertEqual(response, {'visible': False})
-#         response = self._callFUT(request)
-#         request.dbsession.commit()
-#         self.assertEqual(response, {'visible': True})
-#         response = self._callFUT(request)
-#         request.dbsession.commit()
-#         self.assertEqual(response, {'visible': False})
-
-
-
-    # def test_sa_save_position(self):
-    #     request = testing.DummyRequest()
-    #     equest.set_property(mock_dbsession, 'dbsession', reify=True)
-        # res = self.testapp.post_json(
-        #     '/admin/save_position',
-        #     {'column': 1, 'position': 3, 'widget': 'not_exists'})
-        # self.assertEqual(res.json, None)
-
-        # res = self.testapp.post_json(
-        #     '/admin/save_position',
-        #     {'column': 1, 'position': 3, 'widget': 'Pages'})
-        # self.assertDictEqual(res.json, {"result": "ok"})
+        self.testapp.get('/admin/user/delete/id/1/', status=302)
