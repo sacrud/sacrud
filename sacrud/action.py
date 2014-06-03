@@ -107,19 +107,20 @@ class CRUD(object):
             if not self.obj:
                 self.obj = get_empty_instance(self.table)
 
-            # save m2m relationships
-            self.obj = set_m2m_value(self.session, self.request, self.obj)
-
             # filter request params for object
             for key, value in self.request.items():
                 # chek if columns not exist
                 if key not in self.table.__table__.columns:
-                    self.request.pop(key, None)
+                    if key[-2:] != '[]':
+                        self.request.pop(key, None)
                     continue
                 self.request[key] = check_type(self.request, self.table, key)
 
             for key, value in self.request.iteritems():
                 self.obj.__setattr__(key, value)
+
+            # save m2m relationships
+            self.obj = set_m2m_value(self.session, self.request, self.obj)
 
             self.session.add(self.obj)
             transaction.commit()
