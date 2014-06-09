@@ -7,55 +7,17 @@
 # Distributed under terms of the MIT license.
 
 """
-Test for sacrud.common
+Test for sacrud.common.custom
 """
-
 import unittest
-
-from pyramid.testing import DummyRequest
-from webhelpers.paginate import PageURL_WebOb
-
-from sacrud.common import import_from_string
-from sacrud.common.custom import widget_link, get_name, widget_horizontal
-from sacrud.common.paginator import get_current_page, get_paginator
+from sacrud.common.custom import get_name, widget_horizontal, widget_link
 from sacrud.tests.test_models import User
 
 
-class BaseTest(unittest.TestCase):
-    def setUp(self):
-        self.request = DummyRequest()
-
-    def tearDown(self):
-        pass
-
-
-class PaginatorTest(BaseTest):
-
-    def test_get_current_page(self):
-        page = get_current_page(self.request)
-        self.assertEqual(page, 1)
-        self.request.GET['page'] = 5
-        page = get_current_page(self.request)
-        self.assertEqual(page, 5)
-
-    def test_get_paginator(self):
-        paginator = get_paginator(self.request)
-        self.assertEqual(paginator['items_per_page'], 10)
-        self.assertEqual(paginator['page'], 1)
-        self.assertEqual(type(paginator['url']), PageURL_WebOb)
-
-        self.request.GET['page'] = 100500
-        paginator = get_paginator(self.request, 20)
-        self.assertEqual(paginator['items_per_page'], 20)
-        self.assertEqual(paginator['page'], 100500)
-        self.assertEqual(type(paginator['url']), PageURL_WebOb)
-
-
-class CustomTest(BaseTest):
+class CustomTest(unittest.TestCase):
 
     def test_horizontal_field(self):
         widget = widget_horizontal(sacrud_name='foo')
-        self.maxDiff = None
         self.assertEqual(widget,
                          {'info': {'sacrud_list_template': 'sacrud/custom/WidgetHorizontalList.jinja2',
                                    'sacrud_position': 'inline',
@@ -101,10 +63,3 @@ class CustomTest(BaseTest):
         self.assertEqual(link['column'], User.sex)
         self.assertEqual(link['name'], 'sex')
         self.assertEqual(link['sacrud_name'], u'foo bar \u0431\u0430\u0437')
-
-
-class CommonTest(BaseTest):
-
-    def test_import_from_string(self):
-        self.assertEqual(User,
-                         import_from_string('sacrud.tests.test_models:User'))

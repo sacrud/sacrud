@@ -9,11 +9,12 @@
 """
 Test for sacrud.common
 """
+import unittest
 from sacrud.common import import_from_string
 from sacrud.tests.test_models import User
 
 
-class CommonTest(object):
+class CommonTest(unittest.TestCase):
 
     def test_import_from_string(self):
         self.assertEqual(User,

@@ -19,3 +19,4 @@ TODO.txt
 nohup.out
 .cache
 htmlcov
+.ropeproject

@@ -63,10 +63,6 @@ class User(Base):
                       'alien',
                       'unknown', name="sex"))
 
-    @TableProperty
-    def foo(cls):
-        return cls.name
-
     def __init__(self, name, fullname, password, sex='unknown'):
         self.name = name
         self.fullname = fullname
