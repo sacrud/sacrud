@@ -10,7 +10,9 @@
 Test for sacrud.common.custom
 """
 import unittest
-from sacrud.common.custom import get_name, widget_horizontal, widget_link
+
+from sacrud.common.custom import (get_name, widget_horizontal, widget_link,
+                                  widget_m2m)
 from sacrud.tests.test_models import User
 
 
@@ -63,3 +65,7 @@ class CustomTest(unittest.TestCase):
         self.assertEqual(link['column'], User.sex)
         self.assertEqual(link['name'], 'sex')
         self.assertEqual(link['sacrud_name'], u'foo bar \u0431\u0430\u0437')
+
+    def test_widget_m2m(self):
+        w_m2m = widget_m2m()
+        self.assertEqual(w_m2m, {'info': {'sacrud_template': 'sacrud/custom/WidgetM2MDetail.jinja2'}, 'sacrud_name': '', 'name': ''})
