@@ -1,26 +1,21 @@
 {% extends "sacrud/types/SacrudBase.jinja2" %}
 
 {% block sacrud_column %}
-
-    <div class="popup popup_type_elfinder">
-        <div class="popup-background">&nbsp;</div>
-        <div class="popup-inner">
-            <div class="popup-inner__ie">
-                <div class="popup-inner__content">
-                    <div class="popup-inner__content-link">
-                        <a href="#" class="popup-inner__content-link-text">close</a>
-                    </div>
-                    <div id="elfinder_{{ col.name }}"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {% include 'elfinder/elfinderhead.html' %}
-    <script>
-        function load_elfinder($id) {
-            $('.popup_type_elfinder').css('display', 'table');
-            $('.popup_type_elfinder').css('position', 'absolute');
+
+    <a href="#" id="browse_link">Browse</a>
+
+    <input type="text"
+           class="sacrud_unicode {{ css_styles }}"
+           id="sacrud_unicode_{{ col.name }}"
+           name="{{ col.name }}"
+           value="{{ value }}"
+    />
+
+   <script>
+        $(function() {
+            var page_html = '<div id="elfinder_{{ col.name }}"></div>';
+            $('.popup-inner__content-elfinder').append(page_html);
 
             $('#elfinder_{{ col.name }}').elfinder({
                 url : "{{ request.route_url('connector') }}",
@@ -38,20 +33,20 @@
                 ],
                 getFileCallback: function(file) { // editor callback
                     // actually file.url - doesnt work for me, but file does. (elfinder 2.0-rc1)
-                    document.getElementById($id).value = file.url;
-                    $('.popup_type_elfinder').hide();
+                    var id = 'sacrud_unicode_{{ col.name }}';
+                    document.getElementById(id).value = file.url;
+                    $('.popup').hide();
+                    $('.popup-inner__content-delete').show();
+                    $('.popup-inner__content-elfinder').hide();
                 },
-            })
-        }
+            });
+        });
+
+        $(document).on('click', '#browse_link', function(event) {
+            $('.popup-inner__content-delete').hide();
+            $('.popup-inner__content-elfinder').show();
+            $('.popup').show();
+            event.preventDefault();
+        });
     </script>
-
-    <a href="#" onclick="load_elfinder('sacrud_unicode_{{ col.name }}');">Browse</a>
-
-  <input type="text"
-         class="sacrud_unicode {{ css_styles }}"
-         id="sacrud_unicode_{{ col.name }}"
-         name="{{ col.name }}"
-         value="{{ value }}"
-  />
-
 {% endblock %}

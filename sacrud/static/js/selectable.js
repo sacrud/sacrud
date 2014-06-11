@@ -17,7 +17,7 @@ $(function() {
 
     $('table > tbody').selectable({
         filter: 'tr', // :not(td)
-        cancel: 'a, input',
+        cancel: 'a, input, .selectable_disabled',
         start: function (event, ui) {
             current_rows = $(this).data('uiSelectable').selectees.filter('.ui-selected');
         },
