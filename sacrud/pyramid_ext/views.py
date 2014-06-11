@@ -11,9 +11,8 @@ Views for Pyramid frontend
 """
 import itertools
 import json
-import operator
+from collections import OrderedDict
 
-import transaction
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
 from sqlalchemy import inspect
@@ -66,96 +65,58 @@ def pk_list_to_dict(pk_list):
 def sa_save_position(request):
     kwargs = dict(request.POST)
     session = request.dbsession
-    PositionModel = request.sacrud_dashboard_position_model
-
-    if PositionModel:
-        widget_obj = session.query(PositionModel).filter(PositionModel.widget == kwargs['widget']).first()
-        old_column = getattr(widget_obj, 'column', 0)
-        old_position = getattr(widget_obj, 'position', 0)
-
-        if widget_obj:
-            # setattr(widget_obj, 'column', kwargs['column'])
-            widget_obj.column = int(kwargs['column'])
-            widget_obj.position = int(kwargs['position'])
-        else:
-            widget_obj = PositionModel(**kwargs)
-        session.add(widget_obj)
-
-        if old_column == widget_obj.column:
-            if old_position < widget_obj.position:
-                session.query(PositionModel)\
-                    .filter(PositionModel.id != widget_obj.id,
-                            PositionModel.column == kwargs['column'],
-                            PositionModel.position <= kwargs['position'],
-                            PositionModel.position > old_position)\
-                    .update({'position': PositionModel.position-1})
-            else:
-                session.query(PositionModel)\
-                    .filter(PositionModel.id != widget_obj.id,
-                            PositionModel.column == kwargs['column'],
-                            PositionModel.position >= kwargs['position'],
-                            PositionModel.position < old_position)\
-                    .update({'position': PositionModel.position+1})
-        else:
-            old_neighbors = session.query(PositionModel)\
-                                   .filter(PositionModel.column == old_column)\
-                                   .all()
-            for i, old_neighbor in enumerate(old_neighbors):
-                old_neighbor.position = i
-
-            session.query(PositionModel)\
-                   .filter(PositionModel.id != widget_obj.id,
-                           PositionModel.column == kwargs['column'],
-                           PositionModel.position >= kwargs['position'])\
-                   .update({'position': PositionModel.position+1})
-
-        transaction.commit()
+    columns = request.registry.settings\
+        .get('sacrud_dashboard_columns', 3)
+    PositionModel = request.registry.settings\
+        .get('sacrud_dashboard_position_model', None)
+    if not PositionModel:
+        return
+    position = (int(kwargs['position']) + 1) * columns - columns + int(kwargs['column'])
+    session.query(PositionModel)\
+        .filter(PositionModel.position % columns == position % columns)\
+        .filter(PositionModel.position >= position)\
+        .update({'position': PositionModel.position + columns})
+    widget = session.query(PositionModel)\
+        .filter_by(widget=kwargs['widget'] or None).one()
+    widget.position = position
     return {'result': 'ok'}
 
 
-class WidgetPositionObject(object):
-    def __init__(self, title, tables):
-        self.title = title
-        self.tables = tables
+def sorted_dashboard_widget(tables, dashboard_columns=3, session=None,
+                            model=None):
+    def get_position(name):
+        if model and session:
+            return session.query(model).filter_by(widget=(name or None)).one().position
+        return tables[name]['position']
+
+    def set_position(name, value):
+        value['position'] = get_position(name)
+        return value
+
+    def getKey(item):
+        position = item[1]['position']
+        key = position % dashboard_columns
+        if not key:
+            key = dashboard_columns
+        # FIXME: bug with position > 9
+        return float("%s.%s" % (key, position))
+
+    dashboard_widget = {k: set_position(k, v) for k, v in tables.iteritems()}
+    return OrderedDict(sorted(dashboard_widget.iteritems(),
+                              cmp=lambda t1, t2: cmp(getKey(t1), getKey(t2))))
 
 
 @view_config(route_name='sa_home', renderer='/sacrud/home.jinja2')
 def sa_home(request):
-    # XXX: C901
+    session = request.dbsession
     tables = get_settings_param(request, 'sacrud.models')
-    sacrud_dashboard_columns = request.registry.settings\
-                                      .get('sacrud_dashboard_columns', 3)
-    context = {'dashboard_columns': sacrud_dashboard_columns}
-    PositionModel = request.sacrud_dashboard_position_model
-    items_list = {}
-    if PositionModel:
-        for column in range(sacrud_dashboard_columns):
-            widgets = request.dbsession.query(PositionModel.widget)\
-                                       .filter(PositionModel.column == column,
-                                               PositionModel.widget.in_(tables.keys()))\
-                                       .order_by(PositionModel.column,
-                                                 PositionModel.position)\
-                                       .all()
-            # widgets = [w[0] for w in widgets]
-            items_list.update({column: [], })
-            for widget_item in widgets:
-                if widget_item[0] in tables.keys():
-                    items_list[column].append(
-                        WidgetPositionObject(widget_item[0],
-                                             tables[widget_item[0]]['tables'])
-                    )
-    else:
-        for column in range(sacrud_dashboard_columns):
-            items_list.update({column: [], })
-            for group, table_obj in sorted(tables.iteritems(), key=operator.itemgetter(1)):
-                if 'column' not in table_obj:
-                    table_obj['column'] = 0
-                    items_list[0].append(WidgetPositionObject(group, table_obj['tables']))
-                elif table_obj['column'] == column:
-                    items_list[column].append(WidgetPositionObject(group, table_obj['tables']))
-
-    context.update({'tables': items_list})
-    return context
+    dashboard_columns = request.registry.settings\
+        .get('sacrud_dashboard_columns', 3)
+    dashboard_model = request.registry.settings.get('sacrud_dashboard_position_model', None)
+    return {'dashboard_columns': dashboard_columns,
+            'tables': sorted_dashboard_widget(tables, dashboard_columns,
+                                              session, dashboard_model)
+            }
 
 
 class CRUD(object):

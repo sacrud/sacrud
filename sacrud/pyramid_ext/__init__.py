@@ -31,11 +31,14 @@ def includeme(config):
     DBSession = orm.scoped_session(
         orm.sessionmaker(extension=ZopeTransactionExtension()))
     DBSession.configure(bind=engine)
-
     config.set_request_property(lambda x: DBSession, 'dbsession', reify=True)
-    config.set_request_property(
-        lambda x: get_obj_from_settings(x, 'sacrud.dashboard_position_model'),
-        'sacrud_dashboard_position_model', reify=True)
+    settings = config.registry.settings
+
+    # Dashboard widget
+    settings = config.registry.settings
+    if 'sacrud_dashboard_position_model' not in settings:
+        settings['sacrud_dashboard_position_model'] = get_obj_from_settings(settings,
+                                                                            'sacrud.dashboard_position_model')
 
     # Jinja2
     config.add_jinja2_search_path("sacrud:templates")

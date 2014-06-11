@@ -11,9 +11,10 @@ Any helpers for Pyramid
 """
 
 import os
-import sqlalchemy
 
+import sqlalchemy
 from pyramid.path import AssetResolver
+from pyramid.request import Request
 
 from sacrud.common import import_from_string
 
@@ -86,8 +87,10 @@ def get_settings_param(request, name):
 
 
 def get_obj_from_settings(request, name):
-    position_model = request.registry.settings\
-        .get(name)
+    settings = request
+    if isinstance(request, Request):
+        settings = request.registry.settings
+    position_model = settings.get(name)
     if isinstance(position_model, basestring):
         return import_from_string(position_model)
     return position_model
