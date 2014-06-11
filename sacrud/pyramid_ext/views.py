@@ -115,8 +115,7 @@ def sorted_dashboard_widget(tables, dashboard_columns=3, session=None,
         key = position % dashboard_columns
         if not key:
             key = dashboard_columns
-        # FIXME: bug with position > 9
-        return float("%s.%s" % (key, position))
+        return (key, position)
 
     dashboard_widget = {k: set_position(k, v) for k, v in tables.iteritems()}
     return OrderedDict(sorted(dashboard_widget.iteritems(),
