@@ -1,12 +1,18 @@
 $(function() {
+    function show_delete_content() {
+        $('.popup-inner__content-delete').show();
+        $('.popup-inner__content-elfinder').hide();
+    }
+
     $(document).on('click', '.action_button', function () {
-        // $('.popup').css('display', 'table');
-        // $('.popup').css('position', 'absolute');
         $('.popup').show();
+        show_delete_content();
     });
 
-    $(document).on('click', '.popup-inner__content-link-text', function () {
+    $(document).on('click', '.popup-inner__content-link-text', function (event) {
         $('.popup').hide();
+        show_delete_content();
+        event.preventDefault();
     });
 
     $(document).on('click', '.popup-button__item', function () {
