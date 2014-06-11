@@ -14,7 +14,6 @@ import os
 
 import sqlalchemy
 from pyramid.path import AssetResolver
-from pyramid.request import Request
 
 from sacrud.common import import_from_string
 
@@ -88,7 +87,7 @@ def get_settings_param(request, name):
 
 def get_obj_from_settings(request, name):
     settings = request
-    if isinstance(request, Request):
+    if not isinstance(request, dict):
         settings = request.registry.settings
     position_model = settings.get(name)
     if isinstance(position_model, basestring):
