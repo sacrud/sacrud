@@ -63,6 +63,23 @@ def pk_list_to_dict(pk_list):
 @view_config(route_name='sa_save_position', request_method='POST',
              renderer='json')
 def sa_save_position(request):
+    """ col1 col2 col3
+         w1   w2   w3
+         w4   w5   w6
+         w7   w8   w9
+
+         Example w4 move to col3 after w3:
+             w6 and w9 position = position + 3
+             w4 = 2*3 - 3 + 3 = 6
+
+         Example w4 move to col2 after w2:
+             w5 and w8 position = position + 3
+             w4 = 2*3 - 3 + 2 = 5
+
+         Example w5 move to col1 after w4:
+             w7 position = position + 3
+             w5 = 3*3 - 3 + 1 = 7
+    """
     kwargs = dict(request.POST)
     session = request.dbsession
     columns = request.registry.settings\
