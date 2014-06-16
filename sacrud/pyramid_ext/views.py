@@ -65,20 +65,24 @@ def pk_list_to_dict(pk_list):
 def sa_save_position(request):
     """ col1 col2 col3
          w1   w2   w3
-         w4   w5   w6
-         w7   w8   w9
+         w4   w5
+         w7
 
-         Example w4 move to col3 after w3:
-             w6 and w9 position = position + 3
-             w4 = 2*3 - 3 + 3 = 6
+    Example w4 move to col3 after w3:
+        w6 and w9 position = position + 3
+        w4 = 2*3 - 3 + 3 = 6
 
-         Example w4 move to col2 after w2:
-             w5 and w8 position = position + 3
-             w4 = 2*3 - 3 + 2 = 5
+    Example w4 move to col2 after w2:
+        w5 and w8 position = position + 3
+        w4 = 2*3 - 3 + 2 = 5
 
-         Example w5 move to col1 after w4:
-             w7 position = position + 3
-             w5 = 3*3 - 3 + 1 = 7
+    Example w5 move to col1 after w4:
+        w7 position = position + 3
+        w5 = 3*3 - 3 + 1 = 7
+
+    Example w5 move to col2 to top:
+        w2 and w8 position = position + 3
+        w5 = 1*3 - 3 + 2 = 2
     """
     kwargs = dict(request.POST)
     session = request.dbsession
@@ -88,14 +92,29 @@ def sa_save_position(request):
         .get('sacrud_dashboard_position_model', None)
     if not PositionModel:
         return
-    position = (int(kwargs['position']) + 1) * columns - columns + int(kwargs['column'])
-    session.query(PositionModel)\
-        .filter(PositionModel.position % columns == position % columns)\
-        .filter(PositionModel.position >= position)\
-        .update({'position': PositionModel.position + columns})
+
+    import transaction
+    # XXX: ????????????
     widget = session.query(PositionModel)\
         .filter_by(widget=kwargs['widget'] or None).one()
+    old_position = widget.position
+    position = (int(kwargs['position']) + 1) * columns - columns + int(kwargs['column'])
+    foo = session.query(PositionModel)\
+        .filter(PositionModel.position % columns == position % columns)\
+        .filter(PositionModel.position >= position).all()
+    for x in foo:
+        x.position = x.position + columns
+    print "position: ", position
+    print "old_position: ", old_position
+    transaction.commit()
     widget.position = position
+    session.add(widget)
+    transaction.commit()
+    session.query(PositionModel)\
+        .filter(PositionModel.position % columns == old_position % columns)\
+        .filter(PositionModel.position > old_position)\
+        .update({'position': PositionModel.position - columns})
+
     return {'result': 'ok'}
 
 
