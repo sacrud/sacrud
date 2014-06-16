@@ -15,7 +15,7 @@ from collections import OrderedDict
 
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
-from sqlalchemy import inspect
+from sqlalchemy import and_, case, inspect
 
 from sacrud import action
 from sacrud.common.paginator import get_paginator
@@ -92,29 +92,36 @@ def sa_save_position(request):
         .get('sacrud_dashboard_position_model', None)
     if not PositionModel:
         return
+    PositionModel = PositionModel.__table__
 
-    import transaction
-    # XXX: ????????????
     widget = session.query(PositionModel)\
         .filter_by(widget=kwargs['widget'] or None).one()
     old_position = widget.position
     position = (int(kwargs['position']) + 1) * columns - columns + int(kwargs['column'])
-    foo = session.query(PositionModel)\
-        .filter(PositionModel.position % columns == position % columns)\
-        .filter(PositionModel.position >= position).all()
-    for x in foo:
-        x.position = x.position + columns
-    print "position: ", position
-    print "old_position: ", old_position
-    transaction.commit()
-    widget.position = position
-    session.add(widget)
-    transaction.commit()
-    session.query(PositionModel)\
-        .filter(PositionModel.position % columns == old_position % columns)\
-        .filter(PositionModel.position > old_position)\
-        .update({'position': PositionModel.position - columns})
-
+    # do position negative for replace unique value
+    session.query(PositionModel).update({'position': -PositionModel.c.position},
+                                        synchronize_session=False)
+    session.execute(
+        PositionModel.update(
+        ).values(
+            position=case(
+                [
+                    # change nodes position after widget
+                    (and_(-PositionModel.c.position % columns == position % columns,
+                          -PositionModel.c.position >= position),
+                     -PositionModel.c.position + columns),
+                    # change widget position
+                    (PositionModel.c.id == widget.id, position),
+                    # change old widget position
+                    (and_(-PositionModel.c.position % columns == old_position % columns,
+                          -PositionModel.c.position > old_position),
+                     -PositionModel.c.position - columns
+                     )
+                ],
+                else_=-PositionModel.c.position
+            )
+        )
+    )
     return {'result': 'ok'}
 
 
