@@ -55,6 +55,8 @@ def sa_save_position(request):
         .filter_by(widget=kwargs['widget'] or None).one()
     old_position = widget.position
     position = (int(kwargs['position']) + 1) * columns - columns + int(kwargs['column'])
+    if old_position == position:
+        return
     # do position negative for replace unique value
     session.query(PositionModel).update({'position': -PositionModel.c.position},
                                         synchronize_session=False)
@@ -65,13 +67,15 @@ def sa_save_position(request):
                 [
                     # change nodes position after widget
                     (and_(-PositionModel.c.position % columns == position % columns,
-                          -PositionModel.c.position >= position),
+                          -PositionModel.c.position >= position,
+                          PositionModel.c.id != widget.id),
                      -PositionModel.c.position + columns),
                     # change widget position
                     (PositionModel.c.id == widget.id, position),
                     # change old widget position
                     (and_(-PositionModel.c.position % columns == old_position % columns,
-                          -PositionModel.c.position > old_position),
+                          -PositionModel.c.position > old_position,
+                          PositionModel.c.id != widget.id),
                      -PositionModel.c.position - columns
                      )
                 ],
