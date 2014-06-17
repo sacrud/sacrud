@@ -14,6 +14,7 @@ import inspect
 import json
 import os
 import uuid
+from datetime import datetime
 
 import sqlalchemy
 
@@ -119,7 +120,9 @@ def pk_to_list(obj, as_json=False):
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
-    abspath = table.__table__.columns[key].type.abspath
+    if hasattr(table, '__table__'):
+        table = table.__table__
+    abspath = table.columns[key].type.abspath
     path = os.path.join(abspath, os.path.basename(getattr(obj, key)))
     if not obj or not os.path.isfile(path):
         return
@@ -157,49 +160,68 @@ def store_file(request, key, path):
     output_file.close()
 
 
-def check_type(request, table, key=None, obj=None):
-    """ Chek type when Create, Update or Delete.
-    """
-    # XXX: C901 very ugly function
-    # for Delete
-    if not key:
-        for col in table.__table__.columns:
+class ObjPreprocessing(object):
+    def __init__(self, obj):
+        self.obj = obj
+        self.table = obj.__table__
+
+    def delete(self):
+        # XXX: think about same update
+        for col in self.table.columns:
             if col.type.__class__.__name__ == 'FileStore':
-                if getattr(obj, col.name):
-                    delete_fileobj(table, obj, col.name)
-        return
-    column = table.__table__.columns[key]
-    column_type = column.type.__class__.__name__
+                if not getattr(self.obj, col.name):
+                    continue
+                delete_fileobj(self.table, self.obj, col.name)
+        return self.obj
 
-    # for Update or Create
-    value = request[key]
-    if type(value) in (list, tuple):
-        value = value[0]
 
-    if not value and not hasattr(value, 'filename'):
-        return None
+class RequestPreprocessing(object):
+    def __init__(self, request):
+        self.request = request
+        self.types_list = {'Boolean': self._check_boolean,
+                           'FileStore': self._check_filestore,
+                           'HSTORE': self._check_hstore,
+                           'Date': self._check_date,
+                           }
 
-    if column_type == 'Boolean':
+    def _check_boolean(self, value):
         value = False if value == '0' else True
         value = True if value else False
-    elif column_type == 'FileStore':
+        return value
+
+    def _check_filestore(self, value):
         fileobj = value
         if hasattr(fileobj, 'filename'):
             extension = fileobj.filename.split(".")[-1]
             fileobj.filename = str(uuid.uuid4()) + "." + extension
-            abspath = table.__table__.columns[key].type.abspath
-            store_file(request, key, abspath)
-            if obj:
-                if getattr(obj, key):
-                    delete_fileobj(table, obj, key)
+            abspath = self.column.type.abspath
+            store_file(self.request, self.key, abspath)
             value = fileobj.filename
-    elif column_type == 'HSTORE':
+        return value
+
+    def _check_hstore(self, value):
         try:
-            value = ast.literal_eval(value)
+            return ast.literal_eval(value)
         except:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
                             (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
-    elif column_type == 'Date':
-        from datetime import datetime
-        value = datetime.strptime(value, '%Y-%m-%d')
-    return value
+
+    def _check_date(self, value):
+        return datetime.strptime(value, '%Y-%m-%d')
+
+    def check_type(self, table, key):
+        self.key = key
+        self.column = table.__table__.columns[key]
+        column_type = self.column.type.__class__.__name__
+        value = self.request[key]
+        if type(value) in (list, tuple):
+            value = value[0]
+
+        if not value and not hasattr(value, 'filename'):
+            return None
+
+        if column_type in self.types_list.keys():
+            check = self.types_list[column_type]
+            return check(value)
+
+        return value

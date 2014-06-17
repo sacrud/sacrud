@@ -16,7 +16,8 @@ import transaction
 from sqlalchemy import desc, or_
 from webhelpers.paginate import Page
 
-from sacrud.common.sa_helpers import check_type, get_pk, set_instance_name
+from sacrud.common.sa_helpers import (get_pk, ObjPreprocessing,
+                                      RequestPreprocessing, set_instance_name)
 
 prefix = 'crud'
 
@@ -107,6 +108,7 @@ class CRUD(object):
             if not self.obj:
                 self.obj = get_empty_instance(self.table)
 
+            request_preprocessing = RequestPreprocessing(self.request)
             # filter request params for object
             for key, value in self.request.items():
                 # chek if columns not exist
@@ -114,7 +116,7 @@ class CRUD(object):
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
                     continue
-                self.request[key] = check_type(self.request, self.table, key)
+                self.request[key] = request_preprocessing.check_type(self.table, key)
 
             for key, value in self.request.iteritems():
                 self.obj.__setattr__(key, value)
@@ -138,6 +140,6 @@ class CRUD(object):
     def delete(self):
         """ Delete row by pk.
         """
-        check_type('', self.table, obj=self.obj)
-        self.session.delete(self.obj)
+        obj = ObjPreprocessing(obj=self.obj).delete()
+        self.session.delete(obj)
         transaction.commit()
