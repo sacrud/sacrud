@@ -18,7 +18,7 @@ from pyramid import testing
 from sacrud.common.pyramid_helpers import get_obj_from_settings
 from sacrud.common.pyramid_helpers import get_field_template
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
-from sacrud.pyramid_ext.views import get_relationship, get_table
+from sacrud.pyramid_ext.views.CRUD import get_relationship, get_table
 from sacrud.tests.test_models import (_initTestingDB, DB_FILE,
                                       Profile, TEST_DATABASE_CONNECTION_STRING,
                                       User, user_add)
