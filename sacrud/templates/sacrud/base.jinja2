@@ -67,6 +67,7 @@
 
     {% block sa_head_js %}
       <script data-main="{{ request.static_url('sacrud:static/js/app') }}" src="{{ request.static_url('sacrud:static/js/lib/requirejs/require.js') }}"></script>
+      <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
     {% endblock %}
 
     {% block userspace %}
