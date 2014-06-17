@@ -14,7 +14,9 @@
     {% endblock %}
 
     {% block sa_head_css %}
-        <link href="{{ request.static_url('sacrud:static/css/jquery-ui/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
+        <!--
+            <link href="{{ request.static_url('sacrud:static/css/jquery-ui/jquery-ui-1.10.4.custom.css') }}" rel="stylesheet">
+        -->
 
         <link href="{{ request.static_url('sacrud:static/css/normalize.css') }}" rel="stylesheet">
         <link href="{{ request.static_url('sacrud:static/css/main.css') }}" rel="stylesheet">
@@ -64,9 +66,7 @@
     {% block sa_head_extra_css %}{% endblock sa_head_extra_css %}
 
     {% block sa_head_js %}
-      <script data-main="{{ request.static_url('sacrud:static/js/app/main.js') }}"
-              src="{{ request.static_url('sacrud:static/js/lib/requirejs/require.js') }}"></script>
-      <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
+      <script data-main="{{ request.static_url('sacrud:static/js/app') }}" src="{{ request.static_url('sacrud:static/js/lib/requirejs/require.js') }}"></script>
     {% endblock %}
 
     {% block userspace %}

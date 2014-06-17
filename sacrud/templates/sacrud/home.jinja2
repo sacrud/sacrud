@@ -9,31 +9,31 @@
 			<div class="dashboard-title">Dashboard</div>
 			<div class="dashboard__inner clear-fix">
 				{% for widget, widget_list in tables.iteritems() %}
-          {% if widget_list.position % dashboard_columns != tables.items()[loop.index-2][1].position % dashboard_columns %}
-            {% if not loop.first %}
-              </div>
-            {% endif %}
-            <div class="dashboard__column sortable" data-number="{{widget_list.position}}">
-          {% endif %}
-          <div class="widget widget_type_drag" name="{{ widget }}">
-            <div class="widget-title">
-              {{ widget }}
-              <span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
-            </div>
-            <div class="widget-content">
-              {% for table in widget_list['tables'] %}
-                <div class="widget-row">
-                  {% set tname = table.__tablename__ %}
-                  <div class="widget-row__item">
-                    <a href="{{ request.route_url('sa_list', table=tname) }}" class="widget-row__item-link" id="id_{{ tname }}" >{{ table.verbose_name or tname }}</a>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-          {% if loop.last %}
-            </div>
-          {% endif %}
+					{% if widget_list.position % dashboard_columns != tables.items()[loop.index-2][1].position % dashboard_columns %}
+						{% if not loop.first %}
+							</div>
+						{% endif %}
+						<div class="dashboard__column sortable" data-number="{{widget_list.position}}">
+					{% endif %}
+					<div class="widget widget_type_drag" name="{{ widget }}">
+						<div class="widget-title">
+							{{ widget }}
+							<span class="widget-title_state_switch k-icon k-i-arrowhead-n"></span>
+						</div>
+						<div class="widget-content">
+							{% for table in widget_list['tables'] %}
+								<div class="widget-row">
+									{% set tname = table.__tablename__ %}
+									<div class="widget-row__item">
+										<a href="{{ request.route_url('sa_list', table=tname) }}" class="widget-row__item-link" id="id_{{ tname }}" >{{ table.verbose_name or tname }}</a>
+									</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+					{% if loop.last %}
+						</div>
+					{% endif %}
 				{% endfor %}
 			</div>
 		</div>
@@ -41,7 +41,8 @@
 {% endblock sa_body  %}
 
 {% block extrascript %}
-	<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-	<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/sortable.js') }}"></script>
+	<!--
+		<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
+		<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/sortable.js') }}"></script>
+	-->
 {% endblock extrascript %}
