@@ -1,6 +1,4 @@
-define(function (require) {
-    var $ = require('jquery', 'jquery-ui');
-
+define(['jquery', 'jquery-ui'], function ($) {
     $(function() {
         $('.sortable').sortable({
             connectWith: '.sortable',

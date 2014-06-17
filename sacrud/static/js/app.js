@@ -3,7 +3,7 @@ requirejs.config({
     "paths": {
         "app": "../app",
         "jquery": "jquery/dist/jquery.min",
-        "jquery-ui": "jquery-ui/ui/minified/jquery-ui.min"
+        "jquery-ui": "jquery-ui/ui/minified/jquery-ui.min",
     },
 });
 
