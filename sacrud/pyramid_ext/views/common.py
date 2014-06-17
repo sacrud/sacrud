@@ -86,7 +86,15 @@ def sa_save_position(request):
                           -PositionModel.c.position % columns == position % columns,
                           -PositionModel.c.position % columns == old_position % columns,
                           PositionModel.c.id != widget.id),
-                     -PositionModel.c.position + columns)
+                     -PositionModel.c.position + columns),
+                    # change nodes position if move to same col
+                    (and_(position > old_position,
+                          -PositionModel.c.position >= old_position,
+                          -PositionModel.c.position <= position,
+                          -PositionModel.c.position % columns == position % columns,
+                          -PositionModel.c.position % columns == old_position % columns,
+                          PositionModel.c.id != widget.id),
+                     -PositionModel.c.position - columns)
                 ],
                 else_=-PositionModel.c.position
             )
