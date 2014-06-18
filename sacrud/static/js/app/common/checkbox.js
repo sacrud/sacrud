@@ -1,4 +1,4 @@
-define(['jquery', 'speakingurl'], function ($) {
+define(['jquery'], function ($) {
   $(function() {
       function check_checkbox (checkbox) {
           if (checkbox.prop('checked')) {
