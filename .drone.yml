@@ -1,7 +1,8 @@
 image: python2.7
 script:
-  - pip install nose coverage pyramid pyramid_jinja2==1.10 pyramid_beaker
+  - pip install nose coverage pyramid pyramid_beaker
   - pip install -r requirements.txt
+  - pip install pyramid_jinja2==1.10
   - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
 notify:
   email:
