@@ -32,7 +32,7 @@ def add_webasset(config):
     curdir = os.path.dirname(os.path.abspath(__file__))
     settings = config.registry.settings
     settings["webassets.base_dir"] = os.path.join(curdir, '..', 'static')
-    settings["webassets.base_url"] = "/admin/sa_static"
+    settings["webassets.base_url"] = "/%s/sa_static" % config.route_prefix
     settings["webassets.debug"] = "True"
     settings["webassets.updater"] = "timestamp"
     settings["webassets.jst_compiler"] = "Handlebars.compile"
