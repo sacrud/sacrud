@@ -45,5 +45,5 @@ def includeme(config):
     config.add_jinja2_extension('jinja2.ext.loopcontrols')
 
     config.include(add_routes)
-    config.add_static_view('/sa_static', 'sacrud:static')
+    config.add_static_view('sa_static', 'sacrud:static')
     config.scan()

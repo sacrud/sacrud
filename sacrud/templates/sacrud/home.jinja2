@@ -1,7 +1,7 @@
 {% extends "sacrud/redefineme.jinja2" %}
 
 {% block extra_css %}
-{% endblock extra_css %}
+{% endblock %}
 
 {% block sa_body %}
 	<div class="sa_body">
@@ -38,9 +38,10 @@
 			</div>
 		</div>
 	</div>
-{% endblock sa_body  %}
+{% endblock %}
 
 {% block extrascript %}
-		<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-		<script type="text/javascript" src="{{ request.static_url('sacrud:static/js/sortable.js') }}"></script>
-{% endblock extrascript %}
+	<script type="text/javascript">
+        requirejs(["app/sortable"]);
+    </script>
+{% endblock %}

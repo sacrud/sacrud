@@ -37,8 +37,7 @@
 {% endblock %}
 
 {% block extrascript %}
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/selectable.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/popup.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/list.js') }}"></script>
+	<script type="text/javascript">
+        requirejs(["app/list"]);
+    </script>
 {% endblock %}

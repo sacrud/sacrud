@@ -30,14 +30,8 @@
     <link href="{{ request.static_url('sacrud:static/css/chosen/chosen.min.css') }}" rel="stylesheet">
 {% endblock sa_head_extra_css %}
 
-{% block sa_head_js %}
-    {{ super() }}
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-1.10.4.custom.min.js') }}"></script>
-{% endblock %}
-
 {% block extrascript %}
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/jquery/jquery-ui-timepicker-addon.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/checkbox.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/popup.js') }}"></script>
-    <script type="text/javascript" src="{{ request.static_url('sacrud:static/js/chosen/chosen.jquery.min.js') }}" ></script>
+	<script type="text/javascript">
+      requirejs(["app/create"]);
+    </script>
 {% endblock %}
