@@ -1,5 +1,5 @@
 requirejs.config({
-  paths: {
+  "paths": {
     "app": "app",
 
     "jquery": "lib/jquery/dist/jquery.min",
@@ -12,5 +12,8 @@ requirejs.config({
     "checkbox": "app/common/checkbox",
     "selectable": "app/common/selectable",
   },
-  deps: ["jquery"],
-});
+  "shim": {
+      "jquery.alpha": ["jquery"],
+      "jquery.beta": ["jquery"]
+  }
+})

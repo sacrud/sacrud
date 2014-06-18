@@ -75,6 +75,7 @@ setup(
         "sqlalchemy",
         "transaction",
         'zope.sqlalchemy',
+        'pyramid_webassets',
         'webhelpers',
         'webtest',
     ],

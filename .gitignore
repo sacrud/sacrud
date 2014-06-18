@@ -21,3 +21,5 @@ nohup.out
 htmlcov
 .ropeproject
 sacrud/static/js/lib
+.webassets*
+_*.css

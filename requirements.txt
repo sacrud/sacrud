@@ -3,4 +3,5 @@ zope.sqlalchemy
 transaction
 webhelpers
 webtest
-ziggurat_foundations
+pyramid_webassets
+cssmin
