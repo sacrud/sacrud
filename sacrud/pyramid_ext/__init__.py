@@ -9,6 +9,7 @@
 """
 Includeme of SACRUD
 """
+import os
 import sqlalchemy
 import sqlalchemy.orm as orm
 from webassets import Bundle
@@ -28,8 +29,9 @@ def add_routes(config):
 
 
 def add_webasset(config):
+    curdir = os.path.dirname(os.path.abspath(__file__))
     settings = config.registry.settings
-    settings["webassets.base_dir"] = "/home/uralbash/Projects/sacrud_band/sacrud/sacrud/static/"
+    settings["webassets.base_dir"] = os.path.join(curdir, '..', 'static')
     settings["webassets.base_url"] = "/admin/sa_static"
     settings["webassets.debug"] = "True"
     settings["webassets.updater"] = "timestamp"
