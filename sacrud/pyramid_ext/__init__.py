@@ -49,11 +49,21 @@ def webassets_init(config):
 
 
 def add_css_webasset(config):
-    css_base = Bundle('css/*.css', 'css/**/*.css',
-                      filters='cssmin',
-                      output='css/_base.css', debug=False)
-
-    config.add_webasset('sa_css', css_base)
+    settings = config.registry.settings
+    css_file = os.path.join(settings["webassets.base_dir"], 'css', '_base.css')
+    if settings.get('sacrud.debug', False):
+        css = Bundle(
+            # css lib like jquery-ui
+            Bundle('css/*.css', 'styl/**/*.css',
+                   filters='cssmin'),
+            # stylus
+            Bundle('styl/*.styl', 'styl/**/*.styl',
+                   filters=['stylus', 'cssmin']),
+            output=css_file, debug=False
+        )
+        config.add_webasset('sa_css', css)
+    else:
+        config.add_webasset('sa_css', css_file)
 
 
 def add_js_webasset(config):

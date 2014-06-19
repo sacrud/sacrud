@@ -6,28 +6,32 @@
 .pydevproject
 sacrud/.coverage
 sacrud/TODO
-*.pyc
 sacrud/cover
+TODO
+TODO.txt
+nohup.out
+.cache
+.webassets*
+_*.css
+
+# JavaScript
+node_modules
+
+# Python
 cover
 .coverage
 build
 dist
 *.egg-info
 example
-TODO
-TODO.txt
-nohup.out
-.cache
 htmlcov
 .ropeproject
-.webassets*
-_*.css
-node_modules
+*.pyc
 
 # Bower
+sacrud/static/js/*
+!sacrud/static/js/*/
 sacrud/static/js/lib/**/*
-*
-!*/
 !sacrud/static/js/lib/jquery/dist/jquery.min.js
 !sacrud/static/js/lib/chosen/public/chosen.jquery.min.js
 !sacrud/static/js/lib/jquery-ui/ui/minified/jquery-ui.min.js
