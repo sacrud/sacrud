@@ -23,9 +23,6 @@
     {% endblock %}
 
     {% block sa_head_js %}
-        {#% assets "sa_js" %}
-            <script src="{{ ASSET_URL }}"></script>
-        {% endassets %#}
         <script data-main="{{ request.static_url('sacrud:static/js/main') }}"
                 src="{{ request.static_url('sacrud:static/js/lib/requirejs/require.js') }}"></script>
     {% endblock %}
