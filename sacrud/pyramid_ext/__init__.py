@@ -88,6 +88,6 @@ def includeme(config):
     # Assets
     config.include(webassets_init)
     config.include(add_css_webasset)
-    config.include(add_js_webasset)
+    # config.include(add_js_webasset)
 
     config.scan()
