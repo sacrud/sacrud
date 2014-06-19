@@ -28,7 +28,7 @@ def add_routes(config):
     config.add_route('sa_delete',         prefix + '{table}/delete/*pk')
 
 
-def add_webasset(config):
+def webassets_init(config):
     curdir = os.path.dirname(os.path.abspath(__file__))
     settings = config.registry.settings
     settings["webassets.base_dir"] = os.path.join(curdir, '..', 'static')
@@ -42,15 +42,26 @@ def add_webasset(config):
 
     config.include('pyramid_webassets')
 
-    css_base = Bundle('css/*.css', 'css/**/*.css',
-                      filters='cssmin',
-                      output='css/_base.css', debug=False)
-
     config.add_jinja2_extension('webassets.ext.jinja2.AssetsExtension')
     assets_env = config.get_webassets_env()
     jinja2_env = config.get_jinja2_environment()
     jinja2_env.assets_environment = assets_env
+
+
+def add_css_webasset(config):
+    css_base = Bundle('css/*.css', 'css/**/*.css',
+                      filters='cssmin',
+                      output='css/_base.css', debug=False)
+
     config.add_webasset('sa_css', css_base)
+
+
+def add_js_webasset(config):
+    js = Bundle('js/lib/requirejs/require.js', 'js/main.js',
+                # 'js/app/**/*.js',
+                filters='jsmin',
+                output='js/_base.js', debug=False)
+    config.add_webasset('sa_js', js)
 
 
 def includeme(config):
@@ -75,6 +86,8 @@ def includeme(config):
     config.add_static_view('sa_static', 'sacrud:static')
 
     # Assets
-    config.include(add_webasset)
+    config.include(webassets_init)
+    config.include(add_css_webasset)
+    config.include(add_js_webasset)
 
     config.scan()

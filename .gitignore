@@ -23,3 +23,14 @@ htmlcov
 sacrud/static/js/lib
 .webassets*
 _*.css
+node_modules
+
+# Bower
+!sacrud/static/js/lib/jquery/dist/jquery.min.js
+!sacrud/static/js/lib/chosen/public/chosen.jquery.min.js
+!sacrud/static/js/lib/jquery-ui/ui/minified/jquery-ui.min.js
+!sacrud/static/js/lib/speakingurl/speakingurl.min.js
+!sacrud/static/js/lib/jqueryui-timepicker-addon/src/jquery-ui-timepicker-addon.js
+!sacrud/static/js/app/common/popup.js
+!sacrud/static/js/app/common/checkbox.js
+!sacrud/static/js/app/common/selectable.js

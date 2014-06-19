@@ -78,6 +78,8 @@ setup(
         'pyramid_webassets',
         'webhelpers',
         'webtest',
+        'cssmin',
+        'jsmin',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

@@ -5,3 +5,4 @@ webhelpers
 webtest
 pyramid_webassets
 cssmin
+jsmin
