@@ -12,7 +12,6 @@ TODO.txt
 nohup.out
 .cache
 .webassets*
-_*.css
 
 # JavaScript
 node_modules
