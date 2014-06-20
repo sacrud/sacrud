@@ -54,7 +54,7 @@ def add_css_webasset(config):
     if settings.get('sacrud.debug', False):
         css = Bundle(
             # css lib like jquery-ui
-            Bundle('css/*.css', 'styl/**/*.css',
+            Bundle('css/*.css', 'css/**/*.css',
                    filters='cssmin'),
             # stylus
             Bundle('styl/*.styl', 'styl/**/*.styl',
@@ -67,11 +67,21 @@ def add_css_webasset(config):
 
 
 def add_js_webasset(config):
-    js = Bundle('js/lib/requirejs/require.js', 'js/main.js',
-                # 'js/app/**/*.js',
-                filters='jsmin',
-                output='js/_base.js', debug=False)
-    config.add_webasset('sa_js', js)
+    from shutil import copyfile
+    settings = config.registry.settings
+    js_folder = os.path.join(settings["webassets.base_dir"], 'js')
+
+    bower = ["jquery/dist/jquery.min.js",
+             "chosen/public/chosen.jquery.min.js",
+             "jquery-ui/ui/minified/jquery-ui.min.js",
+             "speakingurl/speakingurl.min.js",
+             "jqueryui-timepicker-addon/src/jquery-ui-timepicker-addon.js",
+             "requirejs/require.js",
+             ]
+    for f in bower:
+        src = os.path.join(js_folder, 'bower_components', f)
+        dst = os.path.join(js_folder, 'lib', f.split('/')[-1])
+        copyfile(src, dst)
 
 
 def includeme(config):
@@ -98,6 +108,7 @@ def includeme(config):
     # Assets
     config.include(webassets_init)
     config.include(add_css_webasset)
-    # config.include(add_js_webasset)
+    if settings.get('sacrud.debug', False):
+        config.include(add_js_webasset)
 
     config.scan()
