@@ -54,15 +54,13 @@ def add_css_webasset(config):
     css_bundle = Bundle('css/*.css', 'css/**/*.css',
                         filters='cssmin')
     if settings.get('sacrud.debug', False):
-        css = Bundle(css_bundle,
-                     Bundle('styl/*.styl', 'styl/**/*.styl',
-                            filters=['stylus', 'cssmin'],
-                            output=css_file,
-                            ),
-                     )
-        config.add_webasset('sa_css', css)
-    else:
-        config.add_webasset('sa_css', css_bundle)
+        css_bundle = Bundle(css_bundle,
+                            Bundle('styl/*.styl', 'styl/**/*.styl',
+                                   filters=['stylus', 'cssmin'],
+                                   output=css_file,
+                                   ),
+                            )
+    config.add_webasset('sa_css', css_bundle)
 
 
 def add_js_webasset(config):
