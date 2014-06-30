@@ -8,7 +8,7 @@ import os
 import unittest
 
 import transaction
-from sqlalchemy import create_engine, orm
+from sqlalchemy import create_engine, orm, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import Column, ForeignKey
@@ -74,6 +74,19 @@ class BaseSacrudTest(unittest.TestCase):
         clear_files()
 
 
+association_table = Table('association', Base.metadata,
+                          Column('group_id', Integer, ForeignKey('group.id')),
+                          Column('user_id', Integer, ForeignKey('user.id'))
+                          )
+
+
+class Groups(Base):
+    __tablename__ = 'group'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    users = relationship("User", secondary=association_table)
+
+
 class User(Base):
 
     __tablename__ = 'user'
@@ -86,6 +99,8 @@ class User(Base):
                       'female',
                       'alien',
                       'unknown', name="sex"))
+
+    groups = relationship("Groups", secondary=association_table)
 
     def __init__(self, name, fullname, password, sex='unknown'):
         self.name = name

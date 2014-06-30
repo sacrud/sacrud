@@ -1,11 +1,5 @@
-sacrud.tests.test_common package
-================================
-
-Submodules
-----------
-
 sacrud.tests.test_common.test_common_custom module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==================================================
 
 .. automodule:: sacrud.tests.test_common.test_common_custom
     :members:
@@ -13,7 +7,7 @@ sacrud.tests.test_common.test_common_custom module
     :show-inheritance:
 
 sacrud.tests.test_common.test_common_paginator module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=====================================================
 
 .. automodule:: sacrud.tests.test_common.test_common_paginator
     :members:
@@ -21,7 +15,7 @@ sacrud.tests.test_common.test_common_paginator module
     :show-inheritance:
 
 sacrud.tests.test_common.test_common_pyramid module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===================================================
 
 .. automodule:: sacrud.tests.test_common.test_common_pyramid
     :members:
@@ -29,18 +23,9 @@ sacrud.tests.test_common.test_common_pyramid module
     :show-inheritance:
 
 sacrud.tests.test_common.test_common_sqlalchemy module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+======================================================
 
 .. automodule:: sacrud.tests.test_common.test_common_sqlalchemy
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: sacrud.tests.test_common
     :members:
     :undoc-members:
     :show-inheritance:

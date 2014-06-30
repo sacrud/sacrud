@@ -14,7 +14,7 @@ from pyramid.testing import DummyRequest
 from sacrud.action import CRUD
 from sacrud.common.sa_helpers import delete_fileobj, get_pk
 from sacrud.tests import (BaseSacrudTest, MockCGIFieldStorage, PHOTO_PATH,
-                          Profile, User)
+                          Profile, User, Groups)
 
 
 class ActionTest(BaseSacrudTest):
@@ -47,10 +47,22 @@ class ActionTest(BaseSacrudTest):
 
     def test_create(self):
 
+        # Create groups (M2M example)
+        request = DummyRequest().environ
+        request['name'] = 'foo'
+        group1 = CRUD(self.session, Groups, request=request).add()
+        group2 = CRUD(self.session, Groups, request=request).add()
+        group3 = CRUD(self.session, Groups, request=request).add()
+
+        group = self.session.query(Groups).get(2)
+        self.assertEqual(group.id, group2.id)
+
+        # Create users
         request = DummyRequest().environ
         request['name'] = ["Vasya", ]
         request['fullname'] = ["Vasya Pupkin", ]
         request['password'] = ["123", ]
+        request['groups[]'] = ["1", "3"]
 
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
@@ -58,7 +70,10 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, "123")
+        self.assertEqual(map(lambda x: x.id, user.groups),
+                         [group1.id, group3.id])
 
+        # Add profile
         request = DummyRequest().environ
         request['phone'] = ["213123123", ]
         request['cv'] = ["Vasya Pupkin was born in Moscow", ]

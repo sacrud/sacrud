@@ -1,20 +1,14 @@
 API
 ===
 
-Subpackages
------------
-
 .. toctree::
 
     sacrud.common
     sacrud.pyramid_ext
     sacrud.tests
 
-Submodules
-----------
-
 sacrud.action module
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 .. automodule:: sacrud.action
     :members:
@@ -23,7 +17,7 @@ sacrud.action module
     :show-inheritance:
 
 sacrud.exttype module
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 .. automodule:: sacrud.exttype
     :members:
@@ -31,18 +25,9 @@ sacrud.exttype module
     :show-inheritance:
 
 sacrud.version module
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 .. automodule:: sacrud.version
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: sacrud
     :members:
     :undoc-members:
     :show-inheritance:

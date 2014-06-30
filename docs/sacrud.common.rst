@@ -1,11 +1,5 @@
-sacrud.common package
-=====================
-
-Submodules
-----------
-
 sacrud.common.custom module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===========================
 
 .. automodule:: sacrud.common.custom
     :members:
@@ -13,7 +7,7 @@ sacrud.common.custom module
     :show-inheritance:
 
 sacrud.common.paginator module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==============================
 
 .. automodule:: sacrud.common.paginator
     :members:
@@ -21,7 +15,7 @@ sacrud.common.paginator module
     :show-inheritance:
 
 sacrud.common.pyramid_helpers module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+====================================
 
 .. automodule:: sacrud.common.pyramid_helpers
     :members:
@@ -29,18 +23,9 @@ sacrud.common.pyramid_helpers module
     :show-inheritance:
 
 sacrud.common.sa_helpers module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+===============================
 
 .. automodule:: sacrud.common.sa_helpers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: sacrud.common
     :members:
     :undoc-members:
     :show-inheritance:

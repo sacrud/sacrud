@@ -23,7 +23,7 @@ prefix = 'crud'
 
 
 def get_empty_instance(table):
-    """ Return  empty instance of model
+    """ Return  empty instance of model.
     """
     instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
     # list like ['name', 'group', 'visible'] to dict with empty
@@ -153,7 +153,7 @@ class CRUD(object):
 
             self.session.add(self.obj)
             transaction.commit()
-            return
+            return self.obj
 
         columns = [c for c in getattr(self.table,
                                       'sacrud_detail_col',
