@@ -63,6 +63,7 @@ class ActionTest(BaseSacrudTest):
         request['fullname'] = ["Vasya Pupkin", ]
         request['password'] = ["123", ]
         request['groups[]'] = ["1", "3"]
+        request['badAttr'] = ["1", "bar"]
 
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
