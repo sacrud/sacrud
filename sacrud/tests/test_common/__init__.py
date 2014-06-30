@@ -11,11 +11,11 @@ Test for sacrud.common
 """
 import unittest
 from sacrud.common import import_from_string
-from sacrud.tests.test_models import User
+from sacrud.tests import User
 
 
 class CommonTest(unittest.TestCase):
 
     def test_import_from_string(self):
         self.assertEqual(User,
-                         import_from_string('sacrud.tests.test_models:User'))
+                         import_from_string('sacrud.tests:User'))

@@ -15,13 +15,12 @@ import unittest
 
 from pyramid import testing
 
-from sacrud.common.pyramid_helpers import get_obj_from_settings
-from sacrud.common.pyramid_helpers import get_field_template
+from sacrud.common.pyramid_helpers import (get_field_template,
+                                           get_obj_from_settings)
 from sacrud.pyramid_ext.breadcrumbs import breadcrumbs, get_crumb
 from sacrud.pyramid_ext.views.CRUD import get_relationship, get_table
-from sacrud.tests.test_models import (_initTestingDB, DB_FILE,
-                                      Profile, TEST_DATABASE_CONNECTION_STRING,
-                                      User, user_add)
+from sacrud.tests import DB_FILE, Profile, TEST_DATABASE_CONNECTION_STRING, User
+from sacrud.tests.test_pyramid_ext.test_models import _initTestingDB, user_add
 
 
 class BaseTest(unittest.TestCase):
@@ -41,7 +40,7 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         del self.testapp
-        from sacrud.tests.test_models import DBSession
+        from sacrud.tests import DBSession
         DBSession.remove()
         os.remove(DB_FILE)
 
@@ -97,7 +96,7 @@ class CommonTest(BaseTest):
     def test_get_obj_from_settings(self):
         request = testing.DummyRequest()
         config = testing.setUp(request=request)
-        config.registry.settings['foo.User'] = 'sacrud.tests.test_models:User'
+        config.registry.settings['foo.User'] = 'sacrud.tests:User'
         obj = get_obj_from_settings(request, 'foo.User')
         self.assertEqual(obj, User)
 

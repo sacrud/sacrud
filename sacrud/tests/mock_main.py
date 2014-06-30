@@ -12,7 +12,7 @@ main function for functional test module
 from pyramid.config import Configurator
 from pyramid_beaker import session_factory_from_settings
 
-from sacrud.tests.test_models import Profile, User
+from sacrud.tests import Profile, User
 
 
 def main(global_config, **settings):

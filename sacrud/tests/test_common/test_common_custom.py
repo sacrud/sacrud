@@ -13,7 +13,7 @@ import unittest
 
 from sacrud.common.custom import (get_name, widget_horizontal, widget_link,
                                   widget_m2m)
-from sacrud.tests.test_models import User
+from sacrud.tests import User
 
 
 class CustomTest(unittest.TestCase):

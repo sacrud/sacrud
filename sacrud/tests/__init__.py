@@ -6,15 +6,29 @@ action.py tests
 import glob
 import os
 import unittest
-from StringIO import StringIO
 
 import transaction
-from pyramid.testing import DummyRequest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, orm
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
+from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.action import CRUD
-from sacrud.common.sa_helpers import delete_fileobj, get_pk
-from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
+from sacrud.exttype import FileStore
+
+Base = declarative_base()
+
+DBSession = orm.scoped_session(
+    orm.sessionmaker(extension=ZopeTransactionExtension(),
+                     expire_on_commit=False))
+
+DIRNAME = os.path.dirname(__file__)
+PHOTO_PATH = os.path.join(DIRNAME)
+
+
+DB_FILE = os.path.join(os.path.dirname(__file__), 'test.sqlite')
+TEST_DATABASE_CONNECTION_STRING = 'sqlite:///%s' % DB_FILE
 
 
 class MockCGIFieldStorage(object):
@@ -60,140 +74,42 @@ class BaseSacrudTest(unittest.TestCase):
         clear_files()
 
 
-class SacrudTest(BaseSacrudTest):
+class User(Base):
 
-    def test_get_pk(self):
-        # class
-        pk = get_pk(User)
-        self.assertEqual('id', pk[0].name)
+    __tablename__ = 'user'
 
-        # object
-        user = self.user_add()
-        pk = get_pk(user)
-        self.assertEqual('id', pk[0].name)
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    fullname = Column(String)
+    password = Column(String, info={'verbose_name': 'user password'})
+    sex = Column(Enum('male',
+                      'female',
+                      'alien',
+                      'unknown', name="sex"))
 
-    def test_list(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
+    def __init__(self, name, fullname, password, sex='unknown'):
+        self.name = name
+        self.fullname = fullname
+        self.password = password
+        self.sex = sex
 
-        self.session.add(user)
-        transaction.commit()
 
-        result = CRUD(self.session, User).rows_list()
-        user = self.session.query(User).get(1)
+class Profile(Base):
 
-        self.assertEqual(result['pk'], (User.__table__.c['id'],))
-        self.assertEqual(result["prefix"], "crud")
-        self.assertEqual(result["table"], User)
-        self.assertEqual(result["row"], [user, ])
+    __tablename__ = 'profile'
 
-        self.session.delete(user)
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship(User, backref=backref("profile", lazy="joined"))
+    phone = Column(String)
+    cv = Column(Text)
+    married = Column(Boolean)
+    salary = Column(Float)
+    photo = Column(FileStore(path="/assets/photo", abspath=PHOTO_PATH))
 
-    def test_create(self):
-
-        request = DummyRequest().environ
-        request['name'] = ["Vasya", ]
-        request['fullname'] = ["Vasya Pupkin", ]
-        request['password'] = ["123", ]
-
-        CRUD(self.session, User, request=request).add()
-        user = self.session.query(User).get(1)
-
-        self.assertEqual(user.name, "Vasya")
-        self.assertEqual(user.fullname, "Vasya Pupkin")
-        self.assertEqual(user.password, "123")
-
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["1", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        CRUD(self.session, Profile, request=request).add()
-
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(profile.phone, "213123123")
-        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
-        self.assertEqual(profile.married, True)
-        self.assertEqual(profile.salary, float(23))
-        self.assertEqual(profile.user.id, 1)
-
-        delete_fileobj(Profile, profile, "photo")
-
-        self.session.delete(profile)
-        user = self.session.query(User).get(1)
-        self.session.delete(user)
-        transaction.commit()
-
-        self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
-
-    def test_update(self):
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        user = self.session.query(User).get(1)
-        profile = Profile(user=user, salary="25.7")
-
-        self.session.add(profile)
-        transaction.commit()
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-        user = self.session.query(User).get(2)
-
-        profile = self.session.query(Profile).get(1)
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["2", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        CRUD(self.session, Profile, pk={'id': 1}, request=request).add()
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(profile.phone, "213123123")
-        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
-        self.assertEqual(profile.married, True)
-        self.assertEqual(profile.user.id, 2)
-        self.assertEqual(profile.salary, float(23))
-
-    def test_delete(self):
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["1", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        CRUD(self.session, Profile, request=request).add()
-        CRUD(self.session, Profile, pk={'id': 1}).delete()
-
-        profile = self.session.query(Profile).get(1)
-        self.assertEqual(profile, None)
-        # check file also deleted
-        self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
+    def __init__(self, user, phone="", cv="", married=False, salary=20.0):
+        self.user = user
+        self.phone = phone
+        self.cv = cv
+        self.married = married
+        self.salary = salary

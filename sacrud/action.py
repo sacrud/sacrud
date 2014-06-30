@@ -23,6 +23,8 @@ prefix = 'crud'
 
 
 def get_empty_instance(table):
+    """ Return  empty instance of model
+    """
     instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
     # list like ['name', 'group', 'visible'] to dict with empty
     # value as {'name': None, 'group': None, 'visible': None}
@@ -33,12 +35,19 @@ def get_empty_instance(table):
     return table(**init)
 
 
-def get_m2m_objs(session, relation, ids):
-    pk = relation.primary_key[0]
-    return session.query(relation).filter(pk.in_(ids)).all()
-
-
 def set_m2m_value(session, request, obj):
+    """ Set m2m value for model obj from request params like "group[]"
+
+        :Parameters:
+
+            - `session`: SQLAlchemy DBSession
+            - `request`: request as dict
+            - `obj`: model instance
+    """
+    def get_m2m_objs(session, relation, ids):
+        pk = relation.primary_key[0]
+        return session.query(relation).filter(pk.in_(ids)).all()
+
     m2m_request = {k: v for k, v in request.items() if k[-2:] == '[]'}
     for k, v in m2m_request.iteritems():
         key = k[:-2]
@@ -49,6 +58,15 @@ def set_m2m_value(session, request, obj):
 
 
 class CRUD(object):
+    """ Main class for CRUD actions
+
+        :Parameters:
+
+            - `session`: SQLAlchemy DBSession
+            - `table`: SQLAlchemy model
+            - `pk`: obj primary keys
+            - `request`: web request
+    """
     def __init__(self, session, table, pk=None, request=None):
         self.pk = get_pk(table)
         self.table = table
@@ -100,6 +118,15 @@ class CRUD(object):
 
     def add(self):
         """ Update row of table.
+
+        :Example:
+
+        .. code-block:: python
+
+            resp = action.CRUD(dbsession, table, pk)
+            resp.request = params
+            resp.add()
+
         """
         columns = [c for c in self.table.__table__.columns]
 
@@ -139,6 +166,12 @@ class CRUD(object):
 
     def delete(self):
         """ Delete row by pk.
+
+        :Example:
+
+        .. code-block:: python
+
+            action.CRUD(dbsession, table, pk=pk).delete()
         """
         obj = ObjPreprocessing(obj=self.obj).delete()
         self.session.delete(obj)

@@ -82,7 +82,7 @@ setup(
         'jsmin',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: Production',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
