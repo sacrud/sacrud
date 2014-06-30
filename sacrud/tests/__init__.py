@@ -43,12 +43,12 @@ class BaseSacrudTest(unittest.TestCase):
         user = self.session.query(User).get(1)
         return user
 
-    def profile_add(self, user):
-        profile = Profile(user=user)
-        self.session.add(profile)
-        transaction.commit()
-        profile = self.session.query(Profile).first()
-        return profile
+    # def profile_add(self, user):
+    #     profile = Profile(user=user)
+    #     self.session.add(profile)
+    #     transaction.commit()
+    #     profile = self.session.query(Profile).first()
+    #     return profile
 
     def setUp(self):
 

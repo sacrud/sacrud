@@ -57,6 +57,8 @@ def _silent_none(value):
     ...     return False
     >>> _silent_none(Foo)
     <class 'sacrud.common.pyramid_helpers.Foo'>
+    >>> _silent_none(u'ПревеД!')
+    u'\\xd0\\x9f\\xd1\\x80\\xd0\\xb5\\xd0\\xb2\\xd0\\xb5\\xd0\\x94!'
     """
     if type(value) == int:
         return value
@@ -111,8 +113,8 @@ def sacrud_env(fun):
 
     def wrapped(*args, **kwargs):
         response = fun(*args, **kwargs)
-        if not isinstance(response, dict):
-            return response
+        # if not isinstance(response, dict):
+        #     return response
         DBSession = {'session': args[0].request.dbsession}
         response.update(jinja2_globals)
         response.update(DBSession)

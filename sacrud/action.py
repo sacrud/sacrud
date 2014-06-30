@@ -51,7 +51,9 @@ def set_m2m_value(session, request, obj):
     m2m_request = {k: v for k, v in request.items() if k[-2:] == '[]'}
     for k, v in m2m_request.iteritems():
         key = k[:-2]
-        relation = getattr(obj.__class__, key)
+        relation = getattr(obj.__class__, key, False)
+        if not relation:
+            continue
         value = get_m2m_objs(session, relation.mapper, v)
         setattr(obj, key, value)
     return obj

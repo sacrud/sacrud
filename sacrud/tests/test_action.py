@@ -64,6 +64,7 @@ class ActionTest(BaseSacrudTest):
         request['password'] = ["123", ]
         request['groups[]'] = ["1", "3"]
         request['badAttr'] = ["1", "bar"]
+        request['badM2MAttr[]'] = ["1", "bar"]
 
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
