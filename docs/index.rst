@@ -40,7 +40,10 @@ Usage
    :maxdepth: 3
 
    install
-   sacrud
+   configuration
+   plain_usage
+   contribute
+   api
 
 
 Indices and tables

@@ -1,5 +1,5 @@
-Installing sacrud
-=================
+Installing `sacrud`
+===================
 
 Install from github
 -------------------
