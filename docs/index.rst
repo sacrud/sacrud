@@ -40,7 +40,6 @@ go to http://localhost:6543/sacrud/
 Usage
 -----
 
-
 .. toctree::
    :maxdepth: 3
 
