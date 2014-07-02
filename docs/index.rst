@@ -9,6 +9,11 @@ SACRUD
 Overview
 --------
 
+.. image:: _static/img/index.png
+    :alt: SACRUD main page
+    :align: right
+    :width: 500px
+
 sacrud - CRUD interface for SQLAlchemy with Pyramid gateway. Sacrud will solve your problem of CRUD interface for SQLAlchemy, by providing extension for Pyramid (yet) or use it in pure form.
 
 Look how easy it is to use with Pyramid:
