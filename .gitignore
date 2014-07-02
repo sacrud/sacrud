@@ -12,8 +12,6 @@ TODO.txt
 nohup.out
 .cache
 .webassets*
-_build
-_themes
 
 # JavaScript
 node_modules
@@ -31,3 +29,8 @@ htmlcov
 
 # Bower
 sacrud/static/js/bower_components
+
+# Docs
+_build
+_themes
+_pyramid_sacrud_example

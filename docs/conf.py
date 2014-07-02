@@ -24,6 +24,9 @@ if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
     cwd = os.getcwd()
     _themes = os.path.join(cwd, '_themes')
 
+    call([git, 'clone', 'git://github.com/ITCase/pyramid_sacrud_example.git',
+        '_pyramid_sacrud_example'])
+
     if not os.path.isdir(_themes):
         call([git, 'clone', 'git://github.com/Pylons/pylons_sphinx_theme.git',
                 '_themes'])
@@ -49,7 +52,7 @@ if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+# sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration ------------------------------------------------
 
