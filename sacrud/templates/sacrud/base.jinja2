@@ -105,7 +105,11 @@
 
             {% block sa_body %}{% endblock %}
 
-            <div class="footer">&nbsp;</div>
+            <div class="footer">
+                {% block sa_footer %}
+                    <center>&copy; Copyright 2013, ITCase. <a href="https://github.com/ITCase/sacrud">SACRUD</a></center>
+                {% endblock %}
+            </div>
         </div>
     </div>
 
