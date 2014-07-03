@@ -4,6 +4,7 @@ sacrud.tests package
 .. toctree::
 
     sacrud.tests.test_common
+    sacrud.tests.test_pyramid
 
 sacrud.tests.mock_main module
 -----------------------------
@@ -13,18 +14,10 @@ sacrud.tests.mock_main module
     :undoc-members:
     :show-inheritance:
 
-sacrud.tests.test_models module
+sacrud.tests.test_action module
 -------------------------------
 
-.. automodule:: sacrud.tests.test_models
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-sacrud.tests.test_pyramid module
---------------------------------
-
-.. automodule:: sacrud.tests.test_pyramid
+.. automodule:: sacrud.tests.test_action
     :members:
     :undoc-members:
     :show-inheritance:
