@@ -6,8 +6,9 @@
 sacrud
 ======
 
-sacrud will solve your problem of CRUD interface for SQLAlchemy,
-by providing extension for Pyramid or use it in pure form.
+sacrud - CRUD interface for SQLAlchemy with Pyramid gateway.
+
+SACRUD will solve your problem of CRUD interface for SQLAlchemy, by providing extension for Pyramid (yet) or use it in pure form. Unlike classical CRUD interface, sacrud allows override and flexibly customize interface. (that is closer to django.contrib.admin)
 
 Look how easy it is to use with Pyramid:
 ```python
@@ -18,32 +19,20 @@ from .models import (Model1, Model2, Model3,)
 # add sacrud and project models
 config.include('sacrud.pyramid_ext')
 settings = config.registry.settings
-settings['sacrud.models'] = {'Group1': [Model1, Model2], '': [Model3]}
+settings['sacrud.models'] = {'Group1': {
+                                'tables': [Model1, Model2],
+                                'position': 1,},
+                             'Group2': {
+                                'tables': [Model3],
+                                'position': 4,}
+                            }
 ```
 
 go to http://localhost:6543/sacrud/
 
 and see...
 
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/index.png)
-
-Features
---------
-
-- Be awesome
-- Read table rows
-
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/rows.png)
-
-- Create and update row
-
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/edit.png)
-
-- Delete row
-- Use sortable table with position field
-- Upload file with FileField
-- Union rows (testing)
-- Customizing interface
+![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/_static/img/dashboard.png)
 
 Installation
 ------------
@@ -65,7 +54,7 @@ Contribute
 
 - Issue Tracker: http://github.com/ITCase/sacrud/issues
 - Source Code: http://github.com/ITCase/sacrud
-- Docs: http://sacrud.readthedocs.org (in process)
+- Docs: http://sacrud.readthedocs.org
 - Demo: http://github.com/ITCase/pyramid_sacrud_example
 
 Support
@@ -77,8 +66,4 @@ I have a mailing list located at: sacrud@uralbash.ru
 License
 -------
 
-The project is licensed under the BSD license.
-
-Example
--------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/example.png)
+The project is licensed under the MIT license.

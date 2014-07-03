@@ -16,7 +16,8 @@ Overview
 
 sacrud - CRUD interface for SQLAlchemy with Pyramid gateway.
 
-SACRUD will solve your problem of CRUD interface for SQLAlchemy, by providing extension for Pyramid (yet) or use it in pure form.
+SACRUD will solve your problem of CRUD interface for SQLAlchemy,
+by providing extension for Pyramid (yet) or use it in pure form.
 Unlike classical CRUD interface, sacrud allows override and flexibly customize interface.
 (that is closer to `django.contrib.admin`)
 

@@ -86,7 +86,7 @@ setup(
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Natural Language :: Russian',
         'Operating System :: OS Independent',
@@ -101,6 +101,5 @@ setup(
         "Framework :: Flask",
         "Topic :: Internet",
         "Topic :: Database",
-        "License :: Repoze Public License",
     ],
 )
