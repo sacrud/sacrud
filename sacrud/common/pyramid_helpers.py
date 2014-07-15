@@ -113,10 +113,9 @@ def sacrud_env(fun):
 
     def wrapped(*args, **kwargs):
         response = fun(*args, **kwargs)
-        # if not isinstance(response, dict):
-        #     return response
-        DBSession = {'session': args[0].request.dbsession}
-        response.update(jinja2_globals)
-        response.update(DBSession)
+        if hasattr(response, 'update'):
+            DBSession = {'session': args[0].request.dbsession}
+            response.update(jinja2_globals)
+            response.update(DBSession)
         return response
     return wrapped
