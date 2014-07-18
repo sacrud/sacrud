@@ -201,7 +201,7 @@ class RequestPreprocessing(object):
 
     def _check_hstore(self, value):
         try:
-            return ast.literal_eval(value)
+            return ast.literal_eval(str(value))
         except:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
                             (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
