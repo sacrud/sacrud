@@ -2,12 +2,15 @@
 
 {% block sacrud_column %}
     {% for rel in relationships %}
+                {% for x in session.query(rel.mapper) %}
+                    {% set pk=x.__mapper__.primary_key[0].name %}
+                {% endfor %}
         {% if col in rel.remote_side or col in  rel.local_columns %}
             <select class="sacrud_fk {{ css_styles }}"
                     id="sacrud_fk_{{ col.name }}" name="{{ col.name }}">
                 <option></option>
                 {% for x in session.query(rel.mapper) %}
-                    {% set pk=x.__mapper__.primary_key[0].name %}
+                    {% set pk=pk_to_list(x)[0] %}
                     <option value='{{ getattr(x, pk) }}'
                         {% if obj %}
                             {% if value==getattr(x, pk) %}

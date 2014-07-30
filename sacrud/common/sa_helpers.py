@@ -110,8 +110,9 @@ def pk_to_list(obj, as_json=False):
     pk_list = []
     primary_keys = get_pk(obj)
     for item in primary_keys:
-        pk_list.append(item.name)
-        pk_list.append(getattr(obj, item.name))
+        item_name = get_attrname_by_colname(obj, item.name)
+        pk_list.append(item_name)
+        pk_list.append(getattr(obj, item_name))
     if as_json:
         return json.dumps(pk_list)
     return pk_list

@@ -16,8 +16,9 @@ import transaction
 from sqlalchemy import desc, or_
 from webhelpers.paginate import Page
 
-from sacrud.common.sa_helpers import (get_pk, ObjPreprocessing,
-                                      RequestPreprocessing, set_instance_name)
+from sacrud.common.sa_helpers import (get_attrname_by_colname, get_pk,
+                                      ObjPreprocessing, RequestPreprocessing,
+                                      set_instance_name)
 
 prefix = 'crud'
 
@@ -78,7 +79,9 @@ class CRUD(object):
         if pk:
             obj = session.query(table)
             for item in self.pk:
-                obj = obj.filter(getattr(table, item.name) == pk[item.name])
+                empty_obj = get_empty_instance(self.table)
+                item_name = get_attrname_by_colname(empty_obj, item.name)
+                obj = obj.filter(getattr(table, item_name) == pk[item_name])
             self.obj = obj.one()
 
     def rows_list(self, paginator=None, order_by=None, search=None):
