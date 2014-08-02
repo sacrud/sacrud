@@ -183,12 +183,16 @@ class RequestPreprocessing(object):
                            'FileStore': self._check_filestore,
                            'HSTORE': self._check_hstore,
                            'Date': self._check_date,
+                           'BYTEA': self._check_bytea,
                            }
 
     def _check_boolean(self, value):
         value = False if value == '0' else True
         value = True if value else False
         return value
+
+    def _check_bytea(self, value):
+        return str(value)
 
     def _check_filestore(self, value):
         fileobj = value
