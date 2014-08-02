@@ -92,6 +92,24 @@ class ElfinderString(TypeDecorator):
 
 
 class ChoiceType(TypeDecorator):
+    """ Example:
+
+        .. code-block:: python
+
+            from sacrud.exttype import ChoiceType
+
+            Base = declarative_base()
+
+            REDIRECT_CHOICES = (
+                ('OK (200)', '200'),
+                ('Moved Permanently (301)', '301'),
+                ('Moved Temporarily (302)', '302'),
+            )
+
+            class SuperChoiceModel(Base):
+                ...
+                redirect_type = Column(ChoiceType(choices=REDIRECT_CHOICES))
+    """
 
     impl = String
 
