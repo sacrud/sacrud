@@ -126,7 +126,8 @@ class ChoiceType(TypeDecorator):
     def process_result_value(self, value, dialect):
         if not value:
             return None
-        return self.choices[value]
+        choices = {v: k for k, v in self.choices.items()}
+        return choices[value]
 
 
 class SlugType(TypeDecorator):
