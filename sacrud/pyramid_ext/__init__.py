@@ -10,12 +10,14 @@
 Includeme of SACRUD
 """
 import os
-import sqlalchemy
-import sqlalchemy.orm as orm
+
 from webassets import Bundle
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common.pyramid_helpers import get_obj_from_settings, pkg_prefix
+import sqlalchemy
+import sqlalchemy.orm as orm
+from sacrud.common.pyramid_helpers import (_silent_none, get_obj_from_settings,
+                                           pkg_prefix)
 
 
 def add_routes(config):
@@ -95,6 +97,8 @@ def includeme(config):
                                                                             'sacrud.dashboard_position_model')
 
     # Jinja2
+    jinja2_env = config.get_jinja2_environment()
+    jinja2_env.finalize = _silent_none
     config.add_jinja2_search_path("sacrud:templates")
     config.add_jinja2_extension('jinja2.ext.loopcontrols')
 

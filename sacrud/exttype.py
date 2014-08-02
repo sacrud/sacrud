@@ -11,14 +11,9 @@ Extension type for SQLAlchemy
 """
 import os
 import uuid
+
 from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy.types import (
-    CHAR,
-    VARCHAR,
-    Unicode,
-    String,
-    TypeDecorator,
-)
+from sqlalchemy.types import CHAR, String, TypeDecorator, Unicode, VARCHAR
 
 
 class FileStore(TypeDecorator):
