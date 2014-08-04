@@ -69,6 +69,9 @@ class CRUD(object):
         self.relationships = get_relationship(self.tname, self.request)
         self.params = request.params.dict_of_lists()
 
+        if not self.table:
+            raise HTTPNotFound
+
         pk = request.matchdict.get('pk')
         if pk and len(pk) % 2 == 0:
             self.pk = pk_list_to_dict(pk)
