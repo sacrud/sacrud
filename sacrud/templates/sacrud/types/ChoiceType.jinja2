@@ -9,7 +9,7 @@
   {% for k, v in col.type.choices.iteritems() %}
     <option value="{{ v }}"
       {% if obj %}
-          {% if value==k %}
+          {% if value[1]==k %}
               selected
           {% endif %}
       {% endif %}>
