@@ -56,7 +56,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     test_suite="nose.collector",
-    license="GPL",
+    license="MIT",
     package_dir={'sacrud': 'sacrud'},
     package_data={
         'sacrud': ['static/style/*.css',
