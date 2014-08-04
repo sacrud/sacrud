@@ -128,7 +128,7 @@ class ChoiceType(TypeDecorator):
         if not value:
             return None
         choices = {v: k for k, v in self.choices.items()}
-        return choices[value]
+        return (value, choices[value])
 
 
 class SlugType(TypeDecorator):
