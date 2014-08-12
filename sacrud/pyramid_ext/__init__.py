@@ -11,19 +11,17 @@ Includeme of SACRUD
 """
 import os
 
+import sqlalchemy
+import sqlalchemy.orm as orm
 from webassets import Bundle
 from zope.sqlalchemy import ZopeTransactionExtension
 
-import sqlalchemy
-import sqlalchemy.orm as orm
-from sacrud.common.pyramid_helpers import (_silent_none, get_obj_from_settings,
-                                           pkg_prefix)
+from sacrud.common.pyramid_helpers import _silent_none, pkg_prefix
 
 
 def add_routes(config):
     prefix = pkg_prefix(config)
     config.add_route('sa_home',           prefix)
-    config.add_route('sa_save_position',  prefix + 'save_position')
     config.add_route('sa_list',           prefix + '{table}')
     config.add_route('sa_create',         prefix + '{table}/create')
     config.add_route('sa_update',         prefix + '{table}/update/*pk')
@@ -92,9 +90,6 @@ def includeme(config):
 
     # Dashboard widget
     settings = config.registry.settings
-    if 'sacrud_dashboard_position_model' not in settings:
-        settings['sacrud_dashboard_position_model'] = get_obj_from_settings(settings,
-                                                                            'sacrud.dashboard_position_model')
 
     # Jinja2
     jinja2_env = config.get_jinja2_environment()
