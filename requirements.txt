@@ -3,6 +3,3 @@ zope.sqlalchemy
 transaction
 webhelpers
 webtest
-pyramid_webassets
-cssmin
-jsmin

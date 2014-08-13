@@ -1,3 +1,0 @@
-define(['jquery', 'speakingurl'], function ($) {
-
-});

@@ -47,7 +47,7 @@ print 'files', files
 setup(
     name='sacrud',
     version=version.__version__,
-    url='http://github.com/uralbash/sacrud/',
+    url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
@@ -75,11 +75,8 @@ setup(
         "sqlalchemy",
         "transaction",
         'zope.sqlalchemy',
-        'pyramid_webassets',
         'webhelpers',
         'webtest',
-        'cssmin',
-        'jsmin',
     ],
     classifiers=[
         'Development Status :: Production',
