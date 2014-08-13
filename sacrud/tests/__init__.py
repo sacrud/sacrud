@@ -16,6 +16,7 @@ from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.exttype import FileStore
+from sacrud.common.sa_helpers import TableProperty
 
 Base = declarative_base()
 
@@ -101,6 +102,10 @@ class User(Base):
                       'unknown', name="sex"))
 
     groups = relationship("Groups", secondary=association_table)
+
+    @TableProperty
+    def foo(self):
+        return "I'm property"
 
     def __init__(self, name, fullname, password, sex='unknown'):
         self.name = name
