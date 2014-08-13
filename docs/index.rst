@@ -9,11 +9,6 @@ SACRUD
 Overview
 --------
 
-.. image:: _static/img/index.png
-    :alt: SACRUD main page
-    :align: right
-    :width: 500px
-
 sacrud - CRUD interface for SQLAlchemy.
 
 SACRUD will solve your problem of CRUD interface for SQLAlchemy,
