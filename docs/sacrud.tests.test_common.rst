@@ -14,14 +14,6 @@ sacrud.tests.test_common.test_common_paginator module
     :undoc-members:
     :show-inheritance:
 
-sacrud.tests.test_common.test_common_pyramid module
-===================================================
-
-.. automodule:: sacrud.tests.test_common.test_common_pyramid
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 sacrud.tests.test_common.test_common_sqlalchemy module
 ======================================================
 

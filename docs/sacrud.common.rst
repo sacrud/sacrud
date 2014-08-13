@@ -14,14 +14,6 @@ sacrud.common.paginator module
     :undoc-members:
     :show-inheritance:
 
-sacrud.common.pyramid_helpers module
-====================================
-
-.. automodule:: sacrud.common.pyramid_helpers
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 sacrud.common.sa_helpers module
 ===============================
 

@@ -14,33 +14,24 @@ Overview
     :align: right
     :width: 500px
 
-sacrud - CRUD interface for SQLAlchemy with Pyramid gateway.
+sacrud - CRUD interface for SQLAlchemy.
 
 SACRUD will solve your problem of CRUD interface for SQLAlchemy,
-by providing extension for Pyramid (yet) or use it in pure form.
-Unlike classical CRUD interface, sacrud allows override and flexibly customize interface.
+by providing `extension for Pyramid <https://github.com/ITCase/pyramid_sacrud>`_ (yet) or use it in pure form.
+Unlike classical CRUD interface, `pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud>`_ allows override and flexibly customize interface.
 (that is closer to `django.contrib.admin`)
 
-Look how easy it is to use with Pyramid:
+Look how easy it is to use:
 
 .. code-block:: python
 
-    config.include('pyramid_jinja2')
-    config.add_jinja2_search_path("myprojectname:templates")
+    from .models import Groups
+    from sacrud.action import CRUD
 
-    from .models import (Model1, Model2, Model3,)
-    # add sacrud and project models
-    config.include('sacrud.pyramid_ext')
-    settings = config.registry.settings
-    settings['sacrud.models'] = {'Group1': {
-                                    'tables': [Model1, Model2],
-                                    'position': 1,},
-                                 'Group2': {
-                                    'tables': [Model3],
-                                    'position': 4,}
-                                }
-
-go to http://localhost:6543/sacrud/
+    data = {'name': 'Electronics',
+            'parent_id': '10',}
+    group_obj = CRUD(DBSession, Groups, request=data).add()
+    print group_obj.id
 
 Usage
 -----
@@ -49,7 +40,6 @@ Usage
    :maxdepth: 3
 
    install
-   configuration
    plain_usage
    api
 

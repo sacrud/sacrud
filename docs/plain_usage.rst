@@ -1,5 +1,5 @@
-Plain use `sacrud`
-=================
+Usage `sacrud`
+==============
 
 CREATE action
 -------------
