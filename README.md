@@ -24,7 +24,7 @@ print group_obj.id
 Installation
 ------------
 
-Install from github (now is broken, fixes with 0.1.3 release):
+Install from github:
 
     pip install git+http://github.com/ITCase/sacrud.git
     
