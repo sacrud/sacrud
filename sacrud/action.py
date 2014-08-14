@@ -96,8 +96,8 @@ class CRUD(object):
         col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
         row = session.query(table)
 
-        if row:
-            col = set_instance_name(row[0], col)
+        if row.all():
+            col = set_instance_name(row.all()[0], col)
 
         return {'row': row,
                 'pk': self.pk,
