@@ -15,8 +15,8 @@ from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.exttype import FileStore
 from sacrud.common.sa_helpers import TableProperty
+from sacrud.exttype import FileStore
 
 Base = declarative_base()
 
@@ -86,6 +86,17 @@ class Groups(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     users = relationship("User", secondary=association_table)
+
+
+class MultiPK(Base):
+
+    __tablename__ = 'multipk'
+
+    id = Column(Integer, primary_key=True)
+    id2 = Column(Integer, primary_key=True)
+    id3 = Column(Integer, primary_key=True)
+
+    fk = Column('group_id', Integer, ForeignKey('group.id'))
 
 
 class User(Base):
