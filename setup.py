@@ -79,7 +79,7 @@ setup(
         'webtest',
     ],
     classifiers=[
-        'Development Status :: Production',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
