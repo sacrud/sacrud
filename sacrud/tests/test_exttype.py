@@ -5,13 +5,19 @@
 # Copyright © 2014 uralbash <root@uralbash.ru>
 #
 # Distributed under terms of the MIT license.
+import os
 import uuid
+from StringIO import StringIO
 
 import transaction
+from pyramid.testing import DummyRequest
 from sqlalchemy import Column, Integer
 
 from sacrud.exttype import GUID
-from sacrud.tests import Base, BaseSacrudTest
+from sacrud.tests import (Base, BaseSacrudTest, MockCGIFieldStorage, Profile,
+                          User, FileStore)
+
+file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 
 
 class ExtTypeModel(Base):
@@ -50,3 +56,43 @@ class ExtTypeTest(BaseSacrudTest):
 
         guid = self.session.query(ExtTypeModel).one()
         self.assertEqual(guid.col_guid, value)
+
+    def test_file_storage(self):
+
+        user = User(u'Vasya', u'Pupkin', u"123")
+        self.session.add(user)
+        transaction.commit()
+
+        request = DummyRequest().environ
+        request['user_id'] = 1
+        request['phone'] = 213123123
+        request['cv'] = "Vasya Pupkin was born in Moscow"
+        request['married'] = True
+        request["salary"] = 23.0
+
+        upload = MockCGIFieldStorage()
+        upload.file = StringIO('foo')
+        upload.filename = 'foo.html'
+        request["photo"] = upload
+
+        profile = Profile(**request)
+        self.session.add(profile)
+        transaction.commit()
+
+        profile = self.session.query(Profile).get(1)
+        self.assertEqual(profile.photo, u'/assets/photo/foo.html')
+
+        # test URL
+        request["photo"] = 'https://www.linux.org.ru/img/good-penguin.jpg'
+
+        profile = Profile(**request)
+        self.session.add(profile)
+        transaction.commit()
+
+        profile = self.session.query(Profile).order_by('-id').first()
+        self.assertEqual(profile.photo,
+                         'https://www.linux.org.ru/img/good-penguin.jpg')
+
+        # test repr
+        self.assertEqual(FileStore().__repr__(), '')
+        self.assertEqual(FileStore(path="/foo/bar/").__repr__(), '/foo/bar/')

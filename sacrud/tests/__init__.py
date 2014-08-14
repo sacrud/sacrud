@@ -146,10 +146,3 @@ class Profile(Base):
     married = Column(Boolean)
     salary = Column(Float)
     photo = Column(FileStore(path="/assets/photo", abspath=PHOTO_PATH))
-
-    def __init__(self, user, phone="", cv="", married=False, salary=20.0):
-        self.user = user
-        self.phone = phone
-        self.cv = cv
-        self.married = married
-        self.salary = salary
