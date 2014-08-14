@@ -13,11 +13,13 @@ import transaction
 from pyramid.testing import DummyRequest
 from sqlalchemy import Column, Integer
 
-from sacrud.exttype import GUID
-from sacrud.tests import (Base, BaseSacrudTest, MockCGIFieldStorage, Profile,
-                          User, FileStore)
+from sacrud.exttype import ChoiceType, ElfinderString, GUID, SlugType
+from sacrud.tests import (Base, BaseSacrudTest, FileStore, MockCGIFieldStorage,
+                          Profile, User)
 
 file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+TEST_CHOICES = {'val_1': 'val_1', 'val_2': 'val_2', 'val_3': 'val_3',
+                'val_4': 'val_4', 'val_5': 'val_5', 'val_6': 'val_6'}
 
 
 class ExtTypeModel(Base):
@@ -25,6 +27,10 @@ class ExtTypeModel(Base):
 
     id = Column(Integer, primary_key=True)
     col_guid = Column(GUID(), default=uuid.uuid4)
+    col_elfinder = Column(ElfinderString, info={"verbose_name": u'Проверка Elfinder', })
+    col_choice = Column(ChoiceType(choices=TEST_CHOICES),
+                        info={"verbose_name": u'Проверка select', })
+    slug = Column(SlugType('string_name', False))
 
 
 class ExtTypeTest(BaseSacrudTest):
@@ -96,3 +102,29 @@ class ExtTypeTest(BaseSacrudTest):
         # test repr
         self.assertEqual(FileStore().__repr__(), '')
         self.assertEqual(FileStore(path="/foo/bar/").__repr__(), '/foo/bar/')
+
+    def test_choices_type(self):
+        obj = ExtTypeModel()
+        value = 'val_5'
+        obj.col_choice = value
+        self.session.add(obj)
+        self.session.flush()
+        self.assertEqual(obj.col_choice, value)
+
+        transaction.commit()
+
+        obj = self.session.query(ExtTypeModel).one()
+        self.assertEqual(obj.col_choice, (u'val_5', 'val_5'))
+
+    def test_slug_type(self):
+        obj = ExtTypeModel()
+        value = 'test'
+        obj.slug = value
+        self.session.add(obj)
+        self.session.flush()
+        self.assertEqual(obj.slug, value)
+
+        transaction.commit()
+
+        obj = self.session.query(ExtTypeModel).one()
+        self.assertEqual(obj.slug, value)

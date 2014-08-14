@@ -87,9 +87,6 @@ class ElfinderString(TypeDecorator):
     def process_result_value(self, value, dialect):
         return value
 
-    def __repr__(self):
-        return self.path
-
 
 class ChoiceType(TypeDecorator):
     """ Example:
