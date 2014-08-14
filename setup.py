@@ -47,16 +47,16 @@ print 'files', files
 setup(
     name='sacrud',
     version=version.__version__,
-    url='http://github.com/uralbash/sacrud/',
+    url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.pyramid_ext', 'sacrud.common', 'sacrud.tests'],
+    packages=['sacrud', 'sacrud.common', 'sacrud.tests'],
     data_files=files,
     include_package_data=True,
     zip_safe=False,
     test_suite="nose.collector",
-    license="GPL",
+    license="MIT",
     package_dir={'sacrud': 'sacrud'},
     package_data={
         'sacrud': ['static/style/*.css',
@@ -70,7 +70,7 @@ setup(
         'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
     install_requires=[
         "sqlalchemy",
         "transaction",
@@ -79,11 +79,11 @@ setup(
         'webtest',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: Production',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Natural Language :: Russian',
         'Operating System :: OS Independent',
@@ -98,6 +98,5 @@ setup(
         "Framework :: Flask",
         "Topic :: Internet",
         "Topic :: Database",
-        "License :: Repoze Public License",
     ],
 )

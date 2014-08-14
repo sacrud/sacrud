@@ -11,13 +11,9 @@ Extension type for SQLAlchemy
 """
 import os
 import uuid
+
 from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy.types import (
-    CHAR,
-    VARCHAR,
-    Unicode,
-    TypeDecorator,
-)
+from sqlalchemy.types import CHAR, String, TypeDecorator, Unicode, VARCHAR
 
 
 class FileStore(TypeDecorator):
@@ -56,7 +52,7 @@ class GUID(TypeDecorator):
 
     def load_dialect_impl(self, dialect):
         if dialect.name == 'postgresql':
-            return dialect.type_descriptor(UUID())
+            return dialect.type_descriptor(UUID())  # pragma: no cover
         else:
             return dialect.type_descriptor(CHAR(32))
 
@@ -64,7 +60,7 @@ class GUID(TypeDecorator):
         if value is None:
             return value
         elif dialect.name == 'postgresql':
-            return str(value)
+            return str(value)  # pragma: no cover
         else:
             if not isinstance(value, uuid.UUID):
                 return "%.32x" % uuid.UUID(value)
@@ -91,5 +87,52 @@ class ElfinderString(TypeDecorator):
     def process_result_value(self, value, dialect):
         return value
 
-    def __repr__(self):
-        return self.path
+
+class ChoiceType(TypeDecorator):
+    """ Example:
+
+.. code-block:: python
+    :linenos:
+
+    from sacrud.exttype import ChoiceType
+
+    Base = declarative_base()
+
+    REDIRECT_CHOICES = (
+        ('OK (200)', '200'),
+        ('Moved Permanently (301)', '301'),
+        ('Moved Temporarily (302)', '302'),
+    )
+
+    class SuperChoiceModel(Base):
+        ...
+        redirect_type = Column(ChoiceType(choices=REDIRECT_CHOICES))
+    """
+
+    impl = String
+
+    def __init__(self, choices, **kw):
+        self.choices = dict(choices)
+        super(ChoiceType, self).__init__(**kw)
+
+    def process_bind_param(self, value, dialect):
+        val = [(k, v) for k, v in self.choices.iteritems() if k == value or v == value]
+        if val:
+            return val[0][1]
+        return None
+
+    def process_result_value(self, value, dialect):
+        if not value:
+            return None
+        choices = {v: k for k, v in self.choices.items()}
+        return (value, choices[value])
+
+
+class SlugType(TypeDecorator):
+
+    impl = String
+
+    def __init__(self, input_id, reflection=True, **kw):
+        self.input_id = input_id
+        self.reflection = reflection
+        super(SlugType, self).__init__(**kw)

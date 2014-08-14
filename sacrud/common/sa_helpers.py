@@ -9,11 +9,75 @@
 """
 SQLAlchemy helpers
 """
-import os
 import ast
-import uuid
 import inspect
+import json
+import os
+import uuid
+from datetime import datetime
+
 import sqlalchemy
+
+
+class TableProperty(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, inst, cls):
+        return self.func(cls.__table__)
+
+
+def get_attrname_by_colname(instance, name):
+    """ Get value from SQLAlchemy instance by column name
+
+    :Parameters:
+        - `instance`: SQLAlchemy model instance.
+        - `name`:  Column name
+
+    :Examples:
+
+    >>> from sqlalchemy import Column, Integer
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> Base = declarative_base()
+    >>> class MPTTPages(Base):
+    ...     __tablename__ = "mptt_pages"
+    ...     id = Column(Integer, primary_key=True)
+    ...     left = Column("lft", Integer, nullable=False)
+    >>> get_attrname_by_colname(MPTTPages(), 'lft')
+    'left'
+    """
+    for attr, column in sqlalchemy.inspect(instance.__class__).c.items():
+        if column.name == name:
+            return attr
+
+
+def set_instance_name(instance, cols):
+    """ It gives you opportunity to get instance attr by column name
+        Like this: row.__getattribute__(col.instance_name)
+
+    :Parameters:
+        - `instance`: SQLAlchemy model instance.
+        - `cols`:  list of SQLAlchemy column
+
+    :Examples:
+
+    >>> from sqlalchemy import Column, Integer
+    >>> from sqlalchemy.ext.declarative import declarative_base
+    >>> Base = declarative_base()
+    >>> class MPTTPages(Base):
+    ...     __tablename__ = "mptt_pages"
+    ...     id = Column(Integer, primary_key=True)
+    ...     left = Column("lft", Integer, nullable=False)
+    >>> columns = set_instance_name(MPTTPages(), MPTTPages.__table__.c).items()
+    >>> columns[1][1].instance_name
+    'left'
+
+    """
+    for col in cols:
+        if isinstance(col, sqlalchemy.Column):
+            setattr(col, "instance_name", get_attrname_by_colname(instance,
+                                                                  col.name))
+    return cols
 
 
 def get_pk(obj):
@@ -42,36 +106,24 @@ def get_pk(obj):
     return pk_list
 
 
-def get_relations(obj):
-    """
-    :Examples:
-
-    >>> from sqlalchemy import Column, Integer, ForeignKey
-    >>> from sqlalchemy.ext.declarative import declarative_base
-    >>> from sqlalchemy.orm import relationship, backref
-    >>> Base = declarative_base()
-    >>> class User(Base):
-    ...    __tablename__ = 'users'
-    ...    id = Column(Integer, primary_key=True)
-    ...
-    >>> class Address(Base):
-    ...    __tablename__ = 'addresses'
-    ...    id = Column(Integer, primary_key=True)
-    ...    user_id = Column(Integer, ForeignKey('users.id'))
-    ...    user = relationship("User", backref=backref('addresses', order_by=id))
-    >>> get_relations(User())
-    [('addresses', [])]
-
-    """
-    return [(n, getattr(obj, n)) for n in dir(obj)
-            if isinstance(getattr(obj, n),
-                          sqlalchemy.orm.collections.InstrumentedList)]
+def pk_to_list(obj, as_json=False):
+    pk_list = []
+    primary_keys = get_pk(obj)
+    for item in primary_keys:
+        item_name = get_attrname_by_colname(obj, item.name)
+        pk_list.append(item_name)
+        pk_list.append(getattr(obj, item_name))
+    if as_json:
+        return json.dumps(pk_list)
+    return pk_list
 
 
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
-    abspath = table.__table__.columns[key].type.abspath
+    if hasattr(table, '__table__'):
+        table = table.__table__
+    abspath = table.columns[key].type.abspath
     path = os.path.join(abspath, os.path.basename(getattr(obj, key)))
     if not obj or not os.path.isfile(path):
         return
@@ -109,49 +161,74 @@ def store_file(request, key, path):
     output_file.close()
 
 
-def check_type(request, table, key=None, obj=None):
-    """ Chek type when Create, Update or Delete.
-    """
-    # XXX: C901 very ugly function
-    # for Delete
-    if not key:
-        for col in table.__table__.columns:
+class ObjPreprocessing(object):
+    def __init__(self, obj):
+        self.obj = obj
+        self.table = obj.__table__
+
+    def delete(self):
+        # XXX: think about same update
+        for col in self.table.columns:
             if col.type.__class__.__name__ == 'FileStore':
-                if getattr(obj, col.name):
-                    delete_fileobj(table, obj, col.name)
-        return
-    column = table.__table__.columns[key]
-    column_type = column.type.__class__.__name__
+                if not getattr(self.obj, col.name):
+                    continue  # pragma: no cover
+                delete_fileobj(self.table, self.obj, col.name)
+        return self.obj
 
-    # for Update or Create
-    value = request[key]
-    if type(value) in (list, tuple):
-        value = value[0]
 
-    if not value and not hasattr(value, 'filename'):
-        return None
+class RequestPreprocessing(object):
+    def __init__(self, request):
+        self.request = request
+        self.types_list = {'Boolean': self._check_boolean,
+                           'FileStore': self._check_filestore,
+                           'HSTORE': self._check_hstore,
+                           'Date': self._check_date,
+                           'DateTime': self._check_date,
+                           'BYTEA': self._check_bytea,
+                           'LargeBinary': self._check_bytea,
+                           }
 
-    if column_type == 'Boolean':
+    def _check_boolean(self, value):
         value = False if value == '0' else True
         value = True if value else False
-    elif column_type == 'FileStore':
+        return value
+
+    def _check_bytea(self, value):
+        return str(value)
+
+    def _check_filestore(self, value):
         fileobj = value
         if hasattr(fileobj, 'filename'):
             extension = fileobj.filename.split(".")[-1]
             fileobj.filename = str(uuid.uuid4()) + "." + extension
-            abspath = table.__table__.columns[key].type.abspath
-            store_file(request, key, abspath)
-            if obj:
-                if getattr(obj, key):
-                    delete_fileobj(table, obj, key)
+            abspath = self.column.type.abspath
+            store_file(self.request, self.key, abspath)
             value = fileobj.filename
-    elif column_type == 'HSTORE':
+        return value
+
+    def _check_hstore(self, value):
         try:
-            value = ast.literal_eval(value)
+            return ast.literal_eval(str(value))
         except:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
                             (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
-    elif column_type == 'Date':
-        from datetime import datetime
-        value = datetime.strptime(value, '%Y-%m-%d')
-    return value
+
+    def _check_date(self, value):
+        return datetime.strptime(value, '%Y-%m-%d')
+
+    def check_type(self, table, key):
+        self.key = key
+        self.column = table.__table__.columns[key]
+        column_type = self.column.type.__class__.__name__
+        value = self.request[key]
+        if type(value) in (list, tuple):
+            value = value[0]
+
+        if not value and not hasattr(value, 'filename'):
+            return None
+
+        if column_type in self.types_list.keys():
+            check = self.types_list[column_type]
+            return check(value)
+
+        return value

@@ -1,49 +1,25 @@
 [![Build Status](https://travis-ci.org/ITCase/sacrud.svg?branch=master)](https://travis-ci.org/ITCase/sacrud)
 [![Coverage Status](https://coveralls.io/repos/ITCase/sacrud/badge.png?branch=master)](https://coveralls.io/r/ITCase/sacrud?branch=master)
 [![Stories in Progress](https://badge.waffle.io/ITCase/sacrud.png?label=in progress&title=In Progress)](http://waffle.io/ITCase/sacrud)
-[![PyPI](http://img.shields.io/pypi/dm/sacrud.svg)](http://img.shields.io/pypi/dm/sacrud.svg)
+[![PyPI](http://img.shields.io/pypi/dm/sacrud.svg)](https://pypi.python.org/pypi/sacrud/)
 
 sacrud
 ======
 
-sacrud will solve your problem of CRUD interface for SQLAlchemy,
-by providing extension for Pyramid or use it in pure form.
+sacrud - CRUD interface for SQLAlchemy.
 
-Look how easy it is to use with Pyramid:
+SACRUD will solve your problem of CRUD interface for SQLAlchemy, by providing [extension for Pyramid](https://github.com/ITCase/pyramid_sacrud) (yet) or use it in pure form. Unlike classical CRUD interface, [pyramid_sacrud](https://github.com/ITCase/pyramid_sacrud) allows override and flexibly customize interface. (that is closer to django.contrib.admin)
+
+Look how easy it is to use:
 ```python
-config.include('pyramid_jinja2')
-config.add_jinja2_search_path("myprojectname:templates")
+from .models import Groups
+from sacrud.action import CRUD
 
-from .models import (Model1, Model2, Model3,)
-# add sacrud and project models
-config.include('sacrud.pyramid_ext')
-settings = config.registry.settings
-settings['sacrud.models'] = {'Group1': [Model1, Model2], '': [Model3]}
+data = {'name': 'Electronics',
+        'parent_id': '10',}
+group_obj = CRUD(DBSession, Groups, request=data).add()
+print group_obj.id
 ```
-
-go to http://localhost:6543/sacrud/
-
-and see...
-
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/index.png)
-
-Features
---------
-
-- Be awesome
-- Read table rows
-
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/rows.png)
-
-- Create and update row
-
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/edit.png)
-
-- Delete row
-- Use sortable table with position field
-- Upload file with FileField
-- Union rows (testing)
-- Customizing interface
 
 Installation
 ------------
@@ -69,7 +45,7 @@ Contribute
 
 - Issue Tracker: http://github.com/ITCase/sacrud/issues
 - Source Code: http://github.com/ITCase/sacrud
-- Docs: http://sacrud.readthedocs.org (in process)
+- Docs: http://sacrud.readthedocs.org
 - Demo: http://github.com/ITCase/pyramid_sacrud_example
 
 Support
@@ -81,8 +57,4 @@ I have a mailing list located at: sacrud@uralbash.ru
 License
 -------
 
-The project is licensed under the BSD license.
-
-Example
--------
-![ScreenShot](https://raw.github.com/uralbash/sacrud/master/docs/img/example.png)
+The project is licensed under the MIT license.

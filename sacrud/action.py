@@ -10,154 +10,159 @@
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import inspect
+import itertools
+
 import transaction
 
-from webhelpers.paginate import Page
-from sacrud.common.sa_helpers import (
-    check_type,
-    get_pk,
-    get_relations,
-)
+from sacrud.common.sa_helpers import (get_attrname_by_colname, get_pk,
+                                      ObjPreprocessing, RequestPreprocessing,
+                                      set_instance_name)
 
 prefix = 'crud'
 
-# FIXME: rewrite it
-get_pk_hook = lambda x: get_pk(x)[0].name
 
-
-def list(session, table, paginator=None, order_by=None):
+def get_empty_instance(table):
+    """ Return  empty instance of model.
     """
-    Return a list of table rows.
+    instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
+    # list like ['name', 'group', 'visible'] to dict with empty
+    # value as {'name': None, 'group': None, 'visible': None}
+    init = dict(
+        zip(instance_defaults_params,
+            itertools.repeat(None))
+    )
+    return table(**init)
 
-    :Parameters:
 
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `order_by`: name ordered row.
-        - `paginator`: see sacrud.common.paginator.get_paginator.
+def set_m2m_value(session, request, obj):
+    """ Set m2m value for model obj from request params like "group[]"
+
+        :Parameters:
+
+            - `session`: SQLAlchemy DBSession
+            - `request`: request as dict
+            - `obj`: model instance
     """
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    pk_name = get_pk_hook(table)
-    query = session.query(table)
-    if order_by:
-        query = query.order_by(order_by)
-    row = query.all()
-    if paginator:
-        row = Page(row, **paginator)
+    def get_m2m_objs(session, relation, ids):
+        pk = relation.primary_key[0]
+        return session.query(relation).filter(pk.in_(ids)).all()
 
-    return {'row': row,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix,
-            }
+    m2m_request = {k: v for k, v in request.items() if k[-2:] == '[]'}
+    for k, v in m2m_request.iteritems():
+        key = k[:-2]
+        relation = getattr(obj.__class__, key, False)
+        if not relation:
+            continue  # pragma: no cover
+        value = get_m2m_objs(session, relation.mapper, v)
+        setattr(obj, key, value)
+    return obj
 
 
-def create(session, table, request=''):
+class CRUD(object):
+    """ Main class for CRUD actions
+
+        :Parameters:
+
+            - `session`: SQLAlchemy DBSession
+            - `table`: SQLAlchemy model
+            - `pk`: obj primary keys
+            - `request`: web request
     """
-    Insert row to table.
+    def __init__(self, session, table, pk=None, request=None):
+        self.pk = get_pk(table)
+        self.table = table
+        self.request = request
+        self.session = session
+        self.obj = None
+        if pk:
+            obj = session.query(table)
+            for item in self.pk:
+                empty_obj = get_empty_instance(self.table)
+                item_name = get_attrname_by_colname(empty_obj, item.name)
+                obj = obj.filter(getattr(table, item_name) == pk[item_name])
+            self.obj = obj.one()
 
-    :Parameters:
+    def rows_list(self):
+        """
+        Return a list of table rows.
 
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `request`: webob format request.
-    """
-    if request:
-        args = {}
-        # FIXME: я чувствую здесь диссонанс
-        for arg in inspect.getargspec(table.__init__).args[1:]:
-            args[arg] = None
-        obj = table(**args)
-        for key, value in request.items():
-            # chek columns exist
-            if key not in table.__table__.columns:
-                continue
-            value = check_type(request, table, key)
-            obj.__setattr__(key, value)
-        session.add(obj)
+        :Parameters:
+
+            - `order_by`: name ordered row.
+            - `paginator`: see sacrud.common.paginator.get_paginator.
+        """
+        table = self.table
+        session = self.session
+        col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
+        row = session.query(table)
+
+        if row.all():
+            col = set_instance_name(row.all()[0], col)
+
+        return {'row': row,
+                'pk': self.pk,
+                'col': col,
+                'table': table,
+                'prefix': prefix,
+                }
+
+    def add(self):
+        """ Update row of table.
+
+        :Example:
+
+        .. code-block:: python
+
+            resp = action.CRUD(dbsession, table, pk)
+            resp.request = params
+            resp.add()
+
+        """
+        columns = [c for c in self.table.__table__.columns]
+
+        if self.request:
+            # for create
+            if not self.obj:
+                self.obj = get_empty_instance(self.table)
+
+            request_preprocessing = RequestPreprocessing(self.request)
+            # filter request params for object
+            for key, value in self.request.items():
+                # chek if columns not exist
+                if key not in self.table.__table__.columns:
+                    if key[-2:] != '[]':
+                        self.request.pop(key, None)
+                    continue  # pragma: no cover
+                self.request[key] = request_preprocessing.check_type(self.table, key)
+
+            for key, value in self.request.iteritems():
+                self.obj.__setattr__(key, value)
+
+            # save m2m relationships
+            self.obj = set_m2m_value(self.session, self.request, self.obj)
+
+            self.session.add(self.obj)
+            transaction.commit()
+            return self.obj
+
+        columns = [c for c in getattr(self.table,
+                                      'sacrud_detail_col',
+                                      [('', self.table.__table__.columns)])]
+        return {'obj': self.obj,
+                'pk': self.pk,
+                'col': columns,
+                'table': self.table,
+                'prefix': prefix}
+
+    def delete(self):
+        """ Delete row by pk.
+
+        :Example:
+
+        .. code-block:: python
+
+            action.CRUD(dbsession, table, pk=pk).delete()
+        """
+        obj = ObjPreprocessing(obj=self.obj).delete()
+        self.session.delete(obj)
         transaction.commit()
-        return
-
-    pk_name = get_pk_hook(table)
-    col = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
-    return {'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix}
-
-
-def read(session, table, pk):
-    """
-    Select row by pk.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col,
-            'table': table,
-            'prefix': prefix,
-            'rel': get_relations(obj)}
-
-
-def update(session, table, pk, request=''):
-    """
-    Update row of table.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `request`: webob format request.
-    """
-
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    col_list = [c for c in table.__table__.columns]
-
-    if request:
-        for col in col_list:
-            if col.name not in request:
-                continue
-            if getattr(obj, col.name) == request[col.name][0]:
-                continue
-            if col.type.__class__.__name__ == 'FileStore':
-                if not hasattr(request[col.name][0], 'filename'):
-                    continue
-            value = check_type(request, table, col.name, obj)
-            setattr(obj, col.name, value)
-        session.add(obj)
-        transaction.commit()
-        return
-    col_list = [c for c in getattr(table, 'sacrud_detail_col', table.__table__.columns)]
-    return {'obj': obj,
-            'pk': pk_name,
-            'col': col_list,
-            'table': table,
-            'prefix': prefix}
-
-
-def delete(session, table, pk):
-    """
-    Delete row by pk.
-
-    :Parameters:
-
-        - `session`: DBSession.
-        - `table`: table instance.
-        - `pk`: primary key value.
-    """
-
-    pk_name = get_pk_hook(table)
-    obj = session.query(table).filter(getattr(table, pk_name) == pk).one()
-    check_type('', table, obj=obj)
-    session.delete(obj)
-    transaction.commit()

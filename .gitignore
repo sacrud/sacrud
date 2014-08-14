@@ -6,15 +6,31 @@
 .pydevproject
 sacrud/.coverage
 sacrud/TODO
-*.pyc
 sacrud/cover
+TODO
+TODO.txt
+nohup.out
+.cache
+.webassets*
+
+# JavaScript
+node_modules
+
+# Python
 cover
 .coverage
 build
 dist
 *.egg-info
 example
-TODO
-TODO.txt
-nohup.out
-.cache
+htmlcov
+.ropeproject
+*.pyc
+
+# Bower
+sacrud/static/js/bower_components
+
+# Docs
+_build
+_themes
+_pyramid_sacrud_example

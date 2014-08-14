@@ -14,11 +14,9 @@ notifications:
 
 python:
   - "2.7"
-  - "2.6"
 
 install:
-  - pip install nose coverage coveralls
-  - pip install pyramid pyramid_jinja2==1.10 pyramid_beaker
+  - pip install nose coverage coveralls pyramid
   - pip install -r requirements.txt
 
 script:

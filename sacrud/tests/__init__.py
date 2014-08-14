@@ -1,18 +1,37 @@
 # -*- coding: utf-8 -*-
+"""
+action.py tests
+"""
 
 import glob
 import os
 import unittest
-from StringIO import StringIO
 
 import transaction
-from pyramid.testing import DummyRequest
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, orm, Table
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import backref, relationship
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import (Boolean, DateTime, Enum, Float, Integer,
+                              String, Text)
+from sqlalchemy.types import LargeBinary as BYTEA
+from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.action import list as row_list
-from sacrud.action import create, delete, read, update
-from sacrud.common.sa_helpers import delete_fileobj, get_pk, get_relations
-from sacrud.tests.test_models import DBSession, PHOTO_PATH, Profile, User
+from sacrud.common.sa_helpers import TableProperty
+from sacrud.exttype import FileStore
+
+Base = declarative_base()
+
+DBSession = orm.scoped_session(
+    orm.sessionmaker(extension=ZopeTransactionExtension(),
+                     expire_on_commit=False))
+
+DIRNAME = os.path.dirname(__file__)
+PHOTO_PATH = os.path.join(DIRNAME)
+
+
+DB_FILE = os.path.join(os.path.dirname(__file__), 'test.sqlite')
+TEST_DATABASE_CONNECTION_STRING = 'sqlite:///%s' % DB_FILE
 
 
 class MockCGIFieldStorage(object):
@@ -27,12 +46,12 @@ class BaseSacrudTest(unittest.TestCase):
         user = self.session.query(User).get(1)
         return user
 
-    def profile_add(self, user):
-        profile = Profile(user=user)
-        self.session.add(profile)
-        transaction.commit()
-        profile = self.session.query(Profile).first()
-        return profile
+    # def profile_add(self, user):
+    #     profile = Profile(user=user)
+    #     self.session.add(profile)
+    #     transaction.commit()
+    #     profile = self.session.query(Profile).first()
+    #     return profile
 
     def setUp(self):
 
@@ -58,201 +77,72 @@ class BaseSacrudTest(unittest.TestCase):
         clear_files()
 
 
-class SacrudTest(BaseSacrudTest):
-
-    def test_relations(self):
-        user = self.user_add()
-        self.profile_add(user)
-        user = self.session.query(User).get(1)
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(get_relations(user), [('profile', [profile, ])])
-        self.session.delete(profile)
-        self.session.delete(user)
-        transaction.commit()
-
-    def test_get_pk(self):
-        # class
-        pk = get_pk(User)
-        self.assertEqual('id', pk[0].name)
-
-        # object
-        user = self.user_add()
-        pk = get_pk(user)
-        self.assertEqual('id', pk[0].name)
-
-    def test_list(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-
-        self.session.add(user)
-        transaction.commit()
-
-        result = row_list(self.session, User)
-        user = self.session.query(User).get(1)
-
-        self.assertEqual(result['pk'], 'id')
-        self.assertEqual(result["prefix"], "crud")
-        self.assertEqual(result["table"], User)
-        self.assertEqual(result["row"], [user, ])
-
-        self.session.delete(user)
-
-    def test_create(self):
-
-        request = DummyRequest().environ
-        request['name'] = ["Vasya", ]
-        request['fullname'] = ["Vasya Pupkin", ]
-        request['password'] = ["123", ]
-
-        create(self.session, User, request)
-        user = self.session.query(User).get(1)
-
-        self.assertEqual(user.name, "Vasya")
-        self.assertEqual(user.fullname, "Vasya Pupkin")
-        self.assertEqual(user.password, "123")
-
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["1", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        create(self.session, Profile, request)
-
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(profile.phone, "213123123")
-        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
-        self.assertEqual(profile.married, True)
-        self.assertEqual(profile.salary, float(23))
-        self.assertEqual(profile.user.id, 1)
-
-        delete_fileobj(Profile, profile, "photo")
-
-        self.session.delete(profile)
-        user = self.session.query(User).get(1)
-        self.session.delete(user)
-        transaction.commit()
-
-        self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
-
-    def test_read(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        result = read(self.session, User, 1)
-        self.assertEqual(result['obj'].id, 1)
-        self.assertEqual(result['pk'], "id")
-        self.assertEqual(result['prefix'], "crud")
-        self.assertEqual(result['table'], User)
-        self.assertEqual(result['rel'], [('profile', [])])
-
-    def test_update(self):
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        user = self.session.query(User).get(1)
-        profile = Profile(user=user, salary="25.7")
-
-        self.session.add(profile)
-        transaction.commit()
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-        user = self.session.query(User).get(2)
-
-        profile = self.session.query(Profile).get(1)
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["2", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        update(self.session, Profile, 1, request)
-        profile = self.session.query(Profile).get(1)
-
-        self.assertEqual(profile.phone, "213123123")
-        self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
-        self.assertEqual(profile.married, True)
-        self.assertEqual(profile.user.id, 2)
-        self.assertEqual(profile.salary, float(23))
-
-    def test_delete(self):
-
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
-        transaction.commit()
-
-        request = DummyRequest().environ
-        request['phone'] = ["213123123", ]
-        request['cv'] = ["Vasya Pupkin was born in Moscow", ]
-        request['married'] = ["true", ]
-        request["salary"] = ["23.0", ]
-        request["user_id"] = ["1", ]
-
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
-        create(self.session, Profile, request)
-        delete(self.session, Profile, 1)
-
-        profile = self.session.query(Profile).get(1)
-        self.assertEqual(profile, None)
-        # check file also deleted
-        self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
+association_table = Table('association', Base.metadata,
+                          Column('group_id', Integer, ForeignKey('group.id')),
+                          Column('user_id', Integer, ForeignKey('user.id'))
+                          )
 
 
-class PositionTest(BaseSacrudTest):
+class Groups(Base):
+    __tablename__ = 'group'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    users = relationship("User", secondary=association_table)
 
-    def test_insert(self):
 
-        self.user_add()
-        self.user_add()
-        self.user_add()
+class MultiPK(Base):
 
-        self.assertEqual(self.session.query(User).get(1).position, 2)
-        self.assertEqual(self.session.query(User).get(2).position, 1)
-        self.assertEqual(self.session.query(User).get(3).position, 0)
+    __tablename__ = 'multipk'
 
-        request = DummyRequest().environ
-        request["position"] = ["0", ]
-        update(self.session, User, 1, request)
+    id = Column(Integer, primary_key=True)
+    id2 = Column(Integer, primary_key=True)
+    id3 = Column(Integer, primary_key=True)
 
-        self.assertEqual(self.session.query(User).get(1).position, 0)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
+    fk = Column('group_id', Integer, ForeignKey('group.id'))
 
-        request = DummyRequest().environ
-        request["position"] = ["4", ]
-        update(self.session, User, 1, request)
 
-        self.assertEqual(self.session.query(User).get(1).position, 4)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
+class TypesPreprocessor(Base):
+    __tablename__ = 'types_preprocessor'
+    id = Column(Integer, primary_key=True)
+    sak = Column(BYTEA, nullable=False)
+    datetime = Column(DateTime)
 
-        user = User(u'Vasya', u'Pupkin', u"123", '3')
-        self.session.add(user)
-        transaction.commit()
 
-        self.assertEqual(self.session.query(User).get(1).position, 5)
-        self.assertEqual(self.session.query(User).get(2).position, 2)
-        self.assertEqual(self.session.query(User).get(3).position, 1)
-        self.assertEqual(self.session.query(User).get(4).position, 3)
+class User(Base):
+
+    __tablename__ = 'user'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    fullname = Column(String)
+    password = Column(String, info={'verbose_name': 'user password'})
+    sex = Column(Enum('male',
+                      'female',
+                      'alien',
+                      'unknown', name="sex"))
+
+    groups = relationship("Groups", secondary=association_table)
+
+    @TableProperty
+    def foo(self):
+        return "I'm property"
+
+    def __init__(self, name, fullname, password, sex='unknown'):
+        self.name = name
+        self.fullname = fullname
+        self.password = password
+        self.sex = sex
+
+
+class Profile(Base):
+
+    __tablename__ = 'profile'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    user = relationship(User, backref=backref("profile", lazy="joined"))
+    phone = Column(String)
+    cv = Column(Text)
+    married = Column(Boolean)
+    salary = Column(Float)
+    photo = Column(FileStore(path="/assets/photo", abspath=PHOTO_PATH))
