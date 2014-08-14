@@ -41,7 +41,7 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual(result['pk'], (User.__table__.c['id'],))
         self.assertEqual(result["prefix"], "crud")
         self.assertEqual(result["table"], User)
-        self.assertEqual(result["row"], [user, ])
+        self.assertEqual(result["row"].all(), [user, ])
 
         self.session.delete(user)
 
@@ -64,7 +64,7 @@ class ActionTest(BaseSacrudTest):
         request['password'] = ["123", ]
         request['groups[]'] = ["1", "3"]
         request['badAttr'] = ["1", "bar"]
-        request['badM2MAttr[]'] = ["1", "bar"]
+        request['badAttr'] = ["1", "bar"]
 
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
@@ -106,6 +106,10 @@ class ActionTest(BaseSacrudTest):
         transaction.commit()
 
         self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
+
+    def test_create_wo_request(self):
+        resp = CRUD(self.session, User).add()
+        self.assertEqual(resp['table'], User)
 
     def test_update(self):
 

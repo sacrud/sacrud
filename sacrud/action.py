@@ -13,8 +13,6 @@ import inspect
 import itertools
 
 import transaction
-from sqlalchemy import desc, or_
-from webhelpers.paginate import Page
 
 from sacrud.common.sa_helpers import (get_attrname_by_colname, get_pk,
                                       ObjPreprocessing, RequestPreprocessing,
@@ -54,7 +52,7 @@ def set_m2m_value(session, request, obj):
         key = k[:-2]
         relation = getattr(obj.__class__, key, False)
         if not relation:
-            continue
+            continue  # pragma: no cover
         value = get_m2m_objs(session, relation.mapper, v)
         setattr(obj, key, value)
     return obj
@@ -84,7 +82,7 @@ class CRUD(object):
                 obj = obj.filter(getattr(table, item_name) == pk[item_name])
             self.obj = obj.one()
 
-    def rows_list(self, paginator=None, order_by=None, search=None):
+    def rows_list(self):
         """
         Return a list of table rows.
 
@@ -96,21 +94,8 @@ class CRUD(object):
         table = self.table
         session = self.session
         col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
-        query = session.query(table)
-        if search:
-            search_filter_group = [search_col.like('%%%s%%' % search)
-                                   for search_col in getattr(table, 'sacrud_search_col', [])]
-            query = query.filter(or_(*search_filter_group))
+        row = session.query(table)
 
-        if order_by:
-            order_filter_group = []
-            for value in order_by.split('.'):
-                none, pfx, col_name = value.rpartition('-')
-                order_filter_group.append(desc(col_name) if pfx == '-' else col_name)
-            query = query.order_by(*order_filter_group)
-        row = query.all()
-        if paginator:
-            row = Page(row, **paginator)
         if row:
             col = set_instance_name(row[0], col)
 
@@ -147,7 +132,7 @@ class CRUD(object):
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
-                    continue
+                    continue  # pragma: no cover
                 self.request[key] = request_preprocessing.check_type(self.table, key)
 
             for key, value in self.request.iteritems():
