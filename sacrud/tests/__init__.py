@@ -12,7 +12,9 @@ from sqlalchemy import create_engine, orm, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import Boolean, Enum, Float, Integer, String, Text
+from sqlalchemy.types import (Boolean, DateTime, Enum, Float, Integer,
+                              String, Text)
+from sqlalchemy.types import LargeBinary as BYTEA
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.common.sa_helpers import TableProperty
@@ -97,6 +99,13 @@ class MultiPK(Base):
     id3 = Column(Integer, primary_key=True)
 
     fk = Column('group_id', Integer, ForeignKey('group.id'))
+
+
+class TypesPreprocessor(Base):
+    __tablename__ = 'types_preprocessor'
+    id = Column(Integer, primary_key=True)
+    sak = Column(BYTEA, nullable=False)
+    datetime = Column(DateTime)
 
 
 class User(Base):

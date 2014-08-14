@@ -5,6 +5,7 @@
 # Copyright © 2014 uralbash <root@uralbash.ru>
 #
 # Distributed under terms of the MIT license.
+import datetime
 import glob
 from StringIO import StringIO
 
@@ -13,8 +14,8 @@ from pyramid.testing import DummyRequest
 
 from sacrud.action import CRUD
 from sacrud.common.sa_helpers import delete_fileobj, get_pk
-from sacrud.tests import (BaseSacrudTest, MockCGIFieldStorage, PHOTO_PATH,
-                          Profile, User, Groups)
+from sacrud.tests import (BaseSacrudTest, Groups, MockCGIFieldStorage,
+                          PHOTO_PATH, Profile, TypesPreprocessor, User)
 
 
 class ActionTest(BaseSacrudTest):
@@ -61,17 +62,17 @@ class ActionTest(BaseSacrudTest):
         request = DummyRequest().environ
         request['name'] = ["Vasya", ]
         request['fullname'] = ["Vasya Pupkin", ]
-        request['password'] = ["123", ]
+        request['password'] = ["", ]  # check empty value
         request['groups[]'] = ["1", "3"]
         request['badAttr'] = ["1", "bar"]
-        request['badAttr'] = ["1", "bar"]
+        request['badM2MAttr[]'] = ["1", "bar"]
 
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
 
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
-        self.assertEqual(user.password, "123")
+        self.assertEqual(user.password, None)
         self.assertEqual(map(lambda x: x.id, user.groups),
                          [group1.id, group3.id])
 
@@ -110,6 +111,16 @@ class ActionTest(BaseSacrudTest):
     def test_create_wo_request(self):
         resp = CRUD(self.session, User).add()
         self.assertEqual(resp['table'], User)
+
+    def test_preprocessor(self):
+        # Add profile
+        request = DummyRequest().environ
+        request['datetime'] = "2012-12-12"
+        request["sak"] = "Ac"
+        foo = CRUD(self.session, TypesPreprocessor, request=request).add()
+        self.assertEqual(foo.sak, "Ac")
+        self.assertEqual(foo.datetime,
+                         datetime.datetime(2012, 12, 12, 0, 0))
 
     def test_update(self):
 

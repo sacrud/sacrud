@@ -171,7 +171,7 @@ class ObjPreprocessing(object):
         for col in self.table.columns:
             if col.type.__class__.__name__ == 'FileStore':
                 if not getattr(self.obj, col.name):
-                    continue
+                    continue  # pragma: no cover
                 delete_fileobj(self.table, self.obj, col.name)
         return self.obj
 
@@ -183,7 +183,9 @@ class RequestPreprocessing(object):
                            'FileStore': self._check_filestore,
                            'HSTORE': self._check_hstore,
                            'Date': self._check_date,
+                           'DateTime': self._check_date,
                            'BYTEA': self._check_bytea,
+                           'LargeBinary': self._check_bytea,
                            }
 
     def _check_boolean(self, value):

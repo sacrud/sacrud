@@ -9,7 +9,7 @@
 """
 Test for sacrud.common.sa_helpers
 """
-from sacrud.common.sa_helpers import pk_to_list
+from sacrud.common.sa_helpers import pk_to_list, RequestPreprocessing
 from sacrud.tests import BaseSacrudTest, MultiPK, User
 
 
@@ -34,3 +34,13 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         # JSON
         self.assertEqual(pk_to_list(multipk, as_json=True),
                          '["id", 1, "id2", 1, "id3", 2]')
+
+    def test_preprocessor_hstore(self):
+        prc = RequestPreprocessing({})
+        foo = prc._check_hstore("{'foo':'bar'}")
+        self.assertEqual(foo, {'foo': 'bar'})
+        with self.assertRaises(TypeError) as cm:
+            foo = prc._check_hstore("blablabla")
+        the_exception = cm.exception
+        self.assertEqual(the_exception.message,
+                         'HSTORE: does\'t suppot \'blablabla\' format. Valid example: {"foo": "bar", u"baz": u"biz"}')
