@@ -7,7 +7,8 @@
 # Distributed under terms of the MIT license.
 import os
 import uuid
-from StringIO import StringIO
+# from StringIO import StringIO
+from io import StringIO
 
 import transaction
 from pyramid.testing import DummyRequest
@@ -77,7 +78,7 @@ class ExtTypeTest(BaseSacrudTest):
         request["salary"] = 23.0
 
         upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
+        upload.file = StringIO(u'foo')
         upload.filename = 'foo.html'
         request["photo"] = upload
 

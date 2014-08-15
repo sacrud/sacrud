@@ -14,9 +14,8 @@ import itertools
 
 import transaction
 
-from sacrud.common.sa_helpers import (get_attrname_by_colname, get_pk,
-                                      ObjPreprocessing, RequestPreprocessing,
-                                      set_instance_name)
+from sacrud.common import (get_attrname_by_colname, get_pk, ObjPreprocessing,
+                           RequestPreprocessing, set_instance_name)
 
 prefix = 'crud'
 
@@ -28,8 +27,8 @@ def get_empty_instance(table):
     # list like ['name', 'group', 'visible'] to dict with empty
     # value as {'name': None, 'group': None, 'visible': None}
     init = dict(
-        zip(instance_defaults_params,
-            itertools.repeat(None))
+        list(zip(instance_defaults_params,
+                 itertools.repeat(None)))
     )
     return table(**init)
 
@@ -47,8 +46,8 @@ def set_m2m_value(session, request, obj):
         pk = relation.primary_key[0]
         return session.query(relation).filter(pk.in_(ids)).all()
 
-    m2m_request = {k: v for k, v in request.items() if k[-2:] == '[]'}
-    for k, v in m2m_request.iteritems():
+    m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
+    for k, v in list(m2m_request.items()):
         key = k[:-2]
         relation = getattr(obj.__class__, key, False)
         if not relation:
@@ -127,7 +126,7 @@ class CRUD(object):
 
             request_preprocessing = RequestPreprocessing(self.request)
             # filter request params for object
-            for key, value in self.request.items():
+            for key, value in list(self.request.items()):
                 # chek if columns not exist
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
@@ -135,7 +134,7 @@ class CRUD(object):
                     continue  # pragma: no cover
                 self.request[key] = request_preprocessing.check_type(self.table, key)
 
-            for key, value in self.request.iteritems():
+            for key, value in list(self.request.items()):
                 self.obj.__setattr__(key, value)
 
             # save m2m relationships

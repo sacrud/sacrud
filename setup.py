@@ -35,14 +35,13 @@ def find_data_files(srcdir, *wildcards, **kw):
     file_list = []
     recursive = kw.get('recursive', True)
     if recursive:
-        os.path.walk(srcdir, walk_helper, (file_list, wildcards))
+        os.walk(srcdir, walk_helper, (file_list, wildcards))
     else:
         walk_helper((file_list, wildcards),
                     srcdir,
                     [os.path.basename(f) for f in glob.glob(opj(srcdir, '*'))])
     return file_list
 files = find_data_files('sacrud/', '*.*')
-print 'files', files
 
 setup(
     name='sacrud',
@@ -51,7 +50,7 @@ setup(
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.common', 'sacrud.tests'],
+    packages=['sacrud', 'sacrud.tests'],
     data_files=files,
     include_package_data=True,
     zip_safe=False,
@@ -70,7 +69,7 @@ setup(
         'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
-    long_description=open('README.md').read(),
+    long_description="`http://sacrud.readthedocs.org/`",
     install_requires=[
         "sqlalchemy",
         "transaction",

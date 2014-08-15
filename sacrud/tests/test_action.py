@@ -7,13 +7,13 @@
 # Distributed under terms of the MIT license.
 import datetime
 import glob
-from StringIO import StringIO
+from io import StringIO
 
 import transaction
 from pyramid.testing import DummyRequest
 
 from sacrud.action import CRUD
-from sacrud.common.sa_helpers import delete_fileobj, get_pk
+from sacrud.common import delete_fileobj, get_pk
 from sacrud.tests import (BaseSacrudTest, Groups, MockCGIFieldStorage,
                           PHOTO_PATH, Profile, TypesPreprocessor, User)
 
@@ -31,7 +31,7 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual('id', pk[0].name)
 
     def test_list(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
+        user = User('Vasya', 'Pupkin', '123')
 
         self.session.add(user)
         transaction.commit()
@@ -73,7 +73,7 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, None)
-        self.assertEqual(map(lambda x: x.id, user.groups),
+        self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 
         # Add profile
@@ -85,7 +85,7 @@ class ActionTest(BaseSacrudTest):
         request["user_id"] = ["1", ]
 
         upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
+        upload.file = StringIO(u'foo')
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 
@@ -118,7 +118,7 @@ class ActionTest(BaseSacrudTest):
         request['datetime'] = "2012-12-12"
         request["sak"] = "Ac"
         foo = CRUD(self.session, TypesPreprocessor, request=request).add()
-        self.assertEqual(foo.sak, "Ac")
+        self.assertEqual(foo.sak, bytearray(b"Ac"))
         self.assertEqual(foo.datetime,
                          datetime.datetime(2012, 12, 12, 0, 0))
 
@@ -148,7 +148,7 @@ class ActionTest(BaseSacrudTest):
         request["user_id"] = ["2", ]
 
         upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
+        upload.file = StringIO(u'foo')
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 
@@ -175,7 +175,7 @@ class ActionTest(BaseSacrudTest):
         request["user_id"] = ["1", ]
 
         upload = MockCGIFieldStorage()
-        upload.file = StringIO('foo')
+        upload.file = StringIO(u'foo')
         upload.filename = 'foo.html'
         request["photo"] = [upload, ]
 

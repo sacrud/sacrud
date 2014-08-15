@@ -17,7 +17,7 @@ from sqlalchemy.types import (Boolean, DateTime, Enum, Float, Integer,
 from sqlalchemy.types import LargeBinary as BYTEA
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common.sa_helpers import TableProperty
+from sacrud.common import TableProperty
 from sacrud.exttype import FileStore
 
 Base = declarative_base()

@@ -34,3 +34,7 @@ sacrud/static/js/bower_components
 _build
 _themes
 _pyramid_sacrud_example
+
+# tox
+__pycache__
+.tox

@@ -46,7 +46,7 @@ def get_attrname_by_colname(instance, name):
     >>> get_attrname_by_colname(MPTTPages(), 'lft')
     'left'
     """
-    for attr, column in sqlalchemy.inspect(instance.__class__).c.items():
+    for attr, column in list(sqlalchemy.inspect(instance.__class__).c.items()):
         if column.name == name:
             return attr
 
@@ -157,7 +157,7 @@ def store_file(request, key, path):
         data = input_file.read(2 << 16)
         if not data:
             break
-        output_file.write(data)
+        output_file.write(bytearray(data, 'UTF-8'))
     output_file.close()
 
 
@@ -194,7 +194,7 @@ class RequestPreprocessing(object):
         return value
 
     def _check_bytea(self, value):
-        return str(value)
+        return bytearray(value, 'utf-8')
 
     def _check_filestore(self, value):
         fileobj = value
@@ -227,7 +227,7 @@ class RequestPreprocessing(object):
         if not value and not hasattr(value, 'filename'):
             return None
 
-        if column_type in self.types_list.keys():
+        if column_type in list(self.types_list.keys()):
             check = self.types_list[column_type]
             return check(value)
 
