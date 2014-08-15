@@ -1,23 +1,7 @@
-sacrud.common.custom module
-===========================
+sacrud.common module
+====================
 
-.. automodule:: sacrud.common.custom
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-sacrud.common.paginator module
-==============================
-
-.. automodule:: sacrud.common.paginator
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-sacrud.common.sa_helpers module
-===============================
-
-.. automodule:: sacrud.common.sa_helpers
+.. automodule:: sacrud.common
     :members:
     :undoc-members:
     :show-inheritance:

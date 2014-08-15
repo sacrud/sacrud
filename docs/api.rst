@@ -4,7 +4,6 @@ API
 .. toctree::
 
     sacrud.common
-    sacrud.pyramid_ext
     sacrud.tests
 
 sacrud.action module
