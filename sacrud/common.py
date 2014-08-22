@@ -138,12 +138,15 @@ def store_file(request, key, path):
     # WARNING: this example does not deal with the fact that IE sends an
     # absolute file *path* as the filename.  This example is naive; it
     # trusts user input.
-    filename = request[key].filename
+    obj = request[key]
+    if isinstance(obj, (list, tuple)):
+        obj = obj[0]
+    filename = obj.filename
 
     # ``input_file`` contains the actual file data which needs to be
     # stored somewhere.
 
-    input_file = request[key].file
+    input_file = obj.file
 
     # Using the filename like this without cleaning it is very
     # insecure so please keep that in mind when writing your own
@@ -157,7 +160,10 @@ def store_file(request, key, path):
         data = input_file.read(2 << 16)
         if not data:
             break
-        output_file.write(bytearray(data))
+        try:
+            output_file.write(bytearray(data, 'utf-8'))
+        except UnicodeDecodeError:
+            output_file.write(bytearray(data))
     output_file.close()
 
 
