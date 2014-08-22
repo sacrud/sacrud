@@ -120,18 +120,28 @@ class CRUD(object):
         columns = [c for c in self.table.__table__.columns]
 
         if self.request:
+            # file upload
+            if '__start__' in self.request:
+                start = self.request['__start__']
+                for i, upload in enumerate(start[1:]):
+                    key = upload.split(':')[0]
+                    upload_value = self.request['upload'][i]
+                    if not hasattr(upload_value, 'file'):
+                        continue
+                    self.request[key] = upload_value
             # for create
             if not self.obj:
                 self.obj = get_empty_instance(self.table)
 
             request_preprocessing = RequestPreprocessing(self.request)
             # filter request params for object
+
             for key, value in list(self.request.items()):
                 # chek if columns not exist
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
-                    continue  # pragma: no cover
+                    continue
                 self.request[key] = request_preprocessing.check_type(self.table, key)
 
             for key, value in list(self.request.items()):
