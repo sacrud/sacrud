@@ -162,8 +162,8 @@ def store_file(request, key, path):
             break
         try:
             output_file.write(bytearray(data, 'utf-8'))
-        except UnicodeDecodeError:
-            output_file.write(bytearray(data))
+        except UnicodeDecodeError:  # pragma: no cover
+            output_file.write(bytearray(data))  # pragma: no cover
     output_file.close()
 
 

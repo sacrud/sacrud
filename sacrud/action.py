@@ -141,7 +141,7 @@ class CRUD(object):
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
-                    continue
+                    continue  # pragma: no cover
                 self.request[key] = request_preprocessing.check_type(self.table, key)
 
             for key, value in list(self.request.items()):
