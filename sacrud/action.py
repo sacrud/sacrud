@@ -121,7 +121,8 @@ class CRUD(object):
 
         if self.request:
             # file upload
-            if '__start__' in self.request:
+            if '__start__' in self.request and\
+               'upload' in self.request:
                 start = self.request['__start__']
                 for i, upload in enumerate(start[1:]):
                     key = upload.split(':')[0]
