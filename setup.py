@@ -50,8 +50,7 @@ setup(
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.common', 'sacrud.action', 'sacrud.exttype',
-              'sacrud.tests'],
+    packages=['sacrud', 'sacrud.tests'],
     data_files=files,
     include_package_data=True,
     zip_safe=False,
@@ -67,7 +66,6 @@ setup(
                    'templates/forms/actions/*.jinja2',
                    'templates/types/*.jinja2',
                    'tests/*.py', ],
-        'sacrud.pyramid_ext': ['tests/*.py']
     },
     description='SQLAlchemy CRUD.',
     long_description="`http://sacrud.readthedocs.org/`",
