@@ -9,8 +9,9 @@
 """
 Test for sacrud.common.sa_helpers
 """
-from sacrud.common import pk_to_list, RequestPreprocessing
-from sacrud.tests import BaseSacrudTest, MultiPK, User
+from sacrud.common import get_relationship, pk_to_list, RequestPreprocessing
+from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
+                          Profile, User)
 
 
 class SQLAlchemyHelpersTest(BaseSacrudTest):
@@ -44,3 +45,18 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         the_exception = str(cm.exception)
         self.assertEqual(the_exception,
                          'HSTORE: does\'t suppot \'blablabla\' format. Valid example: {"foo": "bar", u"baz": u"biz"}')
+
+    def test_get_relationship(self):
+        foo = get_relationship(User)
+        self.assertEqual(len(foo), 2)
+        self.assertIn(association_table.c.user_id, foo[0].remote_side)
+        self.assertIn(association_table.c.group_id, foo[0].remote_side)
+        self.assertIn(Profile.__table__.c.user_id, foo[1].remote_side)
+
+        bar = get_relationship(None)
+        self.assertEqual(bar, None)
+
+        baz = get_relationship(Groups)
+        self.assertEqual(len(baz), 1)
+        self.assertIn(association_table.c.user_id, foo[0].remote_side)
+        self.assertIn(association_table.c.group_id, foo[0].remote_side)

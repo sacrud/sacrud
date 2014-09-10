@@ -27,7 +27,7 @@ Installation
 Install from github:
 
     pip install git+http://github.com/ITCase/sacrud.git
-    
+
 current develop version
 
     pip install git+http://github.com/ITCase/sacrud.git@develop

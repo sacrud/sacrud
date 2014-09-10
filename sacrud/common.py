@@ -51,6 +51,13 @@ def get_attrname_by_colname(instance, name):
             return attr
 
 
+def get_relationship(table):
+    if not table:
+        return None
+    relations = sqlalchemy.inspect(table).relationships
+    return [rel for rel in relations]
+
+
 def set_instance_name(instance, cols):
     """ It gives you opportunity to get instance attr by column name
         Like this: row.__getattribute__(col.instance_name)
