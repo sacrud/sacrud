@@ -50,7 +50,8 @@ setup(
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.tests'],
+    packages=['sacrud', 'sacrud.common', 'sacrud.action', 'sacrud.exttype',
+              'sacrud.tests'],
     data_files=files,
     include_package_data=True,
     zip_safe=False,
