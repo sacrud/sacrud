@@ -1,3 +1,0 @@
-include runner README
-recursive-include sacrud/static *
-recursive-include sacrud/templates *
