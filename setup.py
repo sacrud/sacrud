@@ -18,8 +18,6 @@ setup(
     long_description="`http://sacrud.readthedocs.org/`",
     install_requires=[
         "sqlalchemy",
-        'deform',
-        'colander',
         "transaction",
         'zope.sqlalchemy',
         'webhelpers',

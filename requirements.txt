@@ -1,6 +1,4 @@
 SQLAlchemy>=0.8.0b1
-deform
-colander
 zope.sqlalchemy
 transaction
 webhelpers
