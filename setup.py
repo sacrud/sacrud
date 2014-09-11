@@ -1,5 +1,13 @@
+import os
 from sacrud import version
 from setuptools import setup
+
+this = os.path.dirname(os.path.realpath(__file__))
+
+
+def readme():
+    with open(os.path.join(this, 'README.rst')) as f:
+        return f.read()
 
 
 setup(
@@ -15,7 +23,7 @@ setup(
     test_suite="nose.collector",
     license="MIT",
     description='SQLAlchemy CRUD.',
-    long_description="`http://sacrud.readthedocs.org/`",
+    long_description=readme(),
     install_requires=[
         "sqlalchemy",
         "transaction",
