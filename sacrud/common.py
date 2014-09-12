@@ -58,35 +58,6 @@ def get_relationship(table):
     return [rel for rel in relations]
 
 
-def set_instance_name(instance, cols):
-    """ It gives you opportunity to get instance attr by column name
-        Like this: row.__getattribute__(col.instance_name)
-
-    :Parameters:
-        - `instance`: SQLAlchemy model instance.
-        - `cols`:  list of SQLAlchemy column
-
-    :Examples:
-
-    >>> from sqlalchemy import Column, Integer
-    >>> from sqlalchemy.ext.declarative import declarative_base
-    >>> Base = declarative_base()
-    >>> class MPTTPages(Base):
-    ...     __tablename__ = "mptt_pages"
-    ...     id = Column(Integer, primary_key=True)
-    ...     left = Column("lft", Integer, nullable=False)
-    >>> columns = set_instance_name(MPTTPages(), MPTTPages.__table__.c).items()
-    >>> columns[1][1].instance_name
-    'left'
-
-    """
-    for col in cols:
-        if isinstance(col, sqlalchemy.Column):
-            setattr(col, "instance_name", get_attrname_by_colname(instance,
-                                                                  col.name))
-    return cols
-
-
 def get_pk(obj):
     """ Return primary key name by model class or instance.
 
