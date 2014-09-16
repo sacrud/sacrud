@@ -124,7 +124,7 @@ class CRUD(object):
             request_preprocessing = RequestPreprocessing(self.request)
 
             # filter request params for object
-            for key in self.request.keys():
+            for key in list(self.request.keys()):
                 # chek if columns not exist
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
