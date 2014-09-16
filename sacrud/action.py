@@ -117,33 +117,21 @@ class CRUD(object):
         columns = [c for c in self.table.__table__.columns]
 
         if self.request:
-            # file upload
-            if '__start__' in self.request and\
-               'upload' in self.request:
-                start = self.request['__start__']
-                for i, upload in enumerate(start[1:]):
-                    key = upload.split(':')[0]
-                    upload_value = self.request['upload'][i]
-                    if not hasattr(upload_value, 'file'):
-                        continue
-                    self.request[key] = upload_value
-            # for create
+            # Make empty obj for create action
             if not self.obj:
                 self.obj = get_empty_instance(self.table)
 
             request_preprocessing = RequestPreprocessing(self.request)
-            # filter request params for object
 
-            for key, value in list(self.request.items()):
+            # filter request params for object
+            for key in self.request.keys():
                 # chek if columns not exist
                 if key not in self.table.__table__.columns:
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
                     continue  # pragma: no cover
                 self.request[key] = request_preprocessing.check_type(self.table, key)
-
-            for key, value in list(self.request.items()):
-                self.obj.__setattr__(key, value)
+                self.obj.__setattr__(key, self.request[key])
 
             # save m2m relationships
             self.obj = set_m2m_value(self.session, self.request, self.obj)
