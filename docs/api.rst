@@ -29,11 +29,3 @@ sacrud.exttype module
     :members:
     :undoc-members:
     :show-inheritance:
-
-sacrud.version module
----------------------
-
-.. automodule:: sacrud.version
-    :members:
-    :undoc-members:
-    :show-inheritance:
