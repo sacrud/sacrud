@@ -3,8 +3,15 @@ API
 
 .. toctree::
 
-    sacrud.common
     sacrud.tests
+
+sacrud.common module
+--------------------
+
+.. automodule:: sacrud.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 sacrud.action module
 --------------------
