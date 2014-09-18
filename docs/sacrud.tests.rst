@@ -1,9 +1,4 @@
-sacrud.tests package
-====================
-
-.. toctree::
-
-    sacrud.tests.test_common
+.. include:: sacrud.tests.test_common.rst
 
 sacrud.tests.test_action module
 -------------------------------
