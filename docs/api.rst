@@ -25,5 +25,3 @@ sacrud.exttype module
     :members:
     :undoc-members:
     :show-inheritance:
-
-.. include:: sacrud.tests.rst
