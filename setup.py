@@ -1,6 +1,6 @@
 import os
 from sacrud import version
-from setuptools import setup
+from setuptools import setup, find_packages
 
 this = os.path.dirname(os.path.realpath(__file__))
 
@@ -17,7 +17,7 @@ setup(
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
 
-    packages=['sacrud', 'sacrud.tests'],
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     test_suite="nose.collector",
