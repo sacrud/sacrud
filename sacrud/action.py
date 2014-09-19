@@ -9,28 +9,12 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
-import inspect
-import itertools
-
 import transaction
 
-from sacrud.common import (get_attrname_by_colname, get_pk, ObjPreprocessing,
-                           RequestPreprocessing)
+from sacrud.common import (columns_by_group, get_empty_instance, get_obj,
+                           get_pk, ObjPreprocessing, RequestPreprocessing)
 
 prefix = 'crud'
-
-
-def get_empty_instance(table):
-    """ Return  empty instance of model.
-    """
-    instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
-    # list like ['name', 'group', 'visible'] to dict with empty
-    # value as {'name': None, 'group': None, 'visible': None}
-    init = dict(
-        list(zip(instance_defaults_params,
-                 itertools.repeat(None)))
-    )
-    return table(**init)
 
 
 def set_m2m_value(session, request, obj):
@@ -72,14 +56,7 @@ class CRUD(object):
         self.table = table
         self.request = request
         self.session = session
-        self.obj = None
-        if pk:
-            obj = session.query(table)
-            for item in self.pk:
-                empty_obj = get_empty_instance(self.table)
-                item_name = get_attrname_by_colname(empty_obj, item.name)
-                obj = obj.filter(getattr(table, item_name) == pk[item_name])
-            self.obj = obj.one()
+        self.obj = get_obj(session, table, pk)
 
     def rows_list(self):
         """
@@ -114,7 +91,6 @@ class CRUD(object):
             resp.add()
 
         """
-        columns = [c for c in self.table.__table__.columns]
 
         if self.request:
             # Make empty obj for create action
@@ -135,14 +111,10 @@ class CRUD(object):
 
             # save m2m relationships
             self.obj = set_m2m_value(self.session, self.request, self.obj)
-
             self.session.add(self.obj)
             transaction.commit()
             return self.obj
-
-        columns = [c for c in getattr(self.table,
-                                      'sacrud_detail_col',
-                                      [('', self.table.__table__.columns)])]
+        columns = columns_by_group(self.table)
         return {'obj': self.obj,
                 'pk': self.pk,
                 'col': columns,

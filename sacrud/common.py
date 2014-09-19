@@ -11,6 +11,7 @@ SQLAlchemy helpers
 """
 import ast
 import inspect
+import itertools
 import json
 import os
 import uuid
@@ -56,6 +57,31 @@ def get_relationship(table):
         return None
     relations = sqlalchemy.inspect(table).relationships
     return [rel for rel in relations]
+
+
+def get_empty_instance(table):
+    """ Return  empty instance of model.
+    """
+    instance_defaults_params = inspect.getargspec(table.__init__).args[1:]
+    # list like ['name', 'group', 'visible'] to dict with empty
+    # value as {'name': None, 'group': None, 'visible': None}
+    init = dict(
+        list(zip(instance_defaults_params,
+                 itertools.repeat(None)))
+    )
+    return table(**init)
+
+
+def get_obj(session, table, pk):
+    if not pk:
+        return None
+    pk_list = get_pk(table)
+    obj = session.query(table)
+    for item in pk_list:
+        empty_obj = get_empty_instance(table)
+        item_name = get_attrname_by_colname(empty_obj, item.name)
+        obj = obj.filter(getattr(table, item_name) == pk[item_name])
+    return obj.one()
 
 
 def get_pk(obj):
@@ -143,6 +169,13 @@ def store_file(request, key, path):
         except UnicodeDecodeError:  # pragma: no cover
             output_file.write(bytearray(data))  # pragma: no cover
     output_file.close()
+
+
+def columns_by_group(table):
+    columns = [c for c in getattr(table,
+                                  'sacrud_detail_col',
+                                  [('', table.__table__.columns)])]
+    return columns
 
 
 class ObjPreprocessing(object):
