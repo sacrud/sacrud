@@ -115,12 +115,18 @@ class ActionTest(BaseSacrudTest):
     def test_preprocessor(self):
         # Add profile
         request = DummyRequest().environ
-        request['datetime'] = "2012-12-12"
+        request['date'] = "2012-12-12"
+        request['datetime'] = "2012-12-12 12:12"
+        request['datetimeseconds'] = "2012-12-12 12:12:12"
         request["sak"] = "Ac"
         foo = CRUD(self.session, TypesPreprocessor, request=request).add()
         self.assertEqual(foo.sak, bytearray(b"Ac"))
-        self.assertEqual(foo.datetime,
+        self.assertEqual(foo.date,
                          datetime.datetime(2012, 12, 12, 0, 0))
+        self.assertEqual(foo.datetime,
+                         datetime.datetime(2012, 12, 12, 12, 12))
+        self.assertEqual(foo.datetimeseconds,
+                         datetime.datetime(2012, 12, 12, 12, 12, 12))
 
     def test_update(self):
 

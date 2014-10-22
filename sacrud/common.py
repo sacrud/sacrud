@@ -203,6 +203,7 @@ class RequestPreprocessing(object):
                            'DateTime': self._check_date,
                            'BYTEA': self._check_bytea,
                            'LargeBinary': self._check_bytea,
+                           'TIMESTAMP': self._check_date
                            }
 
     def _check_boolean(self, value):
@@ -231,7 +232,13 @@ class RequestPreprocessing(object):
                             (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
 
     def _check_date(self, value):
-        return datetime.strptime(value, '%Y-%m-%d')
+        try:
+            return datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            try:
+                return datetime.strptime(value, '%Y-%m-%d %H:%M')
+            except ValueError:
+                return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
     def check_type(self, table, key):
         self.key = key

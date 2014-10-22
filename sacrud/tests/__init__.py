@@ -12,8 +12,8 @@ from sqlalchemy import create_engine, orm, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, relationship
 from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import (Boolean, DateTime, Enum, Float, Integer,
-                              String, Text)
+from sqlalchemy.types import (Boolean, Date, DateTime, Enum, Float, Integer,
+                              String, Text, TIMESTAMP)
 from sqlalchemy.types import LargeBinary as BYTEA
 from zope.sqlalchemy import ZopeTransactionExtension
 
@@ -105,7 +105,9 @@ class TypesPreprocessor(Base):
     __tablename__ = 'types_preprocessor'
     id = Column(Integer, primary_key=True)
     sak = Column(BYTEA, nullable=False)
+    date = Column(Date)
     datetime = Column(DateTime)
+    datetimeseconds = Column(TIMESTAMP)
 
 
 class User(Base):
