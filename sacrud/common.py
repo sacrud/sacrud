@@ -200,7 +200,7 @@ class RequestPreprocessing(object):
                            'FileStore': self._check_filestore,
                            'HSTORE': self._check_hstore,
                            'Date': self._check_date,
-                           'DateTime': self._check_date,
+                           'DateTime': self._check_datetime,
                            'BYTEA': self._check_bytea,
                            'LargeBinary': self._check_bytea,
                            }
@@ -232,6 +232,9 @@ class RequestPreprocessing(object):
 
     def _check_date(self, value):
         return datetime.strptime(value, '%Y-%m-%d')
+
+    def _check_datetime(self, value):
+        return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
     def check_type(self, table, key):
         self.key = key
