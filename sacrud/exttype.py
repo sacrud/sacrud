@@ -13,7 +13,7 @@ import os
 import uuid
 
 from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy.types import CHAR, String, TypeDecorator, Unicode, VARCHAR
+from sqlalchemy.types import CHAR, String, TypeDecorator, VARCHAR
 
 
 class FileStore(TypeDecorator):
@@ -73,19 +73,6 @@ class GUID(TypeDecorator):
             return value
         else:
             return uuid.UUID(value)
-
-
-class ElfinderString(TypeDecorator):
-    impl = Unicode
-
-    def __init__(self, *arg, **kw):
-        TypeDecorator.__init__(self, *arg, **kw)
-
-    def process_bind_param(self, value, dialect):
-        return value
-
-    def process_result_value(self, value, dialect):
-        return value
 
 
 class ChoiceType(TypeDecorator):
