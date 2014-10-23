@@ -14,7 +14,7 @@ import transaction
 from pyramid.testing import DummyRequest
 from sqlalchemy import Column, Integer
 
-from sacrud.exttype import ChoiceType, ElfinderString, GUID, SlugType
+from sacrud.exttype import ChoiceType, GUID, SlugType
 from sacrud.tests import (Base, BaseSacrudTest, FileStore, MockCGIFieldStorage,
                           Profile, User)
 
@@ -28,7 +28,6 @@ class ExtTypeModel(Base):
 
     id = Column(Integer, primary_key=True)
     col_guid = Column(GUID(), default=uuid.uuid4)
-    col_elfinder = Column(ElfinderString, info={"verbose_name": u'Проверка Elfinder', })
     col_choice = Column(ChoiceType(choices=TEST_CHOICES),
                         info={"verbose_name": u'Проверка select', })
     slug = Column(SlugType('string_name', False))
