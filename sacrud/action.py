@@ -132,4 +132,4 @@ class CRUD(object):
         """
         obj = ObjPreprocessing(obj=self.obj).delete()
         self.session.delete(obj)
-        transaction.commit()
+        self.session.flush()
