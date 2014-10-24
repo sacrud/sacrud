@@ -66,8 +66,7 @@ def get_empty_instance(table):
     # list like ['name', 'group', 'visible'] to dict with empty
     # value as {'name': None, 'group': None, 'visible': None}
     init = dict(
-        list(zip(instance_defaults_params,
-                 itertools.repeat(None)))
+        list(zip(instance_defaults_params, itertools.repeat(None)))
     )
     return table(**init)
 
