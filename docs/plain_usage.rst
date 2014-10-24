@@ -44,9 +44,11 @@ DELETE action
 .. code-block:: python
     :linenos:
 
+    import transaction
     from sacrud.action import CRUD
 
     CRUD(DBSession, Profile, pk={'id': 1}).delete()
+    transaction.commit()
 
 For more details see:
 
