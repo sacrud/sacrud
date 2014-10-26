@@ -187,7 +187,6 @@ class ActionTest(BaseSacrudTest):
 
         CRUD(self.session, Profile, request=request).add()
         CRUD(self.session, Profile, pk={'id': 1}).delete()
-        transaction.commit()
 
         profile = self.session.query(Profile).get(1)
         self.assertEqual(profile, None)

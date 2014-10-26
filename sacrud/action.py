@@ -69,9 +69,9 @@ class CRUD(object):
         """
         table = self.table
         session = self.session
-        col = [c for c in getattr(table, 'sacrud_list_col', table.__table__.columns)]
+        col = [c for c in getattr(table, 'sacrud_list_col',
+                                  table.__table__.columns)]
         row = session.query(table)
-
         return {'row': row,
                 'pk': self.pk,
                 'col': col,
@@ -121,7 +121,7 @@ class CRUD(object):
                 'table': self.table,
                 'prefix': prefix}
 
-    def delete(self):
+    def delete(self, commit=True):
         """ Delete row by pk.
 
         :Example:
@@ -129,6 +129,15 @@ class CRUD(object):
         .. code-block:: python
 
             action.CRUD(dbsession, table, pk=pk).delete()
+
+        If you no needed commit session
+
+        .. code-block:: python
+
+            action.CRUD(dbsession, table, pk=pk).delete(commit=False)
         """
         obj = ObjPreprocessing(obj=self.obj).delete()
         self.session.delete(obj)
+        if commit is True:
+            transaction.commit()
+        return self.pk
