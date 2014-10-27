@@ -241,7 +241,11 @@ class RequestPreprocessing(object):
 
     def check_type(self, table, key):
         self.key = key
-        self.column = table.__table__.columns[key]
+        self.column = None
+        if key in table.__table__.columns:
+            self.column = table.__table__.columns[key]
+        else:
+            self.column = getattr(table, key)
         column_type = self.column.type.__class__.__name__
         value = self.request[key]
         if type(value) in (list, tuple):

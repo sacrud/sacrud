@@ -102,7 +102,8 @@ class CRUD(object):
             # filter request params for object
             for key in list(self.request.keys()):
                 # chek if columns not exist
-                if key not in self.table.__table__.columns:
+                if key not in self.table.__table__.columns and\
+                        not hasattr(self.table, key):
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
                     continue  # pragma: no cover
