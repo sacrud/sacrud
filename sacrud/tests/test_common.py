@@ -65,3 +65,19 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         prc = RequestPreprocessing({'name': ''})
         foo = prc.check_type(User, 'name')
         self.assertEqual(foo, '')
+
+    def test_polymorphycall_in_preprocessor(self):
+        from sqlalchemy import Column, String, Integer, ForeignKey
+
+        class Foo(User):
+            __tablename__ = 'foo'
+            __mapper_args__ = {
+                'polymorphic_identity': 'foo',
+            }
+
+            id = Column(Integer, ForeignKey('user.id'), primary_key=True)
+            foo = Column(String)
+
+        prc = RequestPreprocessing({'name': 'lalala'})
+        foo = prc.check_type(Foo, 'name')
+        self.assertEqual(foo, 'lalala')

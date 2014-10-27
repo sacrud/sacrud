@@ -122,8 +122,14 @@ class User(Base):
                       'female',
                       'alien',
                       'unknown', name="sex"))
+    type = Column(String(50))
 
     groups = relationship("Groups", secondary=association_table)
+
+    __mapper_args__ = {
+        'polymorphic_on': type,
+        'polymorphic_identity': 'users',
+    }
 
     @TableProperty
     def foo(self):
