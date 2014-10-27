@@ -248,6 +248,8 @@ class RequestPreprocessing(object):
             value = value[0]
 
         if not value and not hasattr(value, 'filename'):
+            if self.column.default:
+                return self.column.default.arg
             return None
 
         if column_type in list(self.types_list.keys()):

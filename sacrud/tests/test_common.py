@@ -60,3 +60,8 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         self.assertEqual(len(baz), 1)
         self.assertIn(association_table.c.user_id, foo[0].remote_side)
         self.assertIn(association_table.c.group_id, foo[0].remote_side)
+
+    def test_default_in_preprocessor(self):
+        prc = RequestPreprocessing({'name': ''})
+        foo = prc.check_type(User, 'name')
+        self.assertEqual(foo, '')

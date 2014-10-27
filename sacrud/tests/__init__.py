@@ -115,7 +115,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, default='')
     fullname = Column(String)
     password = Column(String, info={'verbose_name': 'user password'})
     sex = Column(Enum('male',
