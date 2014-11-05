@@ -9,7 +9,8 @@
 """
 Test for sacrud.common.sa_helpers
 """
-from sacrud.common import get_relationship, pk_to_list, RequestPreprocessing
+from sacrud.common import (get_relationship, pk_list_to_dict, pk_to_list,
+                           RequestPreprocessing, columns_by_group)
 from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
                           Profile, User)
 
@@ -81,3 +82,34 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         prc = RequestPreprocessing({'name': 'lalala'})
         foo = prc.check_type(Foo, 'name')
         self.assertEqual(foo, 'lalala')
+
+    def test_pk_list_to_dict(self):
+        l = ['id', 1, 'id2', 22, 'foo', 'bar']
+        d = pk_list_to_dict(l)
+        self.assertEqual(d, {'foo': 'bar', 'id2': 22, 'id': 1})
+
+    def test_pk_list_to_dict2(self):
+        foo = [1, 2, 3, "a", "b", {"foo": "bar"}]
+        resp = pk_list_to_dict(foo)
+        self.assertEqual(resp, {1: 2, 3: 'a', 'b': {'foo': 'bar'}})
+
+        foo = [1, 2, 3, "a", "b"]
+        resp = pk_list_to_dict(foo)
+        self.assertEqual(resp, None)
+
+    def test_bad_pk_list_to_dict(self):
+        l = ['id', 1, 'id2', 22, 'foo']
+        d = pk_list_to_dict(l)
+        self.assertEqual(d, None)
+
+    def test_columns_by_groups(self):
+        c = columns_by_group(User)
+        table = User.__table__
+        self.assertEqual(c, [('', table.c.name, table.c.fullname,
+                              table.c.password),
+                             ('other', table.c.sex)]
+                         )
+        c = columns_by_group(Groups)
+        table = Groups.__table__
+        self.assertEqual(c[0][0], '')
+        self.assertEqual([x for x in c[0][1]], [table.c.id, table.c.name])

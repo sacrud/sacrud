@@ -63,7 +63,7 @@ class ActionTest(BaseSacrudTest):
         request['name'] = ["Vasya", ]
         request['fullname'] = ["Vasya Pupkin", ]
         request['password'] = ["", ]  # check empty value
-        request['groups[]'] = ["1", "3"]
+        request['groups[]'] = [u'["id", 1]', u'["id", 3]', u'["id" bad row]']
         request['badAttr'] = ["1", "bar"]
         request['badM2MAttr[]'] = ["1", "bar"]
 
@@ -73,6 +73,12 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
         self.assertEqual(user.password, None)
+        self.assertEqual([x.id for x in user.groups],
+                         [group1.id, group3.id])
+
+        request['groups[]'] = None
+        CRUD(self.session, User, request=request).add()
+        user = self.session.query(User).get(1)
         self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 

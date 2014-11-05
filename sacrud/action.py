@@ -9,6 +9,8 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
+import json
+
 import transaction
 
 from sacrud.common import (columns_by_group, get_empty_instance, get_obj,
@@ -26,9 +28,34 @@ def set_m2m_value(session, request, obj):
             - `request`: request as dict
             - `obj`: model instance
     """
-    def get_m2m_objs(session, relation, ids):
-        pk = relation.primary_key[0]
-        return session.query(relation).filter(pk.in_(ids)).all()
+    def list_of_lists_to_dict(l):
+        """ Convert list of key,value lists to dict
+
+        [['id', 1], ['id', 2], ['id', 3], ['foo': 4]]
+        {'id': [1, 2, 3], 'foo': [4]}
+        """
+        d = {}
+        for key, val in l:
+            d.setdefault(key, []).append(val)
+        return d
+
+    def get_m2m_objs(session, relation, id_from_request):
+        mapper = relation.mapper
+        pk_list = mapper.primary_key
+        ids = []
+        if id_from_request:
+            for id in id_from_request:
+                try:
+                    ids.append(json.loads(id))
+                except ValueError:
+                    pass
+            ids = list_of_lists_to_dict(ids)
+        else:
+            ids = {}
+        objs = session.query(mapper)
+        for pk in pk_list:
+            objs = objs.filter(pk.in_(ids.get(pk.name, [])))
+        return objs
 
     m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
     for k, v in list(m2m_request.items()):
@@ -36,7 +63,7 @@ def set_m2m_value(session, request, obj):
         relation = getattr(obj.__class__, key, False)
         if not relation:
             continue  # pragma: no cover
-        value = get_m2m_objs(session, relation.mapper, v)
+        value = get_m2m_objs(session, relation, v).all()
         setattr(obj, key, value)
     return obj
 

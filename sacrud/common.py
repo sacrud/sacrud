@@ -121,6 +121,16 @@ def pk_to_list(obj, as_json=False):
     return pk_list
 
 
+def pk_list_to_dict(pk_list):
+    """ convert list of multi pk to dict
+
+    ['id', 1, 'id2', 22, 'foo', 'bar'] -> {'foo': 'bar', 'id2': 22, 'id': 1}
+    """
+    if pk_list and len(pk_list) % 2 == 0:
+        return dict(zip(pk_list[::2], pk_list[1::2]))
+    return None
+
+
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
@@ -171,10 +181,9 @@ def store_file(request, key, path):
 
 
 def columns_by_group(table):
-    columns = [c for c in getattr(table,
-                                  'sacrud_detail_col',
-                                  [('', table.__table__.columns)])]
-    return columns
+    if 'sacrud_detail_col' in table.__dict__:
+        return [c for c in table.sacrud_detail_col]
+    return [('', table.__table__.columns)]
 
 
 class ObjPreprocessing(object):
