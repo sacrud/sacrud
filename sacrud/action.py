@@ -11,6 +11,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import json
 
+import six
 import transaction
 
 from sacrud.common import (columns_by_group, get_empty_instance, get_obj,
@@ -44,6 +45,8 @@ def set_m2m_value(session, request, obj):
         pk_list = mapper.primary_key
         ids = []
         if id_from_request:
+            if isinstance(id_from_request, six.string_types):
+                id_from_request = [id_from_request, ]
             for id in id_from_request:
                 try:
                     ids.append(json.loads(id))
@@ -54,7 +57,7 @@ def set_m2m_value(session, request, obj):
             ids = {}
         objs = session.query(mapper)
         for pk in pk_list:
-            objs = objs.filter(pk.in_(ids.get(pk.name, [])))
+            objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
         return objs
 
     m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
@@ -63,7 +66,16 @@ def set_m2m_value(session, request, obj):
         relation = getattr(obj.__class__, key, False)
         if not relation:
             continue  # pragma: no cover
-        value = get_m2m_objs(session, relation, v).all()
+        value = get_m2m_objs(session, relation, v)
+
+        obj_relation = getattr(obj, key)
+        try:
+            iter(obj_relation)
+        except TypeError:
+            if value:
+                value = value[0]
+            else:
+                value = None
         setattr(obj, key, value)
     return obj
 
