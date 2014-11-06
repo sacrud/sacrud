@@ -149,7 +149,7 @@ class CRUD(object):
                 self.request[key] = request_preprocessing.check_type(self.table, key)
                 self.obj.__setattr__(key, self.request[key])
 
-            # save m2m relationships
+            # save m2m and m2o relationships
             self.obj = set_m2m_value(self.session, self.request, self.obj)
             self.session.add(self.obj)
             transaction.commit()
