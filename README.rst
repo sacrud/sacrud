@@ -61,7 +61,7 @@ Support
 -------
 
 If you are having issues, please let me know. I have a mailing list
-located at: sacrud@uralbash.ru
+located at sacrud@uralbash.ru and IRC channel #sacrud
 
 License
 -------
