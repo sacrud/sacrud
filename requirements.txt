@@ -1,3 +1,4 @@
 SQLAlchemy>=0.8.0b1
 zope.sqlalchemy
 transaction
+six
