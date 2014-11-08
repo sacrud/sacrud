@@ -65,7 +65,7 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
     def test_default_in_preprocessor(self):
         prc = RequestPreprocessing({'name': ''})
         foo = prc.check_type(User, 'name')
-        self.assertEqual(foo, '')
+        self.assertEqual(foo, None)
 
     def test_polymorphycall_in_preprocessor(self):
         from sqlalchemy import Column, String, Integer, ForeignKey

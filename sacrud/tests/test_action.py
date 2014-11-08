@@ -72,7 +72,7 @@ class ActionTest(BaseSacrudTest):
 
         self.assertEqual(user.name, "Vasya")
         self.assertEqual(user.fullname, "Vasya Pupkin")
-        self.assertEqual(user.password, None)
+        self.assertEqual(user.password, '')
         self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 
