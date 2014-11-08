@@ -146,7 +146,10 @@ class CRUD(object):
                     if key[-2:] != '[]':
                         self.request.pop(key, None)
                     continue  # pragma: no cover
-                self.request[key] = request_preprocessing.check_type(self.table, key)
+                value = request_preprocessing.check_type(self.table, key)
+                if value is None:
+                    continue
+                self.request[key] = value
                 self.obj.__setattr__(key, self.request[key])
 
             # save m2m and m2o relationships
