@@ -9,75 +9,12 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
-import json
-
-import six
 import transaction
 
-from sacrud.common import (columns_by_group, get_empty_instance, get_obj,
-                           get_pk, ObjPreprocessing, RequestPreprocessing)
+from .common import columns_by_group, get_empty_instance, get_obj, get_pk
+from .preprocessing import ObjPreprocessing
 
 prefix = 'crud'
-
-
-def set_m2m_value(session, request, obj):
-    """ Set m2m value for model obj from request params like "group[]"
-
-        :Parameters:
-
-            - `session`: SQLAlchemy DBSession
-            - `request`: request as dict
-            - `obj`: model instance
-    """
-    def list_of_lists_to_dict(l):
-        """ Convert list of key,value lists to dict
-
-        [['id', 1], ['id', 2], ['id', 3], ['foo': 4]]
-        {'id': [1, 2, 3], 'foo': [4]}
-        """
-        d = {}
-        for key, val in l:
-            d.setdefault(key, []).append(val)
-        return d
-
-    def get_m2m_objs(session, relation, id_from_request):
-        mapper = relation.mapper
-        pk_list = mapper.primary_key
-        ids = []
-        if id_from_request:
-            if isinstance(id_from_request, six.string_types):
-                id_from_request = [id_from_request, ]
-            for id in id_from_request:
-                try:
-                    ids.append(json.loads(id))
-                except ValueError:
-                    pass
-            ids = list_of_lists_to_dict(ids)
-        else:
-            ids = {}
-        objs = session.query(mapper)
-        for pk in pk_list:
-            objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
-        return objs
-
-    m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
-    for k, v in list(m2m_request.items()):
-        key = k[:-2]
-        relation = getattr(obj.__class__, key, False)
-        if not relation:
-            continue  # pragma: no cover
-        value = get_m2m_objs(session, relation, v)
-
-        obj_relation = getattr(obj, key)
-        try:
-            iter(obj_relation)
-        except TypeError:
-            if value:
-                value = value[0]
-            else:
-                value = None
-        setattr(obj, key, value)
-    return obj
 
 
 class CRUD(object):
@@ -128,32 +65,13 @@ class CRUD(object):
             resp = action.CRUD(dbsession, table, pk)
             resp.request = params
             resp.add()
-
         """
-
         if self.request:
             # Make empty obj for create action
             if not self.obj:
                 self.obj = get_empty_instance(self.table)
-
-            request_preprocessing = RequestPreprocessing(self.request)
-
-            # filter request params for object
-            for key in list(self.request.keys()):
-                # chek if columns not exist
-                if key not in self.table.__table__.columns and\
-                        not hasattr(self.table, key):
-                    if key[-2:] != '[]':
-                        self.request.pop(key, None)
-                    continue  # pragma: no cover
-                value = request_preprocessing.check_type(self.table, key)
-                if value is None:
-                    continue
-                self.request[key] = value
-                self.obj.__setattr__(key, self.request[key])
-
-            # save m2m and m2o relationships
-            self.obj = set_m2m_value(self.session, self.request, self.obj)
+            self.obj = ObjPreprocessing(obj=self.obj).add(self.session,
+                                                          self.request)
             self.session.add(self.obj)
             transaction.commit()
             return self.obj

@@ -1,0 +1,180 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
+#
+# Copyright © 2014 uralbash <root@uralbash.ru>
+#
+# Distributed under terms of the MIT license.
+
+"""
+Preprocessing
+"""
+import ast
+import json
+import uuid
+from datetime import datetime
+
+import six
+
+from .common import delete_fileobj, store_file
+
+
+def set_m2m_value(session, request, obj):
+    """ Set m2m value for model obj from request params like "group[]"
+
+        :Parameters:
+
+            - `session`: SQLAlchemy DBSession
+            - `request`: request as dict
+            - `obj`: model instance
+    """
+    def list_of_lists_to_dict(l):
+        """ Convert list of key,value lists to dict
+
+        [['id', 1], ['id', 2], ['id', 3], ['foo': 4]]
+        {'id': [1, 2, 3], 'foo': [4]}
+        """
+        d = {}
+        for key, val in l:
+            d.setdefault(key, []).append(val)
+        return d
+
+    def get_m2m_objs(session, relation, id_from_request):
+        mapper = relation.mapper
+        pk_list = mapper.primary_key
+        ids = []
+        if id_from_request:
+            if isinstance(id_from_request, six.string_types):
+                id_from_request = [id_from_request, ]
+            for id in id_from_request:
+                try:
+                    ids.append(json.loads(id))
+                except ValueError:
+                    pass
+            ids = list_of_lists_to_dict(ids)
+        else:
+            ids = {}
+        objs = session.query(mapper)
+        for pk in pk_list:
+            objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
+        return objs
+
+    m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
+    for k, v in list(m2m_request.items()):
+        key = k[:-2]
+        relation = getattr(obj.__class__, key, False)
+        if not relation:
+            continue  # pragma: no cover
+        value = get_m2m_objs(session, relation, v)
+
+        obj_relation = getattr(obj, key)
+        try:
+            iter(obj_relation)
+        except TypeError:
+            if value:
+                value = value[0]
+            else:
+                value = None
+        setattr(obj, key, value)
+    return obj
+
+
+class RequestPreprocessing(object):
+    def __init__(self, request):
+        self.request = request
+        self.types_list = {'Boolean': self._check_boolean,
+                           'FileStore': self._check_filestore,
+                           'HSTORE': self._check_hstore,
+                           'Date': self._check_date,
+                           'DateTime': self._check_date,
+                           'BYTEA': self._check_bytea,
+                           'LargeBinary': self._check_bytea,
+                           'TIMESTAMP': self._check_date
+                           }
+
+    def _check_boolean(self, value):
+        value = False if value == '0' else True
+        value = True if value else False
+        return value
+
+    def _check_bytea(self, value):
+        return bytearray(value, 'utf-8')
+
+    def _check_filestore(self, value):
+        fileobj = value
+        if hasattr(fileobj, 'filename'):
+            extension = fileobj.filename.split(".")[-1]
+            fileobj.filename = str(uuid.uuid4()) + "." + extension
+            abspath = self.column.type.abspath
+            store_file(self.request, self.key, abspath)
+            value = fileobj.filename
+        return value
+
+    def _check_hstore(self, value):
+        try:
+            return ast.literal_eval(str(value))
+        except:
+            raise TypeError("HSTORE: does't suppot '%s' format. %s" %
+                            (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
+
+    def _check_date(self, value):
+        try:
+            return datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            try:
+                return datetime.strptime(value, '%Y-%m-%d %H:%M')
+            except ValueError:
+                return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+
+    def check_type(self, table, key):
+        self.key = key
+        self.column = None
+        if key in table.__table__.columns:
+            self.column = table.__table__.columns[key]
+        else:
+            self.column = getattr(table, key)
+        column_type = self.column.type.__class__.__name__
+        value = self.request[key]
+        if type(value) in (list, tuple):
+            value = value[0]
+
+        if not value and not hasattr(value, 'filename'):
+            if self.column.default:
+                return None
+
+        if column_type in list(self.types_list.keys()):
+            check = self.types_list[column_type]
+            return check(value)
+
+        return value
+
+
+class ObjPreprocessing(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+    def add(self, session, request):
+        request_preprocessing = RequestPreprocessing(request)
+        # filter request params for object
+        for key in list(request.keys()):
+            # chek if columns not exist
+            if key not in self.obj.__table__.columns and\
+                    not hasattr(self.obj, key):
+                if key[-2:] != '[]':
+                    request.pop(key, None)
+                continue  # pragma: no cover
+            value = request_preprocessing.check_type(self.obj, key)
+            if value is None:
+                continue
+            request[key] = value
+            self.obj.__setattr__(key, request[key])
+        return set_m2m_value(session, request, self.obj)
+
+    def delete(self):
+        # XXX: think about same update
+        for col in self.table.columns:
+            if col.type.__class__.__name__ == 'FileStore':
+                if not getattr(self.obj, col.name):
+                    continue  # pragma: no cover
+                delete_fileobj(self.obj.__table__, self.obj, col.name)
+        return self.obj

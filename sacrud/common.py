@@ -9,13 +9,10 @@
 """
 SQLAlchemy helpers
 """
-import ast
 import inspect
 import itertools
 import json
 import os
-import uuid
-from datetime import datetime
 
 import sqlalchemy
 
@@ -184,88 +181,3 @@ def columns_by_group(table):
     if 'sacrud_detail_col' in table.__dict__:
         return [c for c in table.sacrud_detail_col]
     return [('', table.__table__.columns)]
-
-
-class ObjPreprocessing(object):
-    def __init__(self, obj):
-        self.obj = obj
-        self.table = obj.__table__
-
-    def delete(self):
-        # XXX: think about same update
-        for col in self.table.columns:
-            if col.type.__class__.__name__ == 'FileStore':
-                if not getattr(self.obj, col.name):
-                    continue  # pragma: no cover
-                delete_fileobj(self.table, self.obj, col.name)
-        return self.obj
-
-
-class RequestPreprocessing(object):
-    def __init__(self, request):
-        self.request = request
-        self.types_list = {'Boolean': self._check_boolean,
-                           'FileStore': self._check_filestore,
-                           'HSTORE': self._check_hstore,
-                           'Date': self._check_date,
-                           'DateTime': self._check_date,
-                           'BYTEA': self._check_bytea,
-                           'LargeBinary': self._check_bytea,
-                           'TIMESTAMP': self._check_date
-                           }
-
-    def _check_boolean(self, value):
-        value = False if value == '0' else True
-        value = True if value else False
-        return value
-
-    def _check_bytea(self, value):
-        return bytearray(value, 'utf-8')
-
-    def _check_filestore(self, value):
-        fileobj = value
-        if hasattr(fileobj, 'filename'):
-            extension = fileobj.filename.split(".")[-1]
-            fileobj.filename = str(uuid.uuid4()) + "." + extension
-            abspath = self.column.type.abspath
-            store_file(self.request, self.key, abspath)
-            value = fileobj.filename
-        return value
-
-    def _check_hstore(self, value):
-        try:
-            return ast.literal_eval(str(value))
-        except:
-            raise TypeError("HSTORE: does't suppot '%s' format. %s" %
-                            (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
-
-    def _check_date(self, value):
-        try:
-            return datetime.strptime(value, '%Y-%m-%d')
-        except ValueError:
-            try:
-                return datetime.strptime(value, '%Y-%m-%d %H:%M')
-            except ValueError:
-                return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
-
-    def check_type(self, table, key):
-        self.key = key
-        self.column = None
-        if key in table.__table__.columns:
-            self.column = table.__table__.columns[key]
-        else:
-            self.column = getattr(table, key)
-        column_type = self.column.type.__class__.__name__
-        value = self.request[key]
-        if type(value) in (list, tuple):
-            value = value[0]
-
-        if not value and not hasattr(value, 'filename'):
-            if self.column.default:
-                return None
-
-        if column_type in list(self.types_list.keys()):
-            check = self.types_list[column_type]
-            return check(value)
-
-        return value

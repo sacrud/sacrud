@@ -1,5 +1,4 @@
 import os
-from sacrud import version
 from setuptools import setup, find_packages
 
 this = os.path.dirname(os.path.realpath(__file__))
@@ -12,7 +11,7 @@ def readme():
 
 setup(
     name='sacrud',
-    version=version.__version__,
+    version='0.2.0a',
     url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
