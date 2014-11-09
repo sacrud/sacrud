@@ -9,8 +9,8 @@
 """
 Test for sacrud.common.sa_helpers
 """
-from sacrud.common import (get_relationship, pk_list_to_dict, pk_to_list,
-                           RequestPreprocessing, columns_by_group)
+from sacrud.common import (columns_by_group, get_relationship, pk_list_to_dict,
+                           pk_to_list)
 from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
                           Profile, User)
 
@@ -37,16 +37,6 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         self.assertEqual(pk_to_list(multipk, as_json=True),
                          '["id", 1, "id2", 1, "id3", 2]')
 
-    def test_preprocessor_hstore(self):
-        prc = RequestPreprocessing({})
-        foo = prc._check_hstore("{'foo':'bar'}")
-        self.assertEqual(foo, {'foo': 'bar'})
-        with self.assertRaises(TypeError) as cm:
-            foo = prc._check_hstore("blablabla")
-        the_exception = str(cm.exception)
-        self.assertEqual(the_exception,
-                         'HSTORE: does\'t suppot \'blablabla\' format. Valid example: {"foo": "bar", u"baz": u"biz"}')
-
     def test_get_relationship(self):
         foo = get_relationship(User)
         self.assertEqual(len(foo), 2)
@@ -61,27 +51,6 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
         self.assertEqual(len(baz), 1)
         self.assertIn(association_table.c.user_id, foo[0].remote_side)
         self.assertIn(association_table.c.group_id, foo[0].remote_side)
-
-    def test_default_in_preprocessor(self):
-        prc = RequestPreprocessing({'name': ''})
-        foo = prc.check_type(User, 'name')
-        self.assertEqual(foo, None)
-
-    def test_polymorphycall_in_preprocessor(self):
-        from sqlalchemy import Column, String, Integer, ForeignKey
-
-        class Foo(User):
-            __tablename__ = 'foo'
-            __mapper_args__ = {
-                'polymorphic_identity': 'foo',
-            }
-
-            id = Column(Integer, ForeignKey('user.id'), primary_key=True)
-            foo = Column(String)
-
-        prc = RequestPreprocessing({'name': 'lalala'})
-        foo = prc.check_type(Foo, 'name')
-        self.assertEqual(foo, 'lalala')
 
     def test_pk_list_to_dict(self):
         l = ['id', 1, 'id2', 22, 'foo', 'bar']

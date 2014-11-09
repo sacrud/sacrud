@@ -171,8 +171,7 @@ class ObjPreprocessing(object):
         return set_m2m_value(session, request, self.obj)
 
     def delete(self):
-        # XXX: think about same update
-        for col in self.table.columns:
+        for col in self.obj.__table__.columns:
             if col.type.__class__.__name__ == 'FileStore':
                 if not getattr(self.obj, col.name):
                     continue  # pragma: no cover
