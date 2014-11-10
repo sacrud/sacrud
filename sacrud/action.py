@@ -95,7 +95,8 @@ class CRUD(object):
             action.CRUD(dbsession, table, pk=pk).delete(commit=False)
         """
         obj = ObjPreprocessing(obj=self.obj).delete()
+        obj_name = self.obj.__repr__()
         self.session.delete(obj)
         if commit is True:
             transaction.commit()
-        return self.pk
+        return {'pk': self.pk, 'name': obj_name}
