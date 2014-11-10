@@ -175,7 +175,7 @@ class ObjPreprocessing(object):
             request[key] = value
         params = {k: v for k, v in request.items() if not k.endswith('[]')}
         m2m_params = get_m2m_value(session, request, self.obj)
-        params = dict(params.items() + m2m_params.items())
+        params = dict(list(params.items()) + list(m2m_params.items()))
         if inspect.isclass(self.obj):
             return self.obj(**params)
         for k, v in params.items():
