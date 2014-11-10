@@ -59,7 +59,7 @@ def set_m2m_value(session, request, obj):
             objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
         return objs
 
-    m2m_request = {k: v for k, v in list(request.items()) if k[-2:] == '[]'}
+    m2m_request = {k: v for k, v in list(request.items()) if k.endswith('[]')}
     for k, v in list(m2m_request.items()):
         key = k[:-2]
         relation = getattr(obj.__class__, key, False)
@@ -160,7 +160,7 @@ class ObjPreprocessing(object):
             # chek if columns not exist
             if key not in self.obj.__table__.columns and\
                     not hasattr(self.obj, key):
-                if key[-2:] != '[]':
+                if not key.endswith('[]'):
                     request.pop(key, None)
                 continue  # pragma: no cover
             value = request_preprocessing.check_type(self.obj, key)
