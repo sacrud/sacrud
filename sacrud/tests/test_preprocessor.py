@@ -15,7 +15,7 @@ from sacrud.preprocessing import RequestPreprocessing
 from sacrud.tests import BaseSacrudTest, User
 
 
-class PreprocessingTest(BaseSacrudTest):
+class RequestPreprocessingTest(BaseSacrudTest):
 
     def test_preprocessor_hstore(self):
         prc = RequestPreprocessing({})

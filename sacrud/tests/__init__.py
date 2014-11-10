@@ -46,13 +46,6 @@ class BaseSacrudTest(unittest.TestCase):
         user = self.session.query(User).get(1)
         return user
 
-    # def profile_add(self, user):
-    #     profile = Profile(user=user)
-    #     self.session.add(profile)
-    #     transaction.commit()
-    #     profile = self.session.query(Profile).first()
-    #     return profile
-
     def setUp(self):
 
         engine = create_engine('sqlite:///:memory:')
@@ -138,11 +131,12 @@ class User(Base):
     def foo(self):
         return "I'm property"
 
-    def __init__(self, name, fullname, password, sex='unknown'):
+    def __init__(self, name, fullname, password, sex='unknown', groups=[]):
         self.name = name
         self.fullname = fullname
         self.password = password
         self.sex = sex
+        self.groups = groups
 
 
 class Profile(Base):

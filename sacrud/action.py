@@ -11,7 +11,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
 
-from .common import columns_by_group, get_empty_instance, get_obj, get_pk
+from .common import columns_by_group, get_obj, get_pk
 from .preprocessing import ObjPreprocessing
 
 prefix = 'crud'
@@ -67,11 +67,8 @@ class CRUD(object):
             resp.add()
         """
         if self.request:
-            # Make empty obj for create action
-            if not self.obj:
-                self.obj = get_empty_instance(self.table)
-            self.obj = ObjPreprocessing(obj=self.obj).add(self.session,
-                                                          self.request)
+            self.obj = ObjPreprocessing(obj=self.obj or self.table)\
+                .add(self.session, self.request, self.table)
             self.session.add(self.obj)
             transaction.commit()
             return self.obj

@@ -10,6 +10,7 @@
 Preprocessing
 """
 import ast
+import inspect
 import json
 import uuid
 from datetime import datetime
@@ -19,7 +20,7 @@ import six
 from .common import delete_fileobj, store_file
 
 
-def set_m2m_value(session, request, obj):
+def get_m2m_value(session, request, obj):
     """ Set m2m value for model obj from request params like "group[]"
 
         :Parameters:
@@ -59,10 +60,13 @@ def set_m2m_value(session, request, obj):
             objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
         return objs
 
+    params = {}
     m2m_request = {k: v for k, v in list(request.items()) if k.endswith('[]')}
     for k, v in list(m2m_request.items()):
         key = k[:-2]
         relation = getattr(obj.__class__, key, False)
+        if not relation:
+            relation = getattr(obj, key, False)
         if not relation:
             continue  # pragma: no cover
         value = get_m2m_objs(session, relation, v)
@@ -75,8 +79,8 @@ def set_m2m_value(session, request, obj):
                 value = value[0]
             else:
                 value = None
-        setattr(obj, key, value)
-    return obj
+        params[key] = value
+    return params
 
 
 class RequestPreprocessing(object):
@@ -115,9 +119,11 @@ class RequestPreprocessing(object):
             return ast.literal_eval(str(value))
         except:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
-                            (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
+                            (value,
+                             'Valid example: {"foo": "bar", u"baz": u"biz"}'))
 
     def _check_date(self, value):
+        # XXX: I feel the dissonance here
         try:
             return datetime.strptime(value, '%Y-%m-%d')
         except ValueError:
@@ -153,7 +159,7 @@ class ObjPreprocessing(object):
     def __init__(self, obj):
         self.obj = obj
 
-    def add(self, session, request):
+    def add(self, session, request, table):
         request_preprocessing = RequestPreprocessing(request)
         # filter request params for object
         for key in list(request.keys()):
@@ -163,12 +169,18 @@ class ObjPreprocessing(object):
                 if not key.endswith('[]'):
                     request.pop(key, None)
                 continue  # pragma: no cover
-            value = request_preprocessing.check_type(self.obj, key)
+            value = request_preprocessing.check_type(table, key)
             if value is None:
                 continue
             request[key] = value
-            self.obj.__setattr__(key, request[key])
-        return set_m2m_value(session, request, self.obj)
+        params = {k: v for k, v in request.items() if not k.endswith('[]')}
+        m2m_params = get_m2m_value(session, request, self.obj)
+        params = dict(params.items() + m2m_params.items())
+        if inspect.isclass(self.obj):
+            return self.obj(**params)
+        for k, v in params.items():
+            setattr(self.obj, k, v)
+        return self.obj
 
     def delete(self):
         for col in self.obj.__table__.columns:

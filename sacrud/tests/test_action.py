@@ -46,17 +46,13 @@ class ActionTest(BaseSacrudTest):
 
         self.session.delete(user)
 
-    def test_create(self):
-
+    def test_create_with_relation(self):
         # Create groups (M2M example)
         request = DummyRequest().environ
         request['name'] = 'foo'
         group1 = CRUD(self.session, Groups, request=request).add()
-        group2 = CRUD(self.session, Groups, request=request).add()
+        CRUD(self.session, Groups, request=request).add()
         group3 = CRUD(self.session, Groups, request=request).add()
-
-        group = self.session.query(Groups).get(2)
-        self.assertEqual(group.id, group2.id)
 
         # Create users
         request = DummyRequest().environ
@@ -76,11 +72,30 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 
+    def test_create(self):
+
+        # Create groups (M2M example)
+        request = DummyRequest().environ
+        request['name'] = 'foo'
+        CRUD(self.session, Groups, request=request).add()
+        group2 = CRUD(self.session, Groups, request=request).add()
+        CRUD(self.session, Groups, request=request).add()
+
+        group = self.session.query(Groups).get(2)
+        self.assertEqual(group.id, group2.id)
+
+        # Create users
+        request = DummyRequest().environ
+        request['name'] = ["Vasya", ]
+        request['fullname'] = ["Vasya Pupkin", ]
+        request['password'] = ["", ]  # check empty value
+        request['groups[]'] = [u'["id", 1]', u'["id", 3]', u'["id" bad row]']
+        request['badAttr'] = ["1", "bar"]
+        request['badM2MAttr[]'] = ["1", "bar"]
         request['groups[]'] = None
         CRUD(self.session, User, request=request).add()
         user = self.session.query(User).get(1)
-        self.assertEqual([x.id for x in user.groups],
-                         [group1.id, group3.id])
+        self.assertEqual([x.id for x in user.groups], [])
 
         # Add profile
         request = DummyRequest().environ
