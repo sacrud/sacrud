@@ -11,7 +11,11 @@ language: python
 notifications:
   email: "sacrud@uralbash.ru"
   email: "arkadiy@bk.ru"
-  irc: "chat.freenode.net#sacrud"
+  irc:
+    channels:
+      - "chat.freenode.net#sacrud"
+    on_success: change
+    on_failure: always
 
 python:
   - "2.7"
