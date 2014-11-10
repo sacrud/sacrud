@@ -71,10 +71,7 @@ def get_m2m_value(session, request, obj):
             continue  # pragma: no cover
         value = get_m2m_objs(session, relation, v)
 
-        obj_relation = getattr(obj, key)
-        try:
-            iter(obj_relation)
-        except TypeError:
+        if relation.property.uselist is False:
             if value:
                 value = value[0]
             else:
