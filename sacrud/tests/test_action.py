@@ -50,9 +50,9 @@ class ActionTest(BaseSacrudTest):
         # Create groups (M2M example)
         request = DummyRequest().environ
         request['name'] = 'foo'
-        group1 = CRUD(self.session, Groups, request=request).add()
+        group1 = CRUD(self.session, Groups, request=request).add()['obj']
         CRUD(self.session, Groups, request=request).add()
-        group3 = CRUD(self.session, Groups, request=request).add()
+        group3 = CRUD(self.session, Groups, request=request).add()['obj']
 
         # Create users
         request = DummyRequest().environ
@@ -78,7 +78,7 @@ class ActionTest(BaseSacrudTest):
         request = DummyRequest().environ
         request['name'] = 'foo'
         CRUD(self.session, Groups, request=request).add()
-        group2 = CRUD(self.session, Groups, request=request).add()
+        group2 = CRUD(self.session, Groups, request=request).add()['obj']
         CRUD(self.session, Groups, request=request).add()
 
         group = self.session.query(Groups).get(2)
@@ -140,7 +140,8 @@ class ActionTest(BaseSacrudTest):
         request['datetime'] = "2012-12-12 12:12"
         request['datetimeseconds'] = "2012-12-12 12:12:12"
         request["sak"] = "Ac"
-        foo = CRUD(self.session, TypesPreprocessor, request=request).add()
+        foo = CRUD(self.session, TypesPreprocessor,
+                   request=request).add()['obj']
         self.assertEqual(foo.sak, bytearray(b"Ac"))
         self.assertEqual(foo.date,
                          datetime.datetime(2012, 12, 12, 0, 0))

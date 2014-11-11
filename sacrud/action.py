@@ -72,7 +72,8 @@ class CRUD(object):
             self.session.add(self.obj)
             obj_name = self.obj.__repr__()
             transaction.commit()
-            return obj_name
+            return {'obj': self.obj,
+                    'name': obj_name}
         columns = columns_by_group(self.table)
         return {'obj': self.obj,
                 'pk': self.pk,
