@@ -70,8 +70,9 @@ class CRUD(object):
             self.obj = ObjPreprocessing(obj=self.obj or self.table)\
                 .add(self.session, self.request, self.table)
             self.session.add(self.obj)
+            obj_name = self.obj.__repr__()
             transaction.commit()
-            return self.obj
+            return obj_name
         columns = columns_by_group(self.table)
         return {'obj': self.obj,
                 'pk': self.pk,
