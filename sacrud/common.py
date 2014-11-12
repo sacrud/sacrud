@@ -181,3 +181,12 @@ def columns_by_group(table):
     if 'sacrud_detail_col' in table.__dict__:
         return [c for c in table.sacrud_detail_col]
     return [('', table.__table__.columns)]
+
+
+def get_flat_columns(table):
+    columns = []
+    if 'sacrud_detail_col' not in table.__dict__:
+        return columns
+    for item in table.sacrud_detail_col:
+        columns.append(item[1][0])
+    return columns
