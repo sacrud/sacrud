@@ -188,5 +188,6 @@ def get_flat_columns(table):
     if 'sacrud_detail_col' not in table.__dict__:
         return columns
     for item in table.sacrud_detail_col:
-        columns.append(item[1][0])
+        for col in item[1]:
+            columns.append(col)
     return columns

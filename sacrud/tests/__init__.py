@@ -124,8 +124,8 @@ class User(Base):
         'polymorphic_identity': 'users',
     }
 
-    sacrud_detail_col = [('', name, fullname, password),
-                         ('other', sex)]
+    sacrud_detail_col = [('', (name, fullname, password)),
+                         ('other', (sex,))]
 
     @TableProperty
     def foo(self):

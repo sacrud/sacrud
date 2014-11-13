@@ -10,7 +10,7 @@
 Test for sacrud.common.sa_helpers
 """
 from sacrud.common import (columns_by_group, get_relationship, pk_list_to_dict,
-                           pk_to_list)
+                           pk_to_list, get_flat_columns)
 from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
                           Profile, User)
 
@@ -73,12 +73,26 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
 
     def test_columns_by_groups(self):
         c = columns_by_group(User)
+        self.maxDiff = None
         table = User.__table__
-        self.assertEqual(c, [('', table.c.name, table.c.fullname,
-                              table.c.password),
-                             ('other', table.c.sex)]
+        self.assertEqual(c, [('', (table.c.name, table.c.fullname,
+                                   table.c.password)),
+                             ('other', (table.c.sex,))]
                          )
         c = columns_by_group(Groups)
         table = Groups.__table__
         self.assertEqual(c[0][0], '')
         self.assertEqual([x for x in c[0][1]], [table.c.id, table.c.name])
+
+    def test_get_flat_columns(self):
+        c = get_flat_columns(User)
+        table = User.__table__.c
+        self.assertEqual(c, [table.name,
+                             table.fullname,
+                             table.password,
+                             table.sex]
+                         )
+
+    def test_get_flat_columns_wo_settings(self):
+        c = get_flat_columns(Groups)
+        self.assertEqual(c, [])
