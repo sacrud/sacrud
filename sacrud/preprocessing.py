@@ -52,6 +52,8 @@ def get_m2m_value(session, request, obj):
                     ids.append(json.loads(id))
                 except ValueError:
                     pass
+                except TypeError:
+                    return None
             ids = list_of_lists_to_dict(ids)
         else:
             ids = {}
@@ -70,6 +72,8 @@ def get_m2m_value(session, request, obj):
         if not relation:
             continue  # pragma: no cover
         value = get_m2m_objs(session, relation, v)
+        if value is None:
+            continue
 
         if relation.property.uselist is False:
             if value:

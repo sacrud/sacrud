@@ -55,7 +55,7 @@ class CRUD(object):
                 'prefix': prefix,
                 }
 
-    def add(self):
+    def add(self, commit=True):
         """ Update row of table.
 
         :Example:
@@ -71,7 +71,8 @@ class CRUD(object):
                 .add(self.session, self.request, self.table)
             self.session.add(self.obj)
             obj_name = self.obj.__repr__()
-            transaction.commit()
+            if commit is True:
+                transaction.commit()
             return {'obj': self.obj,
                     'name': obj_name}
         columns = columns_by_group(self.table)
