@@ -59,8 +59,8 @@ def get_m2m_value(session, request, obj):
             ids = {}
         objs = session.query(mapper)
         for pk in pk_list:
-            objs = objs.filter(pk.in_(ids.get(pk.name, []))).all()
-        return objs
+            objs = objs.filter(pk.in_(ids.get(pk.name, [])))
+        return objs.all()
 
     params = {}
     m2m_request = {k: v for k, v in list(request.items()) if k.endswith('[]')}
