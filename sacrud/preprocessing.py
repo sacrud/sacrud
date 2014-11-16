@@ -146,7 +146,7 @@ class RequestPreprocessing(object):
             value = value[0]
 
         if not value and not hasattr(value, 'filename'):
-            if self.column.default:
+            if self.column.default or self.column.primary_key:
                 return None
 
         if column_type in list(self.types_list.keys()):
@@ -172,6 +172,7 @@ class ObjPreprocessing(object):
                 continue  # pragma: no cover
             value = request_preprocessing.check_type(table, key)
             if value is None:
+                request.pop(key, None)
                 continue
             request[key] = value
         params = {k: v for k, v in request.items() if not k.endswith('[]')}
