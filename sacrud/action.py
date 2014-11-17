@@ -11,7 +11,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
 
-from .common import columns_by_group, get_obj, get_pk
+from .common import columns_by_group, get_obj, get_pk, get_obj_by_request
 from .preprocessing import ObjPreprocessing
 
 prefix = 'crud'
@@ -32,7 +32,10 @@ class CRUD(object):
         self.table = table
         self.request = request
         self.session = session
-        self.obj = get_obj(session, table, pk)
+        if pk:
+            self.obj = get_obj(session, table, pk)
+        else:
+            self.obj = get_obj_by_request(session, table, request)
 
     def rows_list(self):
         """

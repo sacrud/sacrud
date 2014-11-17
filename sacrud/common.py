@@ -128,6 +128,22 @@ def pk_list_to_dict(pk_list):
     return None
 
 
+def get_obj_by_request(session, table, request):
+    pk = {}
+    table_pk = get_pk(table)
+    if not request:
+        return None
+    for item in table_pk:
+        if item.name in request:
+            pk[item.name] = request[item.name]
+        else:
+            return None
+    try:
+        return get_obj(session, table, pk)
+    except sqlalchemy.orm.exc.NoResultFound:
+        return None
+
+
 def delete_fileobj(table, obj, key):
     """ Delete atached file.
     """
