@@ -58,7 +58,7 @@ class CRUD(object):
                 'prefix': prefix,
                 }
 
-    def add(self, commit=True):
+    def add(self, preprocessing=ObjPreprocessing, commit=True):
         """ Update row of table.
 
         :Example:
@@ -70,7 +70,7 @@ class CRUD(object):
             resp.add()
         """
         if self.request:
-            self.obj = ObjPreprocessing(obj=self.obj or self.table)\
+            self.obj = preprocessing(obj=self.obj or self.table)\
                 .add(self.session, self.request, self.table)
             self.session.add(self.obj)
             obj_name = self.obj.__repr__()
@@ -85,7 +85,7 @@ class CRUD(object):
                 'table': self.table,
                 'prefix': prefix}
 
-    def delete(self, commit=True):
+    def delete(self, preprocessing=ObjPreprocessing, commit=True):
         """ Delete row by pk.
 
         :Example:
@@ -100,7 +100,7 @@ class CRUD(object):
 
             action.CRUD(dbsession, table, pk=pk).delete(commit=False)
         """
-        obj = ObjPreprocessing(obj=self.obj).delete()
+        obj = preprocessing(obj=self.obj).delete()
         obj_name = self.obj.__repr__()
         self.session.delete(obj)
         if commit is True:

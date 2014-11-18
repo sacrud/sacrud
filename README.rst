@@ -20,7 +20,7 @@ Look how easy it is to use:
     data = {'name': 'Electronics',
             'parent_id': '10',}
     group_obj = CRUD(DBSession, Groups, request=data).add()
-    print group_obj.id
+    print group_obj['obj'].id
 
 Installation
 ------------

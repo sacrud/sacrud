@@ -13,7 +13,7 @@ CREATE action
             'parent_id': '10',
            }
     group_obj = CRUD(DBSession, Groups, request=data).add()
-    print group_obj.id
+    print group_obj['obj'].id
 
 For more details see:
 
