@@ -25,3 +25,11 @@ sacrud.exttype module
     :members:
     :undoc-members:
     :show-inheritance:
+
+sacrud.preprocessing module
+---------------------------
+
+.. automodule:: sacrud.preprocessing
+    :members:
+    :undoc-members:
+    :show-inheritance:

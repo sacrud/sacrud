@@ -32,6 +32,18 @@ UPDATE action
            }
     CRUD(DBSession, Profile, pk={'id': 5}, request=data).add()
 
+With pk in request
+
+.. code-block:: python
+    :linenos:
+
+    from sacrud.action import CRUD
+
+    data = {'name': 'Admin',
+            'id': 5,
+           }
+    CRUD(DBSession, Profile, request=data).add()
+
 For more details see:
 
 * :mod:`sacrud.action.CRUD`
