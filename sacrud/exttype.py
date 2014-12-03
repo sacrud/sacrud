@@ -42,6 +42,7 @@ class FileStore(TypeDecorator):
 
 
 class GUID(TypeDecorator):
+
     """Platform-independent GUID type.
 
     Uses Postgresql's UUID type, otherwise uses
@@ -76,6 +77,7 @@ class GUID(TypeDecorator):
 
 
 class ChoiceType(TypeDecorator):
+
     """ Example:
 
 .. code-block:: python
@@ -98,7 +100,7 @@ class ChoiceType(TypeDecorator):
 
     impl = String
 
-    def __init__(self, choices, **kw):
+    def __init__(self, choices=(), **kw):
         self.choices = dict(choices)
         super(ChoiceType, self).__init__(**kw)
 
