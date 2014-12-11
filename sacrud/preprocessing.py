@@ -98,9 +98,11 @@ class RequestPreprocessing(object):
                            }
 
     def _check_boolean(self, value):
-        value = False if value == '0' else True
-        value = True if value else False
-        return value
+        if not value:
+            return False
+        if value in ('0', 'False', 'None', 'false'):
+            return False
+        return True
 
     def _check_bytea(self, value):
         return bytearray(value, 'utf-8')

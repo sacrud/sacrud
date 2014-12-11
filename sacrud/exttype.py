@@ -105,7 +105,8 @@ class ChoiceType(TypeDecorator):
         super(ChoiceType, self).__init__(**kw)
 
     def process_bind_param(self, value, dialect):
-        val = [(k, v) for k, v in list(self.choices.items()) if k == value or v == value]
+        val = [(k, v) for k, v in list(self.choices.items()) if (k == value
+                                                                 or v == value)]
         if val:
             return val[0][1]
         return None
