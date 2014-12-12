@@ -11,7 +11,7 @@ def readme():
 
 setup(
     name='sacrud',
-    version='0.2.0a',
+    version='0.2.0',
     url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
