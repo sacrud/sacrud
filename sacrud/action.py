@@ -18,6 +18,7 @@ prefix = 'crud'
 
 
 class CRUD(object):
+
     """ Main class for CRUD actions
 
         :Parameters:
@@ -27,6 +28,7 @@ class CRUD(object):
             - `pk`: obj primary keys
             - `request`: web request
     """
+
     def __init__(self, session, table, pk=None, request=None):
         self.pk = get_pk(table)
         self.table = table
@@ -69,21 +71,22 @@ class CRUD(object):
             resp.request = params
             resp.add()
         """
-        if self.request:
-            self.obj = preprocessing(obj=self.obj or self.table)\
-                .add(self.session, self.request, self.table)
-            self.session.add(self.obj)
-            obj_name = self.obj.__repr__()
-            if commit is True:
-                transaction.commit()
+        if self.request is None:
+            columns = columns_by_group(self.table)
             return {'obj': self.obj,
-                    'name': obj_name}
-        columns = columns_by_group(self.table)
+                    'pk': self.pk,
+                    'col': columns,
+                    'table': self.table,
+                    'prefix': prefix}
+
+        self.obj = preprocessing(obj=self.obj or self.table)\
+            .add(self.session, self.request, self.table)
+        self.session.add(self.obj)
+        obj_name = self.obj.__repr__()
+        if commit is True:
+            transaction.commit()
         return {'obj': self.obj,
-                'pk': self.pk,
-                'col': columns,
-                'table': self.table,
-                'prefix': prefix}
+                'name': obj_name}
 
     def delete(self, preprocessing=ObjPreprocessing, commit=True):
         """ Delete row by pk.

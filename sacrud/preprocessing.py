@@ -19,7 +19,7 @@ import six
 
 from .common import delete_fileobj, store_file
 
-
+# TODO: is too complex
 def get_m2m_value(session, request, obj):
     """ Set m2m value for model obj from request params like "group[]"
 
@@ -85,6 +85,7 @@ def get_m2m_value(session, request, obj):
 
 
 class RequestPreprocessing(object):
+
     def __init__(self, request):
         self.request = request
         self.types_list = {'Boolean': self._check_boolean,
@@ -120,7 +121,7 @@ class RequestPreprocessing(object):
     def _check_hstore(self, value):
         try:
             return ast.literal_eval(str(value))
-        except:
+        except Exception:
             raise TypeError("HSTORE: does't suppot '%s' format. %s" %
                             (value,
                              'Valid example: {"foo": "bar", u"baz": u"biz"}'))
@@ -159,6 +160,7 @@ class RequestPreprocessing(object):
 
 
 class ObjPreprocessing(object):
+
     def __init__(self, obj):
         self.obj = obj
 

@@ -72,6 +72,11 @@ class ActionTest(BaseSacrudTest):
         self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 
+    def test_create_with_empty_post_request(self):
+        request = {}
+        group = CRUD(self.session, Groups, request=request).add()
+        self.assertEqual(group['obj'].id, 1)
+
     def test_create(self):
 
         # Create groups (M2M example)
