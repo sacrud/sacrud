@@ -101,21 +101,8 @@ class ChoiceType(TypeDecorator):
     impl = String
 
     def __init__(self, choices=(), **kw):
-        self.choices = dict(choices)
+        self.choices = choices
         super(ChoiceType, self).__init__(**kw)
-
-    def process_bind_param(self, value, dialect):
-        val = [(k, v) for k, v in list(self.choices.items()) if (k == value
-                                                                 or v == value)]
-        if val:
-            return val[0][1]
-        return None
-
-    def process_result_value(self, value, dialect):
-        if not value:
-            return None
-        choices = {v: k for k, v in list(self.choices.items())}
-        return (value, choices[value])
 
 
 class SlugType(TypeDecorator):
