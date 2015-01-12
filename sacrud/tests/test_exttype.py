@@ -28,7 +28,7 @@ class ExtTypeModel(Base):
 
     id = Column(Integer, primary_key=True)
     col_guid = Column(GUID(), default=uuid.uuid4)
-    col_choice = Column(ChoiceType(choices=TEST_CHOICES),
+    col_choice = Column(ChoiceType(choices=TEST_CHOICES.items()),
                         info={"verbose_name": u'Проверка select', })
     slug = Column(SlugType('string_name', False))
 
@@ -114,7 +114,7 @@ class ExtTypeTest(BaseSacrudTest):
         transaction.commit()
 
         obj = self.session.query(ExtTypeModel).one()
-        self.assertEqual(obj.col_choice, (u'val_5', 'val_5'))
+        self.assertEqual(obj.col_choice, 'val_5')
 
     def test_slug_type(self):
         obj = ExtTypeModel()
