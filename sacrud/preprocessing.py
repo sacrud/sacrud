@@ -19,7 +19,42 @@ import six
 
 from .common import delete_fileobj, store_file
 
-# TODO: is too complex
+
+def list_of_lists_to_dict(l):
+    """ Convert list of key,value lists to dict
+
+    [['id', 1], ['id', 2], ['id', 3], ['foo': 4]]
+    {'id': [1, 2, 3], 'foo': [4]}
+    """
+    d = {}
+    for key, val in l:
+        d.setdefault(key, []).append(val)
+    return d
+
+
+def get_m2m_objs(session, relation, id_from_request):
+    mapper = relation.mapper
+    pk_list = mapper.primary_key
+    ids = []
+    if id_from_request:
+        if isinstance(id_from_request, six.string_types):
+            id_from_request = [id_from_request, ]
+        for id in id_from_request:
+            try:
+                ids.append(json.loads(id))
+            except ValueError:
+                pass
+            except TypeError:
+                return None
+        ids = list_of_lists_to_dict(ids)
+    else:
+        ids = {}
+    objs = session.query(mapper)
+    for pk in pk_list:
+        objs = objs.filter(pk.in_(ids.get(pk.name, [])))
+    return objs.all()
+
+
 def get_m2m_value(session, request, obj):
     """ Set m2m value for model obj from request params like "group[]"
 
@@ -29,40 +64,12 @@ def get_m2m_value(session, request, obj):
             - `request`: request as dict
             - `obj`: model instance
     """
-    def list_of_lists_to_dict(l):
-        """ Convert list of key,value lists to dict
-
-        [['id', 1], ['id', 2], ['id', 3], ['foo': 4]]
-        {'id': [1, 2, 3], 'foo': [4]}
-        """
-        d = {}
-        for key, val in l:
-            d.setdefault(key, []).append(val)
-        return d
-
-    def get_m2m_objs(session, relation, id_from_request):
-        mapper = relation.mapper
-        pk_list = mapper.primary_key
-        ids = []
-        if id_from_request:
-            if isinstance(id_from_request, six.string_types):
-                id_from_request = [id_from_request, ]
-            for id in id_from_request:
-                try:
-                    ids.append(json.loads(id))
-                except ValueError:
-                    pass
-                except TypeError:
-                    return None
-            ids = list_of_lists_to_dict(ids)
-        else:
-            ids = {}
-        objs = session.query(mapper)
-        for pk in pk_list:
-            objs = objs.filter(pk.in_(ids.get(pk.name, [])))
-        return objs.all()
-
     params = {}
+    ''' m2m_request:
+
+        {u'company[]': [u'["id", 1]'],
+         u'professions[]': [u'["id", 2]', u'["id", 3]']}
+    '''
     m2m_request = {k: v for k, v in list(request.items()) if k.endswith('[]')}
     for k, v in list(m2m_request.items()):
         key = k[:-2]
