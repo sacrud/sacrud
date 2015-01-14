@@ -4,27 +4,21 @@ Installing `sacrud`
 Install from github
 -------------------
 
-.. code::
+.. code-block:: bash
 
     pip install git+http://github.com/ITCase/sacrud.git
-
-current develop version
-
-.. code::
-
-    pip install git+http://github.com/ITCase/sacrud.git@develop
 
 PyPi
 ----
 
-.. code::
+.. code-block:: bash
 
     pip install sacrud
 
 Source
 ------
 
-.. code::
+.. code-block:: bash
 
     git clone git+http://github.com/ITCase/sacrud.git
     python setup.py install
