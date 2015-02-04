@@ -13,7 +13,7 @@ import ast
 import inspect
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, date
 
 import six
 
@@ -134,6 +134,8 @@ class RequestPreprocessing(object):
                              'Valid example: {"foo": "bar", u"baz": u"biz"}'))
 
     def _check_date(self, value):
+        if isinstance(value, (date, datetime)):
+            return value
         # XXX: I feel the dissonance here
         try:
             return datetime.strptime(value, '%Y-%m-%d')
