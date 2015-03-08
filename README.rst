@@ -5,16 +5,16 @@ sacrud
 
 sacrud - CRUD interface for SQLAlchemy.
 
-SACRUD will solve your problem of CRUD interface for SQLAlchemy, by
-providing `extension for Pyramid`_ (yet) or use it in pure form. Unlike
-classical CRUD interface, `pyramid\_sacrud`_ allows override and
-flexibly customize interface. (that is closer to django.contrib.admin)
+SACRUD will solve your problem of CRUD interface for SQLAlchemy.
+Originally created for
+`pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
+, but then in a separate project
 
 Look how easy it is to use:
 
 .. code:: python
 
-    from .models import Groups
+    from .models import DBSession, Groups
     from sacrud.action import CRUD
 
     data = {'name': 'Electronics',
@@ -49,7 +49,6 @@ Contribute
 -  Issue Tracker: http://github.com/ITCase/sacrud/issues
 -  Source Code: http://github.com/ITCase/sacrud
 -  Docs: http://sacrud.readthedocs.org
--  Demo: http://github.com/ITCase/pyramid\_sacrud\_example
 
 Support
 -------
@@ -61,9 +60,6 @@ License
 -------
 
 The project is licensed under the MIT license.
-
-.. _extension for Pyramid: https://github.com/ITCase/pyramid_sacrud
-.. _pyramid\_sacrud: https://github.com/ITCase/pyramid_sacrud
 
 .. |Build Status| image:: https://travis-ci.org/ITCase/sacrud.svg?branch=master
    :target: https://travis-ci.org/ITCase/sacrud
