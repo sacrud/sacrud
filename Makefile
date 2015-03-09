@@ -5,9 +5,3 @@ test:
 
 coverage: test
 	coverage html
-
-run:
-	pserve development.ini
-
-shell:
-	pshell development.ini

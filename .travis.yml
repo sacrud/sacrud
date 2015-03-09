@@ -22,13 +22,14 @@ python:
 
 env:
   - TOXENV=py27
+  - TOXENV=py28
+  - TOXENV=pypy
   - TOXENV=py33
   - TOXENV=py34
 
 install:
-  - pip install nose coverage coveralls pyramid zope.sqlalchemy
+  - pip install nose coverage coveralls zope.sqlalchemy tox
   - pip install -r requirements.txt
-  - pip install tox
 
 script:
   - tox

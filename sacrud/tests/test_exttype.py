@@ -7,11 +7,9 @@
 # Distributed under terms of the MIT license.
 import os
 import uuid
-# from StringIO import StringIO
 from io import StringIO
 
 import transaction
-from pyramid.testing import DummyRequest
 from sqlalchemy import Column, Integer
 
 from sacrud.exttype import ChoiceType, GUID, SlugType
@@ -69,7 +67,7 @@ class ExtTypeTest(BaseSacrudTest):
         self.session.add(user)
         transaction.commit()
 
-        request = DummyRequest().environ
+        request = {}
         request['user_id'] = 1
         request['phone'] = 213123123
         request['cv'] = "Vasya Pupkin was born in Moscow"

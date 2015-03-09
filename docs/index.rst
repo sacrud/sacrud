@@ -9,8 +9,6 @@ SACRUD
 Overview
 --------
 
-sacrud - CRUD interface for SQLAlchemy.
-
 SACRUD will solve your problem of CRUD interface for SQLAlchemy.
 Originally created for
 `pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
