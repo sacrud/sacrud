@@ -33,6 +33,7 @@ sacrud/static/js/bower_components
 # Docs
 _build
 _themes
+_pyramid_sacrud
 _pyramid_sacrud_example
 
 # tox

@@ -9,13 +9,29 @@
 """
 Test for sacrud.common.sa_helpers
 """
-from sacrud.common import (columns_by_group, get_relationship, pk_list_to_dict,
-                           pk_to_list, get_flat_columns)
+from sacrud.common import (columns_by_group, get_empty_instance,
+                           get_flat_columns, get_obj, get_pk, get_relationship,
+                           pk_list_to_dict, pk_to_list)
 from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
                           Profile, User)
 
 
 class SQLAlchemyHelpersTest(BaseSacrudTest):
+
+    def test_get_obj_with_bad_pk(self):
+        self.assertEqual(None, get_obj(self.session, User, None))
+        self.assertEqual(None, get_obj(self.session, User, ''))
+        self.assertEqual(None, get_obj(self.session, User, {}))
+
+    def test_get_pk(self):
+        # class
+        pk = get_pk(User)
+        self.assertEqual('id', pk[0].name)
+
+        # object
+        user = self._add_item(User, 'Vasya', 'Pupkin', "123")
+        pk = get_pk(user)
+        self.assertEqual('id', pk[0].name)
 
     def test_table_property(self):
         user = User('Vasya', 'Pupkin', '123')
@@ -96,3 +112,7 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
     def test_get_flat_columns_wo_settings(self):
         c = get_flat_columns(Groups)
         self.assertEqual(c, [])
+
+    def test_get_empty_instance(self):
+        ins = get_empty_instance(Profile)
+        self.assertEqual(ins.id, None)

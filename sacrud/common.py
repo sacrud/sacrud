@@ -71,13 +71,24 @@ def get_empty_instance(table):
 def get_obj(session, table, pk):
     if not pk:
         return None
-    pk_list = get_pk(table)
+
     obj = session.query(table)
-    for item in pk_list:
-        empty_obj = get_empty_instance(table)
-        item_name = get_attrname_by_colname(empty_obj, item.name)
-        obj = obj.filter(getattr(table, item_name) == pk[item_name])
-    return obj.one()
+    pk_list = get_pk(table)
+
+    def get_by_composite_pk(pk, query):
+        for item in pk_list:
+            query = query.filter(getattr(table, item.name) == pk[item.name])
+        return query
+
+    if type(pk) is list or type(pk) is tuple:
+        if all(type(item) is dict for item in pk):
+            return [get_by_composite_pk(item, obj).one() for item in pk]
+        return obj.filter(pk_list[0].in_(pk))
+    elif (type(pk) is int or str(pk).isdigit()) and len(pk_list) == 1:
+        return obj.get(pk)
+    elif type(pk) is dict:
+        return get_by_composite_pk(pk, obj).one()
+    return None  # pragma: no cover
 
 
 def get_pk(obj):
@@ -207,3 +218,9 @@ def get_flat_columns(table):
         for col in item[1]:
             columns.append(col)
     return columns
+
+
+def get_columns(obj):
+    if hasattr(obj, '__table__'):
+        return obj.__table__.columns
+    return sqlalchemy.inspect(obj).mapper.columns

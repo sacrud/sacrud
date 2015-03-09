@@ -1,9 +1,0 @@
-image: python2.7
-script:
-  - pip install nose coverage pyramid
-  - pip install -r requirements.txt
-  - nosetests --cover-package=sacrud --cover-erase --with-coverage --with-doctest
-notify:
-  email:
-    recipients:
-      - sacrud@uralbash.ru

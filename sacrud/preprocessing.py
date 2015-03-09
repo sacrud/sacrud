@@ -17,7 +17,7 @@ from datetime import datetime, date
 
 import six
 
-from .common import delete_fileobj, store_file
+from .common import delete_fileobj, store_file, get_columns
 
 
 def list_of_lists_to_dict(l):
@@ -148,8 +148,9 @@ class RequestPreprocessing(object):
     def check_type(self, table, key):
         self.key = key
         self.column = None
-        if key in table.__table__.columns:
-            self.column = table.__table__.columns[key]
+        obj_columns = get_columns(table)
+        if key in obj_columns:
+            self.column = obj_columns[key]
         else:
             self.column = getattr(table, key)
         column_type = self.column.type.__class__.__name__
@@ -175,15 +176,16 @@ class ObjPreprocessing(object):
 
     def add(self, session, request, table):
         request_preprocessing = RequestPreprocessing(request)
-        # filter request params for object
+        # filter request for object
         for key in list(request.keys()):
-            # chek if columns not exist
-            if key not in self.obj.__table__.columns and\
-                    not hasattr(self.obj, key):
+            obj_columns = get_columns(self.obj)
+            # check if columns not exist
+            if key not in obj_columns and not hasattr(self.obj, key):
                 if not key.endswith('[]'):
                     request.pop(key, None)
                 continue  # pragma: no cover
             value = request_preprocessing.check_type(table, key)
+
             if value is None:
                 request.pop(key, None)
                 continue
@@ -198,7 +200,8 @@ class ObjPreprocessing(object):
         return self.obj
 
     def delete(self):
-        for col in self.obj.__table__.columns:
+        obj_columns = get_columns(self.obj)
+        for col in obj_columns:
             if col.type.__class__.__name__ == 'FileStore':
                 if not getattr(self.obj, col.name):
                     continue  # pragma: no cover

@@ -1,5 +1,16 @@
+.. _API:
+
 API
 ===
+
+sacrud module
+-------------
+
+.. automodule:: sacrud
+    :members:
+    :exclude-members: desc, or_
+    :undoc-members:
+    :show-inheritance:
 
 sacrud.action module
 --------------------

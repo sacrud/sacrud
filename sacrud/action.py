@@ -11,10 +11,8 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
 
-from .common import columns_by_group, get_obj, get_pk, get_obj_by_request
+from .common import get_obj, get_obj_by_request
 from .preprocessing import ObjPreprocessing
-
-prefix = 'crud'
 
 
 class CRUD(object):
@@ -25,87 +23,116 @@ class CRUD(object):
 
             - `session`: SQLAlchemy DBSession
             - `table`: SQLAlchemy model
-            - `pk`: obj primary keys
-            - `request`: web request
+            - `commit`: To do or not after modify object
+            - `preprocessing`: you custom preprocessing class
     """
 
-    def __init__(self, session, table, pk=None, request=None):
-        self.pk = get_pk(table)
+    def __init__(self, session, table, preprocessing=ObjPreprocessing,
+                 commit=True):
         self.table = table
-        self.request = request
         self.session = session
-        if pk:
-            self.obj = get_obj(session, table, pk)
-        else:
-            self.obj = get_obj_by_request(session, table, request)
+        self.commit = commit
+        self.preprocessing = preprocessing
 
-    def rows_list(self):
+    def create(self, data):
         """
-        Return a list of table rows.
-
-        :Parameters:
-
-            - `order_by`: name ordered row.
-            - `paginator`: see sacrud.common.paginator.get_paginator.
-        """
-        table = self.table
-        session = self.session
-        col = [c for c in getattr(table, 'sacrud_list_col',
-                                  table.__table__.columns)]
-        row = session.query(table)
-        return {'row': row,
-                'pk': self.pk,
-                'col': col,
-                'table': table,
-                'prefix': prefix,
-                }
-
-    def add(self, preprocessing=ObjPreprocessing, commit=True):
-        """ Update row of table.
-
-        :Example:
+        Creates a new object pretreated input data.
 
         .. code-block:: python
 
-            resp = action.CRUD(dbsession, table, pk)
-            resp.request = params
-            resp.add()
+            DBSession.sacrud(Users).create({'name': 'Vasya', 'sex': 1})
         """
-        if self.request is None:
-            columns = columns_by_group(self.table)
-            return {'obj': self.obj,
-                    'pk': self.pk,
-                    'col': columns,
-                    'table': self.table,
-                    'prefix': prefix}
+        obj = get_obj_by_request(self.session, self.table, data)
+        return self._add(obj, data)
 
-        self.obj = preprocessing(obj=self.obj or self.table)\
-            .add(self.session, self.request, self.table)
-        self.session.add(self.obj)
-        obj_name = self.obj.__repr__()
-        if commit is True:
+    def read(self, *pk):
+        """
+        Return a list of entries in the table or single
+        entry if there is an pk.
+
+        .. code-block:: python
+
+            # All users
+            DBSession.sacrud(Users).read()
+
+            # Composite primary_key
+            DBSession.sacrud(User2Groups).read({'user_id': 4, 'group_id': 2})
+            DBSession.sacrud(User2Groups).read(
+              pk=[{'user_id': 4, 'group_id': 2},
+                  {'user_id': 4, 'group_id': 3},
+                  {'user_id': 1, 'group_id': 1},
+                  {'user_id': 19, 'group_id': 2}]
+             )
+
+            # Same, but work with only not composite primary key
+            DBSession.sacrud(Users).read((5, 10))   # as list
+            DBSession.sacrud(Users).read(5, "1", 2) # as *args
+            DBSession.sacrud(Users).read(42)        # single
+        """
+
+        if len(pk) == 1:  # like ([1,2,3,4,5], )
+            return get_obj(self.session, self.table, pk[0])
+        elif len(pk) > 1:  # like (1, 2, 3, 4, 5)
+            return get_obj(self.session, self.table, pk)
+        return self.session.query(self.table)
+
+    def update(self, pk, data):
+        """
+        Updates the object by primary_key.
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users).update(1, {'name': 'Petya'})
+            DBSession.sacrud(Users).update('1', {'name': 'Petya'})
+            DBSession.sacrud(User2Groups).update({'user_id': 4, 'group_id': 2},
+                                                 {'group_id': 1})
+        """
+        obj = get_obj(self.session, self.table, pk)
+        return self._add(obj, data)
+
+    def delete(self, pk):
+        """
+        Delete the object by primary_key.
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users).delete(1)
+            DBSession.sacrud(Users).delete('1')
+            DBSession.sacrud(User2Groups).delete({'user_id': 4, 'group_id': 2})
+        """
+        obj = get_obj(self.session, self.table, pk)
+        if self._delete(obj):
+            return {'pk': pk, 'name': obj.__repr__()}
+
+    def _add(self, obj, data):
+        """ Update the object directly.
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users)._add(UserObj, {'name': 'Gennady'})
+        """
+        obj = self.preprocessing(obj=obj or self.table)\
+            .add(self.session, data, self.table)
+        self.session.add(obj)
+        if self.commit is True:
             transaction.commit()
-        return {'obj': self.obj,
-                'name': obj_name}
+        return obj
 
-    def delete(self, preprocessing=ObjPreprocessing, commit=True):
-        """ Delete row by pk.
-
-        :Example:
+    def _delete(self, obj):
+        """ Delete the object directly.
 
         .. code-block:: python
 
-            action.CRUD(dbsession, table, pk=pk).delete()
+            DBSession.sacrud(Users)._delete(UserObj)
 
         If you no needed commit session
 
         .. code-block:: python
 
-            action.CRUD(dbsession, table, pk=pk).delete(commit=False)
+            DBSession.sacrud(Users, commit=False)._delete(UserObj)
         """
-        obj = preprocessing(obj=self.obj).delete()
-        obj_name = self.obj.__repr__()
+        obj = self.preprocessing(obj=obj).delete()
         self.session.delete(obj)
-        if commit is True:
+        if self.commit is True:
             transaction.commit()
-        return {'pk': self.pk, 'name': obj_name}
+        return True

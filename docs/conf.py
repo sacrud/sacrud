@@ -24,8 +24,8 @@ if 'sphinx-build' in ' '.join(sys.argv): # protect against dumb importers
     cwd = os.getcwd()
     _themes = os.path.join(cwd, '_themes')
 
-    call([git, 'clone', 'git://github.com/ITCase/pyramid_sacrud_example.git',
-        '_pyramid_sacrud_example'])
+    call([git, 'clone', 'git://github.com/ITCase/pyramid_sacrud.git',
+        '_pyramid_sacrud'])
 
     if not os.path.isdir(_themes):
         call([git, 'clone', 'git://github.com/ITCase/itcase_sphinx_theme.git',

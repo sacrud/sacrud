@@ -10,11 +10,11 @@ import unittest
 import transaction
 from sqlalchemy import create_engine, orm, Table
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import backref, mapper, relationship
 from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.types import LargeBinary as BYTEA
 from sqlalchemy.types import (Boolean, Date, DateTime, Enum, Float, Integer,
                               String, Text, TIMESTAMP)
-from sqlalchemy.types import LargeBinary as BYTEA
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.common import TableProperty
@@ -22,14 +22,8 @@ from sacrud.exttype import FileStore
 
 Base = declarative_base()
 
-DBSession = orm.scoped_session(
-    orm.sessionmaker(extension=ZopeTransactionExtension(),
-                     expire_on_commit=False))
-
 DIRNAME = os.path.dirname(__file__)
 PHOTO_PATH = os.path.join(DIRNAME)
-
-
 DB_FILE = os.path.join(os.path.dirname(__file__), 'test.sqlite')
 TEST_DATABASE_CONNECTION_STRING = 'sqlite:///%s' % DB_FILE
 
@@ -39,28 +33,26 @@ class MockCGIFieldStorage(object):
 
 
 class BaseSacrudTest(unittest.TestCase):
-    def user_add(self):
-        user = User(u'Vasya', u'Pupkin', u"123")
-        self.session.add(user)
+
+    def _add_item(self, table, *args, **kwargs):
+        obj = table(*args, **kwargs)
+        self.session.add(obj)
         transaction.commit()
-        user = self.session.query(User).get(1)
-        return user
+        return obj
 
     def setUp(self):
-
+        self.session = orm.scoped_session(
+            orm.sessionmaker(extension=ZopeTransactionExtension(),
+                             expire_on_commit=False))
         engine = create_engine('sqlite:///:memory:')
-        DBSession.remove()
-        DBSession.configure(bind=engine)
+        self.session.remove()
+        self.session.configure(bind=engine)
 
-        session = DBSession
-        self.session = session
-
-        # To create tables, you typically do:
+        # Create tables
         User.metadata.create_all(engine)
         Profile.metadata.create_all(engine)
 
     def tearDown(self):
-        DBSession.remove()
 
         def clear_files():
             files = glob.glob("%s/*.html" % PHOTO_PATH)
@@ -74,6 +66,16 @@ association_table = Table('association', Base.metadata,
                           Column('group_id', Integer, ForeignKey('group.id')),
                           Column('user_id', Integer, ForeignKey('user.id'))
                           )
+
+
+class Groups2User(object):
+
+    def __init__(self, group_id, user_id):
+        self.group_id = group_id
+        self.user_id = user_id
+
+mapper(Groups2User, association_table,
+       primary_key=[association_table.c.group_id, association_table.c.user_id])
 
 
 class Groups(Base):

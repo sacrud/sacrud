@@ -9,10 +9,13 @@
 """
 Test for sacrud.common.sa_helpers
 """
+import datetime
+
 from sqlalchemy import Column, ForeignKey, Integer, String
 
+from sacrud.action import CRUD
 from sacrud.preprocessing import RequestPreprocessing
-from sacrud.tests import BaseSacrudTest, User
+from sacrud.tests import BaseSacrudTest, TypesPreprocessor, User
 
 
 class RequestPreprocessingTest(BaseSacrudTest):
@@ -46,3 +49,19 @@ class RequestPreprocessingTest(BaseSacrudTest):
         prc = RequestPreprocessing({'name': 'lalala'})
         foo = prc.check_type(Foo, 'name')
         self.assertEqual(foo, 'lalala')
+
+    def test_preprocessor(self):
+        request = {}
+        request['date'] = "2012-12-12"
+        request['datetime'] = "2012-12-12 12:12"
+        request['datetimeseconds'] = "2012-12-12 12:12:12"
+        request["sak"] = "Ac"
+        foo = CRUD(self.session, TypesPreprocessor).create(request)
+
+        self.assertEqual(foo.sak, bytearray(b"Ac"))
+        self.assertEqual(foo.date,
+                         datetime.datetime(2012, 12, 12, 0, 0))
+        self.assertEqual(foo.datetime,
+                         datetime.datetime(2012, 12, 12, 12, 12))
+        self.assertEqual(foo.datetimeseconds,
+                         datetime.datetime(2012, 12, 12, 12, 12, 12))

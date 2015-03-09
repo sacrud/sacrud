@@ -26,7 +26,7 @@ env:
   - TOXENV=py34
 
 install:
-  - pip install nose coverage coveralls pyramid
+  - pip install nose coverage coveralls pyramid zope.sqlalchemy
   - pip install -r requirements.txt
   - pip install tox
 
