@@ -1,5 +1,11 @@
-0.2.2 (215-03-??)
------------------
+0.2.3 (2015-03-15)
+------------------
+
+- Add attribute ``commit`` to ``create`` and ``update`` function.
+- Write docs for m2o and m2o data.
+
+0.2.2 (2015-03-09)
+------------------
 
 - New API!!!
 - Add wrapper ``crud_sessionmaker`` for SQLAlchemy session.

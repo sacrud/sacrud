@@ -57,6 +57,22 @@ Look how easy it is to use:
 
     CRUD(DBSession, Groups).delete(1)
 
+**M2M and M2O data**
+
+For adding multiple data for m2m or m2o use endinng `[]`, ex.:
+
+.. code-block:: python
+
+    from .models import DBSession, Users
+    from sacrud.action import CRUD
+
+    CRUD(DBSession, Users).create(
+        {'name': 'Vasya', 'sex': 1,
+         'groups[]': ['["id", 1]', '["id", 2]']}
+    )
+
+It support composit primary key.
+
 
 **Wraps your SQLAlchemy session**
 

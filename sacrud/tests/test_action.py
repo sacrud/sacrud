@@ -174,6 +174,28 @@ class CreateTest(ActionTest):
         self.assertEqual([x.id for x in user.groups],
                          [group1.id, group3.id])
 
+    def test_create_no_commit(self):
+        self.request['name'] = 'foo'
+        group = CRUD(self.session, Groups).create(self.request, commit=False)
+        self.assertEqual(group.name, 'foo')
+        self.assertEqual(group.id, None)
+
+        transaction.commit()
+        db_group = self.session.query(Groups).get(group.id)
+        self.assertEqual(group.id, db_group.id)
+
+    def test_create_m2m(self):
+        self._add_item(Groups, name='foo')
+        self._add_item(Groups, name='bar')
+        self._add_item(Groups, name='baz')
+
+        self.request['name'] = 'foo'
+        self.request['fullname'] = 'foo'
+        self.request['password'] = 'foo'
+        self.request['groups[]'] = ['["id", 1]', '["id", 2]']
+        app = CRUD(self.session, User).create(self.request)
+        self.assertEqual([g.id for g in app.groups], [1, 2])
+
 
 class UpdateTest(ActionTest):
 
@@ -182,7 +204,8 @@ class UpdateTest(ActionTest):
         user = self.session.query(User).get(user.id)
 
         CRUD(self.session, User).update(user.id, data={'name': 'Petya'})
-        self.assertEqual(user.name, 'Petya')
+        db_user = self.session.query(User).get(user.id)
+        self.assertEqual(db_user.name, 'Petya')
 
     def test_update_by_str_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
@@ -237,10 +260,23 @@ class UpdateTest(ActionTest):
         self.assertEqual(profile.user.id, 2)
         self.assertEqual(profile.salary, float(23))
 
+    def test_update_no_commit(self):
+        user = self._add_item(User, 'Vasya', 'Pupkin', "123")
+        user = self.session.query(User).get(user.id)
+
+        CRUD(self.session2, User).update(user.id, data={'name': 'Petya'})
+        db_user = self.session.query(User).get(user.id)
+        self.assertEqual(db_user.name, 'Vasya')
+
+        self.session2.commit()
+        self.session.close()
+        db_user = self.session.query(User).get(user.id)
+        self.assertEqual(db_user.name, 'Petya')
+
 
 class DeleteTest(ActionTest):
 
-    def test_update_by_int_id(self):
+    def test_delete_by_int_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
         user = self.session.query(User).get(user.id)
 
@@ -248,7 +284,7 @@ class DeleteTest(ActionTest):
         user = self.session.query(User).filter_by(id=user.id).all()
         self.assertEqual(user, [])
 
-    def test_update_by_str_id(self):
+    def test_delete_by_str_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
         user = self.session.query(User).get(user.id)
 
@@ -256,7 +292,7 @@ class DeleteTest(ActionTest):
         user = self.session.query(User).filter_by(id=user.id).all()
         self.assertEqual(user, [])
 
-    def test_update_by_composit_pk(self):
+    def test_delete_by_composit_pk(self):
         self._add_item(Groups2User, **{'group_id': 3, 'user_id': 2})
 
         CRUD(self.session, Groups2User).delete({'group_id': 3, 'user_id': 2})
@@ -290,3 +326,15 @@ class DeleteTest(ActionTest):
 
         # check file also deleted
         self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
+
+    def test_delete_no_commit(self):
+        user = self._add_item(User, 'Vasya', 'Pupkin', "123")
+        user = self.session.query(User).get(user.id)
+
+        CRUD(self.session2, User).delete(user.id, commit=False)
+        users = self.session.query(User).filter_by(id=user.id).all()
+        self.assertEqual(len(users), 1)
+
+        self.session2.commit()
+        user = self.session.query(User).filter_by(id=user.id).all()
+        self.assertEqual(len(user), 0)

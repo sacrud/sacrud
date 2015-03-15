@@ -34,16 +34,25 @@ class CRUD(object):
         self.commit = commit
         self.preprocessing = preprocessing
 
-    def create(self, data):
+    def create(self, data, **kwargs):
         """
         Creates a new object pretreated input data.
 
         .. code-block:: python
 
             DBSession.sacrud(Users).create({'name': 'Vasya', 'sex': 1})
+
+        For adding multiple data for m2m or m2o use endinng `[]`, ex.:
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users).create(
+                {'name': 'Vasya', 'sex': 1,
+                 'groups[]': ['["id", 1]', '["id", 2]']}
+            )
         """
         obj = get_obj_by_request(self.session, self.table, data)
-        return self._add(obj, data)
+        return self._add(obj, data, **kwargs)
 
     def read(self, *pk):
         """
@@ -76,7 +85,7 @@ class CRUD(object):
             return get_obj(self.session, self.table, pk)
         return self.session.query(self.table)
 
-    def update(self, pk, data):
+    def update(self, pk, data, **kwargs):
         """
         Updates the object by primary_key.
 
@@ -86,11 +95,14 @@ class CRUD(object):
             DBSession.sacrud(Users).update('1', {'name': 'Petya'})
             DBSession.sacrud(User2Groups).update({'user_id': 4, 'group_id': 2},
                                                  {'group_id': 1})
+
+        Default it run ``transaction.commit()``. If it is not necessary use
+        attribute ``commit=False``.
         """
         obj = get_obj(self.session, self.table, pk)
-        return self._add(obj, data)
+        return self._add(obj, data, **kwargs)
 
-    def delete(self, pk):
+    def delete(self, pk, **kwargs):
         """
         Delete the object by primary_key.
 
@@ -99,12 +111,15 @@ class CRUD(object):
             DBSession.sacrud(Users).delete(1)
             DBSession.sacrud(Users).delete('1')
             DBSession.sacrud(User2Groups).delete({'user_id': 4, 'group_id': 2})
+
+        Default it run ``transaction.commit()``. If it is not necessary use
+        attribute ``commit=False``.
         """
         obj = get_obj(self.session, self.table, pk)
-        if self._delete(obj):
+        if self._delete(obj, **kwargs):
             return {'pk': pk, 'name': obj.__repr__()}
 
-    def _add(self, obj, data):
+    def _add(self, obj, data, **kwargs):
         """ Update the object directly.
 
         .. code-block:: python
@@ -114,11 +129,11 @@ class CRUD(object):
         obj = self.preprocessing(obj=obj or self.table)\
             .add(self.session, data, self.table)
         self.session.add(obj)
-        if self.commit is True:
+        if kwargs.get('commit', self.commit) is True:
             transaction.commit()
         return obj
 
-    def _delete(self, obj):
+    def _delete(self, obj, **kwargs):
         """ Delete the object directly.
 
         .. code-block:: python
@@ -133,6 +148,6 @@ class CRUD(object):
         """
         obj = self.preprocessing(obj=obj).delete()
         self.session.delete(obj)
-        if self.commit is True:
+        if kwargs.get('commit', self.commit) is True:
             transaction.commit()
         return True

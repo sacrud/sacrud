@@ -5,10 +5,8 @@
 .project
 .pydevproject
 sacrud/.coverage
-sacrud/TODO
 sacrud/cover
-TODO
-TODO.txt
+TODO.*
 nohup.out
 .cache
 .webassets*

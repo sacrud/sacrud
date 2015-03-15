@@ -41,12 +41,15 @@ class BaseSacrudTest(unittest.TestCase):
         return obj
 
     def setUp(self):
+        self.session2 = orm.scoped_session(orm.sessionmaker())
         self.session = orm.scoped_session(
             orm.sessionmaker(extension=ZopeTransactionExtension(),
                              expire_on_commit=False))
         engine = create_engine('sqlite:///:memory:')
         self.session.remove()
+        self.session2.remove()
         self.session.configure(bind=engine)
+        self.session2.configure(bind=engine)
 
         # Create tables
         User.metadata.create_all(engine)
