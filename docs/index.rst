@@ -79,10 +79,23 @@ It support composit primary key.
 .. code:: python
 
      from sqlalchemy.orm import scoped_session, sessionmaker
+     from sacrud import CRUDSession
+
+     Session = scoped_session(sessionmaker(class_=CRUDSession))
+     DBSession = Session()
+     DBSession.sacrud(User).delete(1)
+
+**Wraps your zope.sqlalchemy session**
+
+.. code:: python
+
+     from sqlalchemy.orm import scoped_session, sessionmaker
+     from zope.sqlalchemy import ZopeTransactionExtension
      from sacrud import crud_sessionmaker
 
-     DBSession = crud_sessionmaker(scoped_session(sessionmaker()))
-     help(DBSession.sacrud)
+     DBSession = crud_sessionmaker(scoped_session(
+         sessionmaker(extension=ZopeTransactionExtension())))
+     DBSession.sacrud(User).delete(1)
 
 Now CRUD available from DBSession.
 
