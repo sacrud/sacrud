@@ -1,3 +1,8 @@
+0.2.4 (2015-03-30)
+------------------
+
+- Add class ``CRUDSession`` for ``class_`` attribute in sessionmaker #102
+
 0.2.3 (2015-03-15)
 ------------------
 
