@@ -73,7 +73,6 @@ For adding multiple data for m2m or m2o use endinng `[]`, ex.:
 
 It support composit primary key.
 
-
 **Wraps your SQLAlchemy session**
 
 .. code:: python
