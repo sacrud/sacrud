@@ -96,8 +96,8 @@ class CRUD(object):
             DBSession.sacrud(User2Groups).update({'user_id': 4, 'group_id': 2},
                                                  {'group_id': 1})
 
-        Default it run ``transaction.commit()``. If it is not necessary use
-        attribute ``commit=False``.
+        Default it run ``session.commit() or transaction.commit()``.
+        If it is not necessary use attribute ``commit=False``.
         """
         obj = get_obj(self.session, self.table, pk)
         return self._add(obj, data, **kwargs)
@@ -112,8 +112,8 @@ class CRUD(object):
             DBSession.sacrud(Users).delete('1')
             DBSession.sacrud(User2Groups).delete({'user_id': 4, 'group_id': 2})
 
-        Default it run ``transaction.commit()``. If it is not necessary use
-        attribute ``commit=False``.
+        Default it run ``session.commit() or transaction.commit()``.
+        If it is not necessary use attribute ``commit=False``.
         """
         obj = get_obj(self.session, self.table, pk)
         if self._delete(obj, **kwargs):
@@ -130,7 +130,10 @@ class CRUD(object):
             .add(self.session, data, self.table)
         self.session.add(obj)
         if kwargs.get('commit', self.commit) is True:
-            transaction.commit()
+            try:
+                self.session.commit()
+            except AssertionError:
+                transaction.commit()
         return obj
 
     def _delete(self, obj, **kwargs):
@@ -149,5 +152,8 @@ class CRUD(object):
         obj = self.preprocessing(obj=obj).delete()
         self.session.delete(obj)
         if kwargs.get('commit', self.commit) is True:
-            transaction.commit()
+            try:
+                self.session.commit()
+            except AssertionError:
+                transaction.commit()
         return True

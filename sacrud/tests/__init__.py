@@ -32,28 +32,13 @@ class MockCGIFieldStorage(object):
     pass
 
 
-class BaseSacrudTest(unittest.TestCase):
-
-    def _add_item(self, table, *args, **kwargs):
-        obj = table(*args, **kwargs)
-        self.session.add(obj)
-        transaction.commit()
-        return obj
+class BaseTest(unittest.TestCase):
 
     def setUp(self):
+        self.engine = create_engine('sqlite:///:memory:')
         self.session2 = orm.scoped_session(orm.sessionmaker())
-        self.session = orm.scoped_session(
-            orm.sessionmaker(extension=ZopeTransactionExtension(),
-                             expire_on_commit=False))
-        engine = create_engine('sqlite:///:memory:')
-        self.session.remove()
         self.session2.remove()
-        self.session.configure(bind=engine)
-        self.session2.configure(bind=engine)
-
-        # Create tables
-        User.metadata.create_all(engine)
-        Profile.metadata.create_all(engine)
+        self.session2.configure(bind=self.engine)
 
     def tearDown(self):
 
@@ -63,6 +48,50 @@ class BaseSacrudTest(unittest.TestCase):
             for filename in files:
                 os.remove(os.path.join(PHOTO_PATH, filename))
         clear_files()
+
+
+class BaseZopeTest(BaseTest):
+
+    zope = True
+
+    def _add_item(self, table, *args, **kwargs):
+        obj = table(*args, **kwargs)
+        self.session.add(obj)
+        transaction.commit()
+        return obj
+
+    def setUp(self):
+        super(BaseZopeTest, self).setUp()
+        self.session = orm.scoped_session(
+            orm.sessionmaker(extension=ZopeTransactionExtension(),
+                             expire_on_commit=False))
+        self.session.remove()
+        self.session.configure(bind=self.engine)
+
+        # Create tables
+        User.metadata.create_all(self.engine)
+        Profile.metadata.create_all(self.engine)
+
+
+class BaseSQLAlchemyTest(BaseTest):
+
+    zope = False
+
+    def _add_item(self, table, *args, **kwargs):
+        obj = table(*args, **kwargs)
+        self.session.add(obj)
+        self.session.commit()
+        return obj
+
+    def setUp(self):
+        super(BaseSQLAlchemyTest, self).setUp()
+        self.session = orm.scoped_session(orm.sessionmaker())
+        self.session.remove()
+        self.session.configure(bind=self.engine)
+
+        # Create tables
+        User.metadata.create_all(self.engine)
+        Profile.metadata.create_all(self.engine)
 
 
 association_table = Table('association', Base.metadata,

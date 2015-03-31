@@ -12,23 +12,11 @@ import transaction
 
 from sacrud.action import CRUD
 from sacrud.common import delete_fileobj
-from sacrud.tests import (Groups2User, BaseSacrudTest, Groups,
-                          MockCGIFieldStorage, PHOTO_PATH, Profile, User)
+from sacrud.tests import (PHOTO_PATH, BaseSQLAlchemyTest, BaseZopeTest, Groups,
+                          Groups2User, MockCGIFieldStorage, Profile, User)
 
 
-class ActionTest(BaseSacrudTest):
-
-    def setUp(self):
-        # print('ActionTest.setUp')
-        super(ActionTest, self).setUp()
-        self.request = {}
-
-        # Generator of Users
-        users = [User(i, i, i) for i in range(20)]
-        self.session.add_all(users)
-
-
-class ReadTest(ActionTest):
+class ReadTest(object):
 
     def test_read(self):
         user = CRUD(self.session, User).read().all()
@@ -77,7 +65,7 @@ class ReadTest(ActionTest):
         self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
 
 
-class CreateTest(ActionTest):
+class CreateTest(object):
 
     def test_create(self):
         self.request['name'] = 'foo'
@@ -136,7 +124,7 @@ class CreateTest(ActionTest):
         self.assertEqual(profile.phone, "213123123")
         self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
         self.assertEqual(profile.married, True)
-        self.assertEqual(profile.salary, float(23))
+        self.assertEqual(float(profile.salary), float(23))
         self.assertEqual(profile.user.id, 1)
 
         delete_fileobj(Profile, profile, "photo")
@@ -144,7 +132,10 @@ class CreateTest(ActionTest):
         self.session.delete(profile)
         user = self.session.query(User).get(1)
         self.session.delete(user)
-        transaction.commit()
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
 
         self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
 
@@ -179,8 +170,10 @@ class CreateTest(ActionTest):
         group = CRUD(self.session, Groups).create(self.request, commit=False)
         self.assertEqual(group.name, 'foo')
         self.assertEqual(group.id, None)
-
-        transaction.commit()
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
         db_group = self.session.query(Groups).get(group.id)
         self.assertEqual(group.id, db_group.id)
 
@@ -197,7 +190,7 @@ class CreateTest(ActionTest):
         self.assertEqual([g.id for g in app.groups], [1, 2])
 
 
-class UpdateTest(ActionTest):
+class UpdateTest(object):
 
     def test_update_by_int_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
@@ -258,7 +251,7 @@ class UpdateTest(ActionTest):
         self.assertEqual(profile.cv, "Vasya Pupkin was born in Moscow")
         self.assertEqual(profile.married, True)
         self.assertEqual(profile.user.id, 2)
-        self.assertEqual(profile.salary, float(23))
+        self.assertEqual(float(profile.salary), float(23))
 
     def test_update_no_commit(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
@@ -274,7 +267,7 @@ class UpdateTest(ActionTest):
         self.assertEqual(db_user.name, 'Petya')
 
 
-class DeleteTest(ActionTest):
+class DeleteTest(object):
 
     def test_delete_by_int_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
@@ -304,7 +297,10 @@ class DeleteTest(ActionTest):
 
         user = User(u'Vasya', u'Pupkin', u"123")
         self.session.add(user)
-        transaction.commit()
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
 
         request = {}
         request['phone'] = ["213123123", ]
@@ -338,3 +334,27 @@ class DeleteTest(ActionTest):
         self.session2.commit()
         user = self.session.query(User).filter_by(id=user.id).all()
         self.assertEqual(len(user), 0)
+
+
+class ZopeTransaction(BaseZopeTest, ReadTest, CreateTest, UpdateTest,
+                      DeleteTest):
+
+    def setUp(self):
+        super(ZopeTransaction, self).setUp()
+        self.request = {}
+
+        # Generator of Users
+        users = [User(i, i, i) for i in range(20)]
+        self.session.add_all(users)
+
+
+class SQLAlchemyTransaction(BaseSQLAlchemyTest, ReadTest, CreateTest,
+                            UpdateTest, DeleteTest):
+
+    def setUp(self):
+        super(SQLAlchemyTransaction, self).setUp()
+        self.request = {}
+
+        # Generator of Users
+        users = [User(i, i, i) for i in range(20)]
+        self.session.add_all(users)

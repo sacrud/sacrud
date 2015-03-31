@@ -15,10 +15,11 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 
 from sacrud.action import CRUD
 from sacrud.preprocessing import RequestPreprocessing
-from sacrud.tests import BaseSacrudTest, TypesPreprocessor, User
+from sacrud.tests import (BaseSQLAlchemyTest, BaseZopeTest, TypesPreprocessor,
+                          User)
 
 
-class RequestPreprocessingTest(BaseSacrudTest):
+class RequestPreprocessingTest(object):
 
     def test_preprocessor_hstore(self):
         prc = RequestPreprocessing({})
@@ -28,7 +29,8 @@ class RequestPreprocessingTest(BaseSacrudTest):
             foo = prc._check_hstore("blablabla")
         the_exception = str(cm.exception)
         self.assertEqual(the_exception,
-                         'HSTORE: does\'t suppot \'blablabla\' format. Valid example: {"foo": "bar", u"baz": u"biz"}')
+                         'HSTORE: does\'t suppot \'blablabla\' format. ' +
+                         'Valid example: {"foo": "bar", u"baz": u"biz"}')
 
     def test_default_in_preprocessor(self):
         prc = RequestPreprocessing({'name': ''})
@@ -39,6 +41,7 @@ class RequestPreprocessingTest(BaseSacrudTest):
 
         class Foo(User):
             __tablename__ = 'foo'
+            __table_args__ = {'extend_existing': True}
             __mapper_args__ = {
                 'polymorphic_identity': 'foo',
             }
@@ -59,9 +62,21 @@ class RequestPreprocessingTest(BaseSacrudTest):
         foo = CRUD(self.session, TypesPreprocessor).create(request)
 
         self.assertEqual(foo.sak, bytearray(b"Ac"))
-        self.assertEqual(foo.date,
-                         datetime.datetime(2012, 12, 12, 0, 0))
+        # XXX: I feel dissonance here...
+        if self.zope:
+            self.assertEqual(foo.date, datetime.datetime(2012, 12, 12, 0, 0))
+        else:
+            self.assertEqual(foo.date, datetime.date(2012, 12, 12))
+
         self.assertEqual(foo.datetime,
                          datetime.datetime(2012, 12, 12, 12, 12))
         self.assertEqual(foo.datetimeseconds,
                          datetime.datetime(2012, 12, 12, 12, 12, 12))
+
+
+class ZopeTransaction(BaseZopeTest, RequestPreprocessingTest):
+    pass
+
+
+class SQLAlchemyTransaction(BaseSQLAlchemyTest, RequestPreprocessingTest):
+    pass

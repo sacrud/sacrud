@@ -12,11 +12,11 @@ Test for sacrud.common.sa_helpers
 from sacrud.common import (columns_by_group, get_empty_instance,
                            get_flat_columns, get_obj, get_pk, get_relationship,
                            pk_list_to_dict, pk_to_list)
-from sacrud.tests import (association_table, BaseSacrudTest, Groups, MultiPK,
-                          Profile, User)
+from sacrud.tests import (BaseSQLAlchemyTest, BaseZopeTest, Groups, MultiPK,
+                          Profile, User, association_table)
 
 
-class SQLAlchemyHelpersTest(BaseSacrudTest):
+class SQLAlchemyHelpersTest(object):
 
     def test_get_obj_with_bad_pk(self):
         self.assertEqual(None, get_obj(self.session, User, None))
@@ -116,3 +116,11 @@ class SQLAlchemyHelpersTest(BaseSacrudTest):
     def test_get_empty_instance(self):
         ins = get_empty_instance(Profile)
         self.assertEqual(ins.id, None)
+
+
+class ZopeTransaction(BaseZopeTest, SQLAlchemyHelpersTest):
+    pass
+
+
+class SQLAlchemyTransaction(BaseSQLAlchemyTest, SQLAlchemyHelpersTest):
+    pass

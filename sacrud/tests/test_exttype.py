@@ -12,9 +12,9 @@ from io import StringIO
 import transaction
 from sqlalchemy import Column, Integer
 
-from sacrud.exttype import ChoiceType, GUID, SlugType
-from sacrud.tests import (Base, BaseSacrudTest, FileStore, MockCGIFieldStorage,
-                          Profile, User)
+from sacrud.exttype import GUID, ChoiceType, SlugType
+from sacrud.tests import (Base, BaseSQLAlchemyTest, BaseZopeTest, FileStore,
+                          MockCGIFieldStorage, Profile, User)
 
 file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 TEST_CHOICES = {'val_1': 'val_1', 'val_2': 'val_2', 'val_3': 'val_3',
@@ -31,7 +31,7 @@ class ExtTypeModel(Base):
     slug = Column(SlugType('string_name', False))
 
 
-class ExtTypeTest(BaseSacrudTest):
+class ExtTypeTest(object):
 
     def test_guid(self):
         guid = ExtTypeModel()
@@ -49,7 +49,7 @@ class ExtTypeTest(BaseSacrudTest):
         transaction.commit()
 
         guid = self.session.query(ExtTypeModel).one()
-        self.assertEqual(guid.col_guid, uuid.UUID(value))
+        self.assertEqual(str(guid.col_guid), str(uuid.UUID(value)))
 
         value = None
         guid.col_guid = value
@@ -84,7 +84,10 @@ class ExtTypeTest(BaseSacrudTest):
         transaction.commit()
 
         profile = self.session.query(Profile).get(1)
-        self.assertEqual(profile.photo, u'/assets/photo/foo.html')
+        if hasattr(profile.photo, 'filename'):
+            self.assertEqual(profile.photo.filename, 'foo.html')
+        else:
+            self.assertEqual(profile.photo, '/assets/photo/foo.html')
 
         # test URL
         request["photo"] = 'https://www.linux.org.ru/img/good-penguin.jpg'
@@ -126,3 +129,11 @@ class ExtTypeTest(BaseSacrudTest):
 
         obj = self.session.query(ExtTypeModel).one()
         self.assertEqual(obj.slug, value)
+
+
+class ZopeTransaction(BaseZopeTest, ExtTypeTest):
+    pass
+
+
+class SQLAlchemyTransaction(BaseSQLAlchemyTest, ExtTypeTest):
+    pass
