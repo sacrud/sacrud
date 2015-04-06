@@ -109,7 +109,7 @@ class SlugType(TypeDecorator):
 
     impl = String
 
-    def __init__(self, input_id, reflection=True, **kw):
+    def __init__(self, input_id="name", reflection=True, **kw):
         self.input_id = input_id
         self.reflection = reflection
         super(SlugType, self).__init__(**kw)
