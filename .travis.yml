@@ -5,7 +5,7 @@
 # Copyright © 2014 uralbash <root@uralbash.ru>
 #
 # Distributed under terms of the MIT license.
-
+sudo: false
 language: python
 
 notifications:
@@ -19,20 +19,16 @@ notifications:
 
 python:
   - "2.7"
-
-env:
-  - TOXENV=py27
-  - TOXENV=py28
-  - TOXENV=pypy
-  - TOXENV=py33
-  - TOXENV=py34
+  - "3.3"
+  - "3.4"
+  - "pypy"
+  - "pypy3"
 
 install:
-  - pip install nose coverage coveralls zope.sqlalchemy tox
+  - pip install nose coverage coveralls zope.sqlalchemy
   - pip install -r requirements.txt
 
 script:
-  - tox
   - nosetests --with-coverage --cover-package sacrud --cover-erase --with-doctest
 
 after_success:

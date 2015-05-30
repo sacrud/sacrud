@@ -75,6 +75,31 @@ class CreateTest(object):
         db_group = self.session.query(Groups).get(group.id)
         self.assertEqual(group.id, db_group.id)
 
+    def test_create_twice(self):
+        self.request['name'] = 'foo'
+        group = CRUD(self.session, Groups).create(self.request)
+        self.assertEqual(group.name, 'foo')
+
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
+
+        # db_group = self.session.query(Groups).get(group.id)
+        # self.assertEqual(group.id, db_group.id)
+        self.request['id'] = group.id
+        try:
+            CRUD(self.session, Groups).create(self.request)
+        except Exception as e:
+            if self.zope:
+                from sqlalchemy.exc import IntegrityError
+                transaction.abort()
+                self.assertEqual(IntegrityError, type(e))
+            else:
+                from sqlalchemy.orm.exc import FlushError
+                self.session.rollback()
+                self.assertEqual(FlushError, type(e))
+
     def test_create_with_empty_post_request(self):
         self.request = {}
         group = CRUD(self.session, Groups).create(self.request)
