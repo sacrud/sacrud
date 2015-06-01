@@ -11,7 +11,7 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
 
-from .common import get_obj
+from .common import get_obj, get_obj_by_request_data
 from .preprocessing import ObjPreprocessing
 
 
@@ -34,7 +34,7 @@ class CRUD(object):
         self.commit = commit
         self.preprocessing = preprocessing
 
-    def create(self, data, **kwargs):
+    def create(self, data, update=False, **kwargs):
         """
         Creates a new object pretreated input data.
 
@@ -51,7 +51,10 @@ class CRUD(object):
                  'groups[]': ['["id", 1]', '["id", 2]']}
             )
         """
-        return self._add(None, data, **kwargs)
+        obj = None
+        if update is True:
+            obj = get_obj_by_request_data(self.session, self.table, data)
+        return self._add(obj, data, **kwargs)
 
     def read(self, *pk):
         """

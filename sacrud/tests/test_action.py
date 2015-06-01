@@ -85,8 +85,6 @@ class CreateTest(object):
         else:
             self.session.commit()
 
-        # db_group = self.session.query(Groups).get(group.id)
-        # self.assertEqual(group.id, db_group.id)
         self.request['id'] = group.id
         try:
             CRUD(self.session, Groups).create(self.request)
@@ -99,6 +97,27 @@ class CreateTest(object):
                 from sqlalchemy.orm.exc import FlushError
                 self.session.rollback()
                 self.assertEqual(FlushError, type(e))
+
+    def test_create_twice_with_update_options(self):
+        self.request['name'] = 'foo'
+        group = CRUD(self.session, Groups).create(self.request)
+        self.assertEqual(group.name, 'foo')
+
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
+
+        self.request['id'] = group.id
+        self.request['name'] = 'new_foo'
+        group = CRUD(self.session, Groups).create(self.request, update=True)
+
+        if self.zope:
+            transaction.commit()
+        else:
+            self.session.commit()
+
+        self.assertEqual(group.name, 'new_foo')
 
     def test_create_with_empty_post_request(self):
         self.request = {}

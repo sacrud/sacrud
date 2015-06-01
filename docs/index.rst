@@ -28,6 +28,19 @@ Look how easy it is to use:
     group_obj = CRUD(DBSession, Groups).create(data)
     print(group_obj.name)
 
+If the entry already exists, just add the option ``update=True``.
+
+.. code:: python
+
+    from .models import DBSession, Groups
+    from sacrud.action import CRUD
+
+    data = {'id': 6,  # existing entry
+            'name': 'Electronics',
+            'parent_id': '10',}
+    group_obj = CRUD(DBSession, Groups).create(data, update=True)
+    print(group_obj.name)
+
 **READ**
 
 .. code:: python
