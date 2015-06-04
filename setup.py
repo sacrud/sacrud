@@ -11,7 +11,7 @@ def read(name):
 
 setup(
     name='sacrud',
-    version='0.2.7.dev1',
+    version='0.2.7',
     url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
