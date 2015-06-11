@@ -1,7 +1,12 @@
-0.2.7 (2015-??-??)
+0.2.8 (2015-06-11)
+------------------
+
+- Added ``sacrud.common.ClassProperty``
+
+0.2.7 (2015-06-04)
 -----------------
 
-- Add ``update`` option for create action.
+- Added ``update`` option for create action.
 
 0.2.6 (2015-05-30)
 ------------------
@@ -16,24 +21,24 @@
 0.2.4 (2015-03-30)
 ------------------
 
-- Add class ``CRUDSession`` for ``class_`` attribute in sessionmaker #102
+- Added class ``CRUDSession`` for ``class_`` attribute in sessionmaker #102
 
 0.2.3 (2015-03-15)
 ------------------
 
-- Add attribute ``commit`` to ``create`` and ``update`` function.
+- Added attribute ``commit`` to ``create`` and ``update`` function.
 - Write docs for m2o and m2o data.
 
 0.2.2 (2015-03-09)
 ------------------
 
 - New API!!!
-- Add wrapper ``crud_sessionmaker`` for SQLAlchemy session.
+- Added wrapper ``crud_sessionmaker`` for SQLAlchemy session.
 - More tests.
 
 0.2.1 (2015-03-08)
 ------------------
 
-- Add support ``Date`` and ``DateTime`` object in request.
+- Added support ``Date`` and ``DateTime`` object in request.
 - Restructured preprocessing.
 

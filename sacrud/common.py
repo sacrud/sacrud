@@ -25,6 +25,11 @@ class TableProperty(object):
         return self.func(cls.__table__)
 
 
+class ClassProperty(TableProperty):
+    def __get__(self, inst, cls):
+        return self.func(cls)
+
+
 def get_attrname_by_colname(instance, name):
     """ Get value from SQLAlchemy instance by column name
 
