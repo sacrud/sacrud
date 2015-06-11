@@ -210,14 +210,14 @@ def store_file(request, key, path):
 
 
 def columns_by_group(table):
-    if 'sacrud_detail_col' in table.__dict__:
+    if hasattr(table, 'sacrud_detail_col'):
         return [c for c in table.sacrud_detail_col]
     return [('', table.__table__.columns)]
 
 
 def get_flat_columns(table):
     columns = []
-    if 'sacrud_detail_col' not in table.__dict__:
+    if not hasattr(table, 'sacrud_detail_col'):
         return columns
     for item in table.sacrud_detail_col:
         for col in item[1]:
