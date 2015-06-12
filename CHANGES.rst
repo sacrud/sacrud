@@ -1,4 +1,4 @@
-0.2.9 (2015-??-??)
+0.2.9 (2015-06-12)
 ------------------
 
 - fix ``sacrud_detail_col`` table attribute
