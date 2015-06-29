@@ -1,3 +1,8 @@
+0.3.0 (2015-06-29)
+------------------
+
+- fix ``Boolean`` field with default value ITCase/pyramid_sacrud#94
+
 0.2.9 (2015-06-12)
 ------------------
 

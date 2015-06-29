@@ -158,7 +158,9 @@ class RequestPreprocessing(object):
         if type(value) in (list, tuple):
             value = value[0]
 
-        if not value and not hasattr(value, 'filename'):
+        if not value\
+                and not hasattr(value, 'filename')\
+                and not column_type == 'Boolean':
             if self.column.default or self.column.primary_key:
                 return None
 
@@ -174,24 +176,24 @@ class ObjPreprocessing(object):
     def __init__(self, obj):
         self.obj = obj
 
-    def add(self, session, request, table):
-        request_preprocessing = RequestPreprocessing(request)
-        # filter request for object
-        for key in list(request.keys()):
+    def add(self, session, data, table):
+        request_preprocessing = RequestPreprocessing(data)
+        # filter data for object
+        for key in list(data.keys()):
             obj_columns = get_columns(self.obj)
             # check if columns not exist
             if key not in obj_columns and not hasattr(self.obj, key):
                 if not key.endswith('[]'):
-                    request.pop(key, None)
+                    data.pop(key, None)
                 continue  # pragma: no cover
             value = request_preprocessing.check_type(table, key)
 
             if value is None:
-                request.pop(key, None)
+                data.pop(key, None)
                 continue
-            request[key] = value
-        params = {k: v for k, v in request.items() if not k.endswith('[]')}
-        m2m_params = get_m2m_value(session, request, self.obj)
+            data[key] = value
+        params = {k: v for k, v in data.items() if not k.endswith('[]')}
+        m2m_params = get_m2m_value(session, data, self.obj)
         params = dict(list(params.items()) + list(m2m_params.items()))
         if inspect.isclass(self.obj):
             return self.obj(**params)

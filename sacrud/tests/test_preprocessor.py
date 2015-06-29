@@ -11,12 +11,12 @@ Test for sacrud.common.sa_helpers
 """
 import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, String
-
 from sacrud.action import CRUD
 from sacrud.preprocessing import RequestPreprocessing
 from sacrud.tests import (BaseSQLAlchemyTest, BaseZopeTest, TypesPreprocessor,
                           User)
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
 
 class RequestPreprocessingTest(object):
@@ -31,6 +31,25 @@ class RequestPreprocessingTest(object):
         self.assertEqual(the_exception,
                          'HSTORE: does\'t suppot \'blablabla\' format. ' +
                          'Valid example: {"foo": "bar", u"baz": u"biz"}')
+
+    def test_preprocessor_boolean_with_default_value(self):
+
+        Base = declarative_base()
+
+        class Foo(Base):
+            __tablename__ = 'foo'
+
+            id = Column(Integer, primary_key=True)
+            visible = Column(Boolean, default=False)
+            archive = Column(Boolean)
+
+        prc = RequestPreprocessing({'visible': True})
+        visible = prc.check_type(Foo, 'visible')
+        self.assertEqual(visible, True)
+
+        prc = RequestPreprocessing({'visible': False})
+        visible = prc.check_type(Foo, 'visible')
+        self.assertEqual(visible, False)
 
     def test_default_in_preprocessor(self):
         prc = RequestPreprocessing({'name': ''})
@@ -50,8 +69,8 @@ class RequestPreprocessingTest(object):
             foo = Column(String)
 
         prc = RequestPreprocessing({'name': 'lalala'})
-        foo = prc.check_type(Foo, 'name')
-        self.assertEqual(foo, 'lalala')
+        name = prc.check_type(Foo, 'name')
+        self.assertEqual(name, 'lalala')
 
     def test_preprocessor(self):
         request = {}
