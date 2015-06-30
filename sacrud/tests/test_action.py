@@ -64,6 +64,18 @@ class ReadTest(object):
         users = CRUD(self.session, User).read(list_of_users)
         self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
 
+    def test_read_list_of_dict_and_then_delete(self):
+        list_of_users = [{'id': '1'}, {'id': '2'}, {'id': '3'},
+                         {'id': 10}, {'id': 20}]
+        CRUD(self.session, User).read(list_of_users)\
+            .delete(synchronize_session=False)
+        rows = [item.id for item in CRUD(self.session, User).read().all()]
+        self.assertNotIn(1, rows)
+        self.assertNotIn(2, rows)
+        self.assertNotIn(3, rows)
+        self.assertNotIn(10, rows)
+        self.assertNotIn(20, rows)
+
 
 class CreateTest(object):
 

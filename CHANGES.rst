@@ -1,3 +1,8 @@
+0.3.1 (2015-06-30)
+------------------
+
+- return query object instead list, when do ``read`` action with multiple primary keys.
+
 0.3.0 (2015-06-29)
 ------------------
 

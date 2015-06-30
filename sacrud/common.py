@@ -15,6 +15,7 @@ import json
 import os
 
 import sqlalchemy
+from sqlalchemy import and_, or_
 
 
 class TableProperty(object):
@@ -77,22 +78,26 @@ def get_obj(session, table, pk):
     if not pk:
         return None
 
-    obj = session.query(table)
     pk_list = get_pk(table)
 
-    def get_by_composite_pk(pk, query):
+    def composite_pk_clauses(pk):
+        clauses = []
         for item in pk_list:
-            query = query.filter(getattr(table, item.name) == pk[item.name])
-        return query
+            clauses.append(getattr(table, item.name) == pk[item.name])
+        return and_(*clauses)
 
+    query = session.query(table)
     if type(pk) is list or type(pk) is tuple:
         if all(type(item) is dict for item in pk):
-            return [get_by_composite_pk(item, obj).one() for item in pk]
-        return obj.filter(pk_list[0].in_(pk))
+            clauses = []
+            for item in pk:
+                clauses.append(composite_pk_clauses(item))
+            return query.filter(or_(*clauses))
+        return query.filter(pk_list[0].in_(pk))
     elif (type(pk) is int or str(pk).isdigit()) and len(pk_list) == 1:
-        return obj.get(pk)
+        return query.get(pk)
     elif type(pk) is dict:
-        return get_by_composite_pk(pk, obj).one()
+        return query.filter(composite_pk_clauses(pk)).one()
     return None  # pragma: no cover
 
 

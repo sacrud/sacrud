@@ -68,12 +68,19 @@ class CRUD(object):
 
             # Composite primary_key
             DBSession.sacrud(User2Groups).read({'user_id': 4, 'group_id': 2})
-            DBSession.sacrud(User2Groups).read(
-              pk=[{'user_id': 4, 'group_id': 2},
-                  {'user_id': 4, 'group_id': 3},
-                  {'user_id': 1, 'group_id': 1},
-                  {'user_id': 19, 'group_id': 2}]
-             )
+
+            # Multiple rows
+            primary_keys = [
+                {'user_id': 4, 'group_id': 2},
+                {'user_id': 4, 'group_id': 3},
+                {'user_id': 1, 'group_id': 1},
+                {'user_id': 19, 'group_id': 2}
+            ]
+            DBSession.sacrud(User2Groups).read(*primary_keys)
+
+            # Delete
+            DBSession.sacrud(User2Groups).read(*primary_keys)\
+                .delete(synchronize_session=False)
 
             # Same, but work with only not composite primary key
             DBSession.sacrud(Users).read((5, 10))   # as list
