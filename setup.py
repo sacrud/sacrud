@@ -11,7 +11,7 @@ def read(name):
 
 setup(
     name='sacrud',
-    version='0.3.1',
+    version='0.3.2.dev1',
     url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
@@ -21,9 +21,10 @@ setup(
     zip_safe=False,
     test_suite="nose.collector",
     license="MIT",
-    description='SQLAlchemy CRUD.',
+    description='CRUD interface for SQLAlchemy.',
     long_description=read('README.rst'),
     install_requires=read('requirements.txt'),
+    tests_require=read('requirements.txt') + read('requirements-test.txt'),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
@@ -31,7 +32,6 @@ setup(
         'Environment :: Other Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         "Programming Language :: Python :: 2.6",

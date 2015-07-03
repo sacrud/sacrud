@@ -24,12 +24,9 @@ python:
   - "pypy"
   - "pypy3"
 
-install:
-  - pip install nose coverage coveralls zope.sqlalchemy
-  - pip install -r requirements.txt
-
 script:
-  - nosetests --with-coverage --cover-package sacrud --cover-erase --with-doctest
+  - python setup.py nosetests
 
 after_success:
-  coveralls
+  - pip install coveralls
+  - coveralls
