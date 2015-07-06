@@ -13,8 +13,8 @@ extensions = [
 ]
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'sqlalchemy': ('http://docs.sqlalchemy.org/', None),
+    'https://docs.python.org/3': None,
+    'http://docs.sqlalchemy.org/en/latest/': None,
 }
 
 # The suffix of source filenames.
