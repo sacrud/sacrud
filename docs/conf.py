@@ -12,6 +12,11 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'sqlalchemy': ('http://docs.sqlalchemy.org/', None),
+}
+
 # The suffix of source filenames.
 source_suffix = '.rst'
 

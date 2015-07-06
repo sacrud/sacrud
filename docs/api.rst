@@ -3,8 +3,8 @@
 API
 ===
 
-sacrud module
--------------
+sacrud
+------
 
 .. automodule:: sacrud
     :members:
@@ -12,8 +12,8 @@ sacrud module
     :undoc-members:
     :show-inheritance:
 
-sacrud.action module
---------------------
+sacrud.action
+-------------
 
 .. automodule:: sacrud.action
     :members:
@@ -21,26 +21,77 @@ sacrud.action module
     :undoc-members:
     :show-inheritance:
 
-sacrud.common module
---------------------
+sacrud.common
+-------------
 
 .. automodule:: sacrud.common
     :members:
     :undoc-members:
     :show-inheritance:
 
-sacrud.exttype module
----------------------
+sacrud.exttype
+--------------
 
 .. automodule:: sacrud.exttype
     :members:
     :undoc-members:
     :show-inheritance:
 
-sacrud.preprocessing module
----------------------------
+sacrud.preprocessing
+--------------------
 
 .. automodule:: sacrud.preprocessing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Tests
+=====
+
+sacrud.tests
+------------
+
+.. automodule:: sacrud.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sacrud.tests.test_action
+------------------------
+
+.. automodule:: sacrud.tests.test_action
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sacrud.tests.test_common
+------------------------
+
+.. automodule:: sacrud.tests.test_common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sacrud.tests.test_exttype
+-------------------------
+
+.. automodule:: sacrud.tests.test_exttype
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sacrud.tests.test_preprocessor
+------------------------------
+
+.. automodule:: sacrud.tests.test_preprocessor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+sacrud.tests.test_sessionmaker
+------------------------------
+
+.. automodule:: sacrud.tests.test_sessionmaker
     :members:
     :undoc-members:
     :show-inheritance:
