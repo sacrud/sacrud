@@ -9,11 +9,24 @@
 """
 Test for sacrud.common.sa_helpers
 """
+import unittest
+
 from sacrud.common import (columns_by_group, get_empty_instance,
                            get_flat_columns, get_obj, get_pk, get_relationship,
-                           pk_list_to_dict, pk_to_list)
-from sacrud.tests import (BaseSQLAlchemyTest, BaseZopeTest, Groups, MultiPK,
-                          Profile, User, association_table)
+                           pk_list_to_dict, pk_to_list, unjson)
+from sacrud.tests import (association_table, BaseSQLAlchemyTest, BaseZopeTest,
+                          Groups, MultiPK, Profile, User)
+
+
+class CommonTest(unittest.TestCase):
+
+    def test_unjson(self):
+        foo = unjson(1)
+        self.assertEqual(foo, 1)
+
+    def test_unjson_json(self):
+        foo = unjson('{"foo": 22}')
+        self.assertEqual(foo, {'foo': 22})
 
 
 class SQLAlchemyHelpersTest(object):

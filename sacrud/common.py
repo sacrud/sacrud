@@ -18,6 +18,14 @@ import sqlalchemy
 from sqlalchemy import and_, or_
 
 
+def unjson(obj):
+    try:
+        return json.loads(obj)
+    except TypeError:
+        pass
+    return obj
+
+
 class TableProperty(object):
     def __init__(self, func):
         self.func = func

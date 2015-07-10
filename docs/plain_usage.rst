@@ -4,7 +4,7 @@ Usage :mod:`sacrud`
 Wraps your SQLAlchemy session
 -----------------------------
 
-.. code:: python
+.. code-block:: python
 
      from sqlalchemy.orm import scoped_session, sessionmaker
      from sacrud import CRUDSession
@@ -23,7 +23,7 @@ Now CRUD available from DBSession.
 Wraps your zope.sqlalchemy session
 ----------------------------------
 
-.. code:: python
+.. code-block:: python
 
      from sqlalchemy.orm import scoped_session, sessionmaker
      from zope.sqlalchemy import ZopeTransactionExtension
@@ -35,7 +35,7 @@ Wraps your zope.sqlalchemy session
 
 Now CRUD available from DBSession.
 
-.. code:: python
+.. code-block:: python
 
     group_obj = DBSession.sacrud(Groups).create(data)
     print(group_obj.name)
@@ -44,7 +44,7 @@ CREATE action
 -------------
 
 .. code-block:: python
-    :linenos:
+    :caption: CREATE action
 
     data = {'name': 'Electronics',
             'parent_id': '10'}
@@ -53,7 +53,8 @@ CREATE action
 
 If the entry already exists, just add the option ``update=True``.
 
-.. code:: python
+.. code-block:: python
+    :caption: CREATE action with option ``update=True``
 
     from .models import DBSession, Groups
     from sacrud.action import CRUD
@@ -66,7 +67,8 @@ If the entry already exists, just add the option ``update=True``.
 
 You can pass JSON data:
 
-.. code:: python
+.. code-block:: python
+    :caption: CREATE action with JSON data
 
     from .models import DBSession, Groups
     from sacrud.action import CRUD

@@ -11,17 +11,8 @@ CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
 
-from .common import get_obj, get_obj_by_request_data
+from .common import get_obj, get_obj_by_request_data, unjson
 from .preprocessing import ObjPreprocessing
-
-
-def unjson(obj):
-    import json
-    try:
-        return json.loads(obj)
-    except TypeError:
-        pass
-    return obj
 
 
 class CRUD(object):
