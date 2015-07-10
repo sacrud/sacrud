@@ -1,7 +1,7 @@
 all: test
 
 test:
-	nosetests --with-coverage --cover-package sacrud --cover-erase --with-doctest --nocapture
+	python setup.py test
 
 coverage: test
 	coverage html

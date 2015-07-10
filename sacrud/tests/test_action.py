@@ -6,14 +6,22 @@
 #
 # Distributed under terms of the MIT license.
 import glob
+import json
 from io import StringIO
 
 import transaction
-
 from sacrud.action import CRUD
 from sacrud.common import delete_fileobj
-from sacrud.tests import (PHOTO_PATH, BaseSQLAlchemyTest, BaseZopeTest, Groups,
-                          Groups2User, MockCGIFieldStorage, Profile, User)
+from sacrud.tests import (
+    BaseSQLAlchemyTest,
+    BaseZopeTest,
+    Groups,
+    Groups2User,
+    MockCGIFieldStorage,
+    PHOTO_PATH,
+    Profile,
+    User
+)
 
 
 class ReadTest(object):
@@ -44,6 +52,11 @@ class ReadTest(object):
         users = CRUD(self.session, User).read(list_of_users)
         self.assertEqual([u.id for u in users], list_of_users)
 
+    def test_read_json_of_list(self):
+        list_of_users = "[1, 2, 3, 10, 20]"
+        users = CRUD(self.session, User).read(list_of_users)
+        self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
+
     def test_read_tuple_of_str(self):
         tuple_of_users = ('1', '2', 3, '10', '20')
         users = CRUD(self.session, User).read(tuple_of_users)
@@ -54,13 +67,28 @@ class ReadTest(object):
         users = CRUD(self.session, User).read(list_of_users)
         self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
 
+    def test_read_json_list_of_str(self):
+        list_of_users = '["1", "2", "3", "10", "20"]'
+        users = CRUD(self.session, User).read(list_of_users)
+        self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
+
     def test_read_by_dict_pk(self):
         user = CRUD(self.session, User).read({'id': 19})
+        self.assertEqual(user.id, 19)
+
+    def test_read_json_by_dict_pk(self):
+        user = CRUD(self.session, User).read('{"id": 19}')
         self.assertEqual(user.id, 19)
 
     def test_read_list_of_dict(self):
         list_of_users = [{'id': '1'}, {'id': '2'}, {'id': '3'},
                          {'id': 10}, {'id': 20}]
+        users = CRUD(self.session, User).read(list_of_users)
+        self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
+
+    def test_read_json_list_of_dict(self):
+        list_of_users = '''[{"id": "1"}, {"id": "2"}, {"id": "3"},
+                            {"id": 10}, {"id": 20}]'''
         users = CRUD(self.session, User).read(list_of_users)
         self.assertEqual([u.id for u in users], [1, 2, 3, 10, 20])
 
@@ -82,6 +110,14 @@ class CreateTest(object):
     def test_create(self):
         self.request['name'] = 'foo'
         group = CRUD(self.session, Groups).create(self.request)
+        self.assertEqual(group.name, 'foo')
+
+        db_group = self.session.query(Groups).get(group.id)
+        self.assertEqual(group.id, db_group.id)
+
+    def test_json_create(self):
+        self.request['name'] = 'foo'
+        group = CRUD(self.session, Groups).create(json.dumps(self.request))
         self.assertEqual(group.name, 'foo')
 
         db_group = self.session.query(Groups).get(group.id)
@@ -139,8 +175,22 @@ class CreateTest(object):
         db_group = self.session.query(Groups).get(group.id)
         self.assertEqual(group.id, db_group.id)
 
+    def test_create_json_with_empty_post_request(self):
+        group = CRUD(self.session, Groups).create("{}")
+        self.assertEqual(group.id, 1)
+
+        db_group = self.session.query(Groups).get(group.id)
+        self.assertEqual(group.id, db_group.id)
+
     def test_create_composit_pk(self):
         CRUD(self.session, Groups2User).create({'group_id': 2, 'user_id': 1})
+        obj = self.session.query(Groups2User).filter_by(group_id=2)\
+            .filter_by(user_id=1).one()
+        self.assertEqual(obj.group_id, 2)
+        self.assertEqual(obj.user_id, 1)
+
+    def test_create_json_composit_pk(self):
+        CRUD(self.session, Groups2User).create('{"group_id": 2, "user_id": 1}')
         obj = self.session.query(Groups2User).filter_by(group_id=2)\
             .filter_by(user_id=1).one()
         self.assertEqual(obj.group_id, 2)
@@ -256,6 +306,14 @@ class UpdateTest(object):
         db_user = self.session.query(User).get(user.id)
         self.assertEqual(db_user.name, 'Petya')
 
+    def test_update_json_by_int_id(self):
+        user = self._add_item(User, 'Vasya', 'Pupkin', "123")
+        user = self.session.query(User).get(user.id)
+
+        CRUD(self.session, User).update(user.id, data='{"name": "Petya"}')
+        db_user = self.session.query(User).get(user.id)
+        self.assertEqual(db_user.name, 'Petya')
+
     def test_update_by_str_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")
         user = self.session.query(User).get(user.id)
@@ -271,6 +329,19 @@ class UpdateTest(object):
 
         CRUD(self.session, Groups2User)\
             .update({'group_id': 2, 'user_id': 1}, data={'group_id': '10'})
+        obj = self.session.query(Groups2User).filter_by(group_id=10)\
+            .filter_by(user_id=1).one()
+        self.assertEqual(obj.group_id, 10)
+        self.assertEqual(obj.user_id, 1)
+
+    def test_update_json_by_composit_pk(self):
+        self._add_item(Groups2User, **{'group_id': 1, 'user_id': 1})
+        self._add_item(Groups2User, **{'group_id': 2, 'user_id': 1})
+        self._add_item(Groups2User, **{'group_id': 3, 'user_id': 2})
+        self._add_item(Groups2User, **{'group_id': 5, 'user_id': 1})
+
+        CRUD(self.session, Groups2User)\
+            .update('{"group_id": 2, "user_id": 1}', data='{"group_id": "10"}')
         obj = self.session.query(Groups2User).filter_by(group_id=10)\
             .filter_by(user_id=1).one()
         self.assertEqual(obj.group_id, 10)
@@ -345,6 +416,14 @@ class DeleteTest(object):
         self._add_item(Groups2User, **{'group_id': 3, 'user_id': 2})
 
         CRUD(self.session, Groups2User).delete({'group_id': 3, 'user_id': 2})
+        obj = self.session.query(Groups2User).filter_by(group_id=3)\
+            .filter_by(user_id=2).all()
+        self.assertEqual(obj, [])
+
+    def test_delete_json_by_composit_pk(self):
+        self._add_item(Groups2User, **{'group_id': 3, 'user_id': 2})
+
+        CRUD(self.session, Groups2User).delete('{"group_id": 3, "user_id": 2}')
         obj = self.session.query(Groups2User).filter_by(group_id=3)\
             .filter_by(user_id=2).all()
         self.assertEqual(obj, [])

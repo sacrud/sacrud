@@ -15,6 +15,15 @@ from .common import get_obj, get_obj_by_request_data
 from .preprocessing import ObjPreprocessing
 
 
+def unjson(obj):
+    import json
+    try:
+        return json.loads(obj)
+    except TypeError:
+        pass
+    return obj
+
+
 class CRUD(object):
 
     """ Main class for CRUD actions
@@ -42,6 +51,12 @@ class CRUD(object):
 
             DBSession.sacrud(Users).create({'name': 'Vasya', 'sex': 1})
 
+        Support JSON:
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users).create('{"name": "Vasya", "sex": 1}')
+
         For adding multiple data for m2m or m2o use endinng `[]`, ex.:
 
         .. code-block:: python
@@ -51,9 +66,12 @@ class CRUD(object):
                  'groups[]': ['["id", 1]', '["id", 2]']}
             )
         """
-        obj = None
+        data = unjson(data)
+
         if update is True:
             obj = get_obj_by_request_data(self.session, self.table, data)
+        else:
+            obj = None
         return self._add(obj, data, **kwargs)
 
     def read(self, *pk):
@@ -78,15 +96,27 @@ class CRUD(object):
             ]
             DBSession.sacrud(User2Groups).read(*primary_keys)
 
+            # JSON using
+            primary_keys = '''[
+                {"user_id": 4, "group_id": 2},
+                {"user_id": 4, "group_id": 3},
+                {"user_id": 1, "group_id": 1},
+                {"user_id": 19, "group_id": 2}
+            ]'''
+            DBSession.sacrud(User2Groups).read(primary_keys)
+
             # Delete
             DBSession.sacrud(User2Groups).read(*primary_keys)\
                 .delete(synchronize_session=False)
 
             # Same, but work with only not composite primary key
-            DBSession.sacrud(Users).read((5, 10))   # as list
-            DBSession.sacrud(Users).read(5, "1", 2) # as *args
-            DBSession.sacrud(Users).read(42)        # single
+            DBSession.sacrud(Users).read((5, 10))       # as list
+            DBSession.sacrud(Users).read('[5, 10]')     # as JSON
+            DBSession.sacrud(Users).read('{"id": 5}')   # as JSON explicit pk
+            DBSession.sacrud(Users).read(5, "1", 2)     # as *args
+            DBSession.sacrud(Users).read(42)            # single
         """
+        pk = [unjson(obj) for obj in pk]
 
         if len(pk) == 1:  # like ([1,2,3,4,5], )
             return get_obj(self.session, self.table, pk[0])
@@ -96,7 +126,7 @@ class CRUD(object):
 
     def update(self, pk, data, **kwargs):
         """
-        Updates the object by primary_key.
+        Updates the object by primary_key:
 
         .. code-block:: python
 
@@ -105,15 +135,28 @@ class CRUD(object):
             DBSession.sacrud(User2Groups).update({'user_id': 4, 'group_id': 2},
                                                  {'group_id': 1})
 
+        JSON support:
+
+        .. code-block:: python
+
+            DBSession.sacrud(Users).update(1, '{"name": "Petya"}')
+            DBSession.sacrud(User2Groups).update(
+                '{"user_id": 4, "group_id": 2}',    # primary_key
+                '{"group_id": 1}'                   # data
+            )
+
         Default it run ``session.commit() or transaction.commit()``.
         If it is not necessary use attribute ``commit=False``.
         """
+        pk = unjson(pk)
+        data = unjson(data)
+
         obj = get_obj(self.session, self.table, pk)
         return self._add(obj, data, **kwargs)
 
     def delete(self, pk, **kwargs):
         """
-        Delete the object by primary_key.
+        Delete the object by primary_key:
 
         .. code-block:: python
 
@@ -121,9 +164,19 @@ class CRUD(object):
             DBSession.sacrud(Users).delete('1')
             DBSession.sacrud(User2Groups).delete({'user_id': 4, 'group_id': 2})
 
+        JSON support:
+
+        .. code-block:: python
+
+            DBSession.sacrud(User2Groups).delete(
+                '{"user_id": 4, "group_id": 2}'
+            )
+
         Default it run ``session.commit() or transaction.commit()``.
         If it is not necessary use attribute ``commit=False``.
         """
+        pk = unjson(pk)
+
         obj = get_obj(self.session, self.table, pk)
         if self._delete(obj, **kwargs):
             return {'pk': pk, 'name': obj.__repr__()}
