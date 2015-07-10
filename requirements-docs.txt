@@ -1,3 +1,3 @@
 sqlalchemy
 zope.sqlalchemy
-itcase_sphinx_theme>=0.1.5
+itcase_sphinx_theme>=0.1.7
