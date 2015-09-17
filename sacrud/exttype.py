@@ -11,9 +11,10 @@ Extension type for SQLAlchemy
 """
 import os
 import uuid
+import logging
 
+from sqlalchemy.types import CHAR, String, VARCHAR, TypeDecorator
 from sqlalchemy.dialects.postgresql.base import UUID
-from sqlalchemy.types import CHAR, String, TypeDecorator, VARCHAR
 
 
 class FileStore(TypeDecorator):
@@ -113,3 +114,13 @@ class SlugType(TypeDecorator):
         self.input_id = input_id
         self.reflection = reflection
         super(SlugType, self).__init__(**kw)
+
+    def process_bind_param(self, value, dialect):
+        if value == '/':
+            return value
+        try:
+            from slugify import slugify
+            return slugify(value)
+        except ImportError:
+            logging.warning("You must install python-slugify!!!")
+            return value
