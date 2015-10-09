@@ -1,3 +1,9 @@
+0.3.3 (2015-10-09)
+------------------
+
+- Fix slug exttype
+- Now work with Postgres JSON and JSONB columns
+
 0.3.2 (2015-07-10)
 ------------------
 

@@ -23,14 +23,12 @@ class RequestPreprocessingTest(object):
 
     def test_preprocessor_hstore(self):
         prc = RequestPreprocessing({})
-        foo = prc._check_hstore("{'foo':'bar'}")
+        foo = prc._check_hstore("{\"foo\":\"bar\"}")
         self.assertEqual(foo, {'foo': 'bar'})
-        with self.assertRaises(TypeError) as cm:
-            foo = prc._check_hstore("blablabla")
-        the_exception = str(cm.exception)
-        self.assertEqual(the_exception,
-                         'HSTORE: does\'t suppot \'blablabla\' format. ' +
-                         'Valid example: {"foo": "bar", u"baz": u"biz"}')
+        foo = prc._check_hstore("{'foo':\"bar\"}")
+        self.assertEqual(foo, {'foo': 'bar'})
+        with self.assertRaises(TypeError):
+            prc._check_hstore("blablabla")
 
     def test_preprocessor_boolean_with_default_value(self):
 
@@ -50,6 +48,47 @@ class RequestPreprocessingTest(object):
         prc = RequestPreprocessing({'visible': False})
         visible = prc.check_type(Foo, 'visible')
         self.assertEqual(visible, False)
+
+    def test_postgres_json_and_hstore_fields(self):
+
+        from sqlalchemy.dialects.postgresql import JSON, JSONB, HSTORE
+
+        Base = declarative_base()
+
+        class Foo(Base):
+            __tablename__ = 'foo'
+
+            id = Column(Integer, primary_key=True)
+            json = Column(JSON)
+            jsonb = Column(JSONB)
+            hstore = Column(HSTORE)
+
+        prc = RequestPreprocessing({
+            'json': '{"a": 1, "c": 3, "b": {"foo": true}}',
+            'jsonb': '{"a": 1, "c": 3, "b": {"foo": true}}',
+            'hstore': '{"a": 1, "c": 3, "b": 2}',
+        })
+        json = prc.check_type(Foo, 'json')
+        jsonb = prc.check_type(Foo, 'jsonb')
+        hstore = prc.check_type(Foo, 'hstore')
+        self.assertEqual(json, {'a': 1, 'c': 3, 'b': {'foo': True}})
+        self.assertEqual(jsonb, {'a': 1, 'c': 3, 'b': {'foo': True}})
+        self.assertEqual(hstore, {'a': 1, 'c': 3, 'b': 2})
+
+        prc = RequestPreprocessing({
+            'json': '',
+            'jsonb': '',
+            'hstore': '',
+        })
+        json = prc.check_type(Foo, 'json')
+        jsonb = prc.check_type(Foo, 'jsonb')
+        hstore = prc.check_type(Foo, 'hstore')
+        self.assertEqual(json, None)
+        self.assertEqual(jsonb, None)
+        self.assertEqual(hstore, None)
+
+        with self.assertRaises(TypeError):
+            prc._check_hstore("blablabla")
 
     def test_default_in_preprocessor(self):
         prc = RequestPreprocessing({'name': ''})

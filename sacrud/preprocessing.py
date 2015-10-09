@@ -10,14 +10,14 @@
 Preprocessing
 """
 import ast
-import inspect
 import json
 import uuid
-from datetime import datetime, date
+import inspect
+from datetime import date, datetime
 
 import six
 
-from .common import delete_fileobj, store_file, get_columns
+from .common import store_file, get_columns, delete_fileobj
 
 
 def list_of_lists_to_dict(l):
@@ -98,6 +98,8 @@ class RequestPreprocessing(object):
         self.types_list = {'Boolean': self._check_boolean,
                            'FileStore': self._check_filestore,
                            'HSTORE': self._check_hstore,
+                           'JSON': self._check_hstore,
+                           'JSONB': self._check_hstore,
                            'Date': self._check_date,
                            'DateTime': self._check_date,
                            'BYTEA': self._check_bytea,
@@ -126,12 +128,17 @@ class RequestPreprocessing(object):
         return value
 
     def _check_hstore(self, value):
+        if not value:
+            return None
         try:
-            return ast.literal_eval(str(value))
+            return json.loads(str(value))
         except Exception:
-            raise TypeError("HSTORE: does't suppot '%s' format. %s" %
-                            (value,
-                             'Valid example: {"foo": "bar", u"baz": u"biz"}'))
+            try:
+                return ast.literal_eval(str(value))
+            except Exception:
+                raise TypeError(
+                    "[HSTORE, JSON, JSONB]: does't suppot '%s' format. %s" %
+                    (value, 'Valid example: {"foo": "bar", u"baz": u"biz"}'))
 
     def _check_date(self, value):
         if isinstance(value, (date, datetime)):
