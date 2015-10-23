@@ -65,7 +65,7 @@ class CRUD(object):
             )
         """
         return self._add(
-            self.schema.load(data, session=self.session).data,  # Instance
+            self.schema.load(data).data,  # Instance
             unjson(data),
             **kwargs
         )
@@ -114,7 +114,6 @@ class CRUD(object):
         """
         pk = [unjson(obj) for obj in pk]
 
-        # TODO: rewrite it to marshmallow
         if len(pk) == 1:  # like ([1,2,3,4,5], )
             return get_obj(self.session, self.table, pk[0])
         elif len(pk) > 1:  # like (1, 2, 3, 4, 5)
@@ -148,11 +147,7 @@ class CRUD(object):
         data = unjson(data)
         instance = self.schema.get_instance(unjson(pk))
         return self._add(
-            self.schema.load(
-                data,
-                session=self.session,
-                instance=instance
-            ).data,  # Instance
+            self.schema.load(data, instance=instance).data,  # Instance
             data,
             **kwargs
         )
@@ -180,8 +175,9 @@ class CRUD(object):
         """
         pk = unjson(pk)
         instance = self.schema.get_instance(pk)
-        if self._delete(instance, **kwargs):
-            return {'pk': pk, 'name': instance.__repr__()}
+        self.session.delete(instance)
+        self._commit(**kwargs)
+        return {'pk': pk, 'name': instance.__repr__()}
 
     def _add(self, instance, data, **kwargs):
         """ Update the object directly.
@@ -191,30 +187,12 @@ class CRUD(object):
             DBSession.sacrud(Users)._add(UserObj, {'name': 'Gennady'})
         """
         self.session.add(instance)
-        if kwargs.get('commit', self.commit) is True:
-            try:
-                self.session.commit()
-            except AssertionError:
-                transaction.commit()
+        self._commit(**kwargs)
         return instance
 
-    def _delete(self, instance, **kwargs):
-        """ Delete the object directly.
-
-        .. code-block:: python
-
-            DBSession.sacrud(Users)._delete(UserObj)
-
-        If you no needed commit session
-
-        .. code-block:: python
-
-            DBSession.sacrud(Users, commit=False)._delete(UserObj)
-        """
-        self.session.delete(instance)
+    def _commit(self, **kwargs):
         if kwargs.get('commit', self.commit) is True:
             try:
                 self.session.commit()
             except AssertionError:
                 transaction.commit()
-        return True
