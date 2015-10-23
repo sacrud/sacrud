@@ -10,9 +10,9 @@
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
 import transaction
+from marshmallow_sqlalchemy import ModelSchema
 
-from .common import get_obj, get_obj_by_request_data, unjson
-from .preprocessing import ObjPreprocessing
+from .common import unjson, get_obj
 
 
 class CRUD(object):
@@ -27,12 +27,18 @@ class CRUD(object):
             - `preprocessing`: you custom preprocessing class
     """
 
-    def __init__(self, session, table, preprocessing=ObjPreprocessing,
-                 commit=True):
+    def __init__(self, session, table, model_schema=ModelSchema, commit=True):
         self.table = table
         self.session = session
         self.commit = commit
-        self.preprocessing = preprocessing
+        if not hasattr(model_schema.Meta, 'model')\
+                or not model_schema.Meta.model:
+            class Schema(ModelSchema):
+                class Meta:
+                    model = self.table
+            self.schema = Schema()
+        else:
+            self.schema = model_schema()
 
     def create(self, data, update=False, **kwargs):
         """
@@ -57,13 +63,11 @@ class CRUD(object):
                  'groups[]': ['["id", 1]', '["id", 2]']}
             )
         """
-        data = unjson(data)
-
-        if update is True:
-            obj = get_obj_by_request_data(self.session, self.table, data)
-        else:
-            obj = None
-        return self._add(obj, data, **kwargs)
+        return self._add(
+            self.schema.load(data, session=self.session).data,  # Instance
+            unjson(data),
+            **kwargs
+        )
 
     def read(self, *pk):
         """
@@ -141,8 +145,16 @@ class CRUD(object):
         """
         pk = unjson(pk)
         data = unjson(data)
-
         obj = get_obj(self.session, self.table, pk)
+        return self._add(
+            self.schema.load(
+                data,
+                session=self.session,
+                instance=obj
+            ).data,  # Instance
+            unjson(data),
+            **kwargs
+        )
         return self._add(obj, data, **kwargs)
 
     def delete(self, pk, **kwargs):
@@ -179,8 +191,6 @@ class CRUD(object):
 
             DBSession.sacrud(Users)._add(UserObj, {'name': 'Gennady'})
         """
-        obj = self.preprocessing(obj=obj or self.table)\
-            .add(self.session, data, self.table)
         self.session.add(obj)
         if kwargs.get('commit', self.commit) is True:
             try:

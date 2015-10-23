@@ -5,3 +5,6 @@ test:
 
 coverage: test
 	coverage html
+
+clean:
+	find . -name '*.pyc' -delete
