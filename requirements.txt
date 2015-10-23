@@ -1,3 +1,4 @@
 SQLAlchemy>=0.9.0
+marshmallow-sqlalchemy
 transaction
 six
