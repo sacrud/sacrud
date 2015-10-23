@@ -5,20 +5,15 @@
 # Copyright © 2014 uralbash <root@uralbash.ru>
 #
 # Distributed under terms of the MIT license.
-import glob
 import json
-from io import StringIO
 
 import transaction
 from sacrud.action import CRUD
-from sacrud.common import delete_fileobj
 from sacrud.tests import (
     BaseSQLAlchemyTest,
     BaseZopeTest,
     Groups,
     Groups2User,
-    MockCGIFieldStorage,
-    PHOTO_PATH,
     Profile,
     User
 )
@@ -218,11 +213,6 @@ class CreateTest(object):
         request["salary"] = ["23.0", ]
         request["user_id"] = ["1", ]
 
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO(u'foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
         CRUD(self.session, Profile).create(request)
 
         profile = self.session.query(Profile).get(1)
@@ -232,18 +222,6 @@ class CreateTest(object):
         self.assertEqual(profile.married, True)
         self.assertEqual(float(profile.salary), float(23))
         self.assertEqual(profile.user.id, 1)
-
-        delete_fileobj(Profile, profile, "photo")
-
-        self.session.delete(profile)
-        user = self.session.query(User).get(1)
-        self.session.delete(user)
-        if self.zope:
-            transaction.commit()
-        else:
-            self.session.commit()
-
-        self.assertEqual(delete_fileobj(Profile, profile, "photo"), None)
 
     def test_create_with_relation(self):
         # Create groups (M2M example)
@@ -366,11 +344,6 @@ class UpdateTest(object):
         request["salary"] = ["23.0", ]
         request["user_id"] = ["2", ]
 
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO(u'foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
         CRUD(self.session, Profile).update(pk={'id': profile.id}, data=request)
         profile = self.session.query(Profile).get(profile.id)
 
@@ -444,19 +417,11 @@ class DeleteTest(object):
         request["salary"] = ["23.0", ]
         request["user_id"] = ["1", ]
 
-        upload = MockCGIFieldStorage()
-        upload.file = StringIO(u'foo')
-        upload.filename = 'foo.html'
-        request["photo"] = [upload, ]
-
         user = CRUD(self.session, Profile).create(request)
         profile = CRUD(self.session, Profile).delete({'id': user.id})
 
         profile = self.session.query(Profile).get(profile['pk']['id'])
         self.assertEqual(profile, None)
-
-        # check file also deleted
-        self.assertEqual(glob.glob("%s/*.html" % (PHOTO_PATH, )), [])
 
     def test_delete_no_commit(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")

@@ -3,7 +3,6 @@
 action.py tests
 """
 
-import glob
 import os
 import unittest
 
@@ -18,13 +17,11 @@ from sqlalchemy.types import (Boolean, Date, DateTime, Enum, Float, Integer,
 from zope.sqlalchemy import ZopeTransactionExtension
 
 from sacrud.common import TableProperty
-from sacrud.exttype import FileStore
 
 Base = declarative_base()
 
 DIRNAME = os.path.dirname(__file__)
-PHOTO_PATH = os.path.join(DIRNAME)
-DB_FILE = os.path.join(os.path.dirname(__file__), 'test.sqlite')
+DB_FILE = os.path.join(DIRNAME, 'test.sqlite')
 TEST_DATABASE_CONNECTION_STRING = 'sqlite:///%s' % DB_FILE
 
 
@@ -41,13 +38,7 @@ class BaseTest(unittest.TestCase):
         self.session2.configure(bind=self.engine)
 
     def tearDown(self):
-
-        def clear_files():
-            files = glob.glob("%s/*.html" % PHOTO_PATH)
-            files += glob.glob("%s/*.txt" % PHOTO_PATH)
-            for filename in files:
-                os.remove(os.path.join(PHOTO_PATH, filename))
-        clear_files()
+        pass
 
 
 class BaseZopeTest(BaseTest):
@@ -184,4 +175,3 @@ class Profile(Base):
     cv = Column(Text)
     married = Column(Boolean)
     salary = Column(Float)
-    photo = Column(FileStore(path="/assets/photo", abspath=PHOTO_PATH))
