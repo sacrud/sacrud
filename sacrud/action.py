@@ -39,6 +39,7 @@ class CRUD(object):
             self.schema = Schema()
         else:
             self.schema = model_schema()
+        self.schema.session = self.session
 
     def create(self, data, update=False, **kwargs):
         """
@@ -113,6 +114,7 @@ class CRUD(object):
         """
         pk = [unjson(obj) for obj in pk]
 
+        # TODO: rewrite it to marshmallow
         if len(pk) == 1:  # like ([1,2,3,4,5], )
             return get_obj(self.session, self.table, pk[0])
         elif len(pk) > 1:  # like (1, 2, 3, 4, 5)
@@ -143,19 +145,17 @@ class CRUD(object):
         Default it run ``session.commit() or transaction.commit()``.
         If it is not necessary use attribute ``commit=False``.
         """
-        pk = unjson(pk)
         data = unjson(data)
-        obj = get_obj(self.session, self.table, pk)
+        instance = self.schema.get_instance(unjson(pk))
         return self._add(
             self.schema.load(
                 data,
                 session=self.session,
-                instance=obj
+                instance=instance
             ).data,  # Instance
-            unjson(data),
+            data,
             **kwargs
         )
-        return self._add(obj, data, **kwargs)
 
     def delete(self, pk, **kwargs):
         """
@@ -179,27 +179,26 @@ class CRUD(object):
         If it is not necessary use attribute ``commit=False``.
         """
         pk = unjson(pk)
+        instance = self.schema.get_instance(pk)
+        if self._delete(instance, **kwargs):
+            return {'pk': pk, 'name': instance.__repr__()}
 
-        obj = get_obj(self.session, self.table, pk)
-        if self._delete(obj, **kwargs):
-            return {'pk': pk, 'name': obj.__repr__()}
-
-    def _add(self, obj, data, **kwargs):
+    def _add(self, instance, data, **kwargs):
         """ Update the object directly.
 
         .. code-block:: python
 
             DBSession.sacrud(Users)._add(UserObj, {'name': 'Gennady'})
         """
-        self.session.add(obj)
+        self.session.add(instance)
         if kwargs.get('commit', self.commit) is True:
             try:
                 self.session.commit()
             except AssertionError:
                 transaction.commit()
-        return obj
+        return instance
 
-    def _delete(self, obj, **kwargs):
+    def _delete(self, instance, **kwargs):
         """ Delete the object directly.
 
         .. code-block:: python
@@ -212,8 +211,7 @@ class CRUD(object):
 
             DBSession.sacrud(Users, commit=False)._delete(UserObj)
         """
-        obj = self.preprocessing(obj=obj).delete()
-        self.session.delete(obj)
+        self.session.delete(instance)
         if kwargs.get('commit', self.commit) is True:
             try:
                 self.session.commit()
