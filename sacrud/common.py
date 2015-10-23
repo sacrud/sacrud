@@ -9,13 +9,12 @@
 """
 SQLAlchemy helpers
 """
+import json
 import inspect
 import itertools
-import json
-import os
 
 import sqlalchemy
-from sqlalchemy import and_, or_
+from sqlalchemy import or_, and_
 
 
 def unjson(obj):
@@ -171,55 +170,6 @@ def get_obj_by_request_data(session, table, data):
         return get_obj(session, table, pk)
     except sqlalchemy.orm.exc.NoResultFound:
         return None
-
-
-def delete_fileobj(table, obj, key):
-    """ Delete atached file.
-    """
-    if hasattr(table, '__table__'):
-        table = table.__table__
-    abspath = table.columns[key].type.abspath
-    path = os.path.join(abspath, os.path.basename(getattr(obj, key)))
-    if not obj or not os.path.isfile(path):
-        return
-    os.remove(path)
-
-
-def store_file(request, key, path):
-    """ Load atached file.
-    """
-    # ``filename`` contains the name of the file in string format.
-    #
-    # WARNING: this example does not deal with the fact that IE sends an
-    # absolute file *path* as the filename.  This example is naive; it
-    # trusts user input.
-    obj = request[key]
-    if isinstance(obj, (list, tuple)):
-        obj = obj[0]
-    filename = obj.filename
-
-    # ``input_file`` contains the actual file data which needs to be
-    # stored somewhere.
-
-    input_file = obj.file
-
-    # Using the filename like this without cleaning it is very
-    # insecure so please keep that in mind when writing your own
-    # file handlingself.
-    file_path = os.path.join(path, filename)
-    output_file = open(file_path, 'wb')
-
-    # Finally write the data to the output file
-    input_file.seek(0)
-    while 1:
-        data = input_file.read(2 << 16)
-        if not data:
-            break
-        try:
-            output_file.write(bytearray(data, 'utf-8'))
-        except UnicodeDecodeError:  # pragma: no cover
-            output_file.write(bytearray(data))  # pragma: no cover
-    output_file.close()
 
 
 def columns_by_group(table):

@@ -11,13 +11,12 @@ Preprocessing
 """
 import ast
 import json
-import uuid
 import inspect
 from datetime import date, datetime
 
 import six
 
-from .common import store_file, get_columns, delete_fileobj
+from .common import get_columns
 
 
 def list_of_lists_to_dict(l):
@@ -96,7 +95,6 @@ class RequestPreprocessing(object):
     def __init__(self, request):
         self.request = request
         self.types_list = {'Boolean': self._check_boolean,
-                           'FileStore': self._check_filestore,
                            'HSTORE': self._check_hstore,
                            'JSON': self._check_hstore,
                            'JSONB': self._check_hstore,
@@ -116,16 +114,6 @@ class RequestPreprocessing(object):
 
     def _check_bytea(self, value):
         return bytearray(value, 'utf-8')
-
-    def _check_filestore(self, value):
-        fileobj = value
-        if hasattr(fileobj, 'filename'):
-            extension = fileobj.filename.split(".")[-1]
-            fileobj.filename = str(uuid.uuid4()) + "." + extension
-            abspath = self.column.type.abspath
-            store_file(self.request, self.key, abspath)
-            value = fileobj.filename
-        return value
 
     def _check_hstore(self, value):
         if not value:
@@ -209,10 +197,4 @@ class ObjPreprocessing(object):
         return self.obj
 
     def delete(self):
-        obj_columns = get_columns(self.obj)
-        for col in obj_columns:
-            if col.type.__class__.__name__ == 'FileStore':
-                if not getattr(self.obj, col.name):
-                    continue  # pragma: no cover
-                delete_fileobj(self.obj.__table__, self.obj, col.name)
         return self.obj
