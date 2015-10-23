@@ -1,3 +1,4 @@
-nose
+pytest
 coverage
+pytest-cov
 zope.sqlalchemy
