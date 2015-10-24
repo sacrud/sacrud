@@ -1,0 +1,3 @@
+
+class CreateDublicate(Exception):
+    pass

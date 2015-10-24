@@ -13,6 +13,7 @@ import transaction
 from marshmallow_sqlalchemy import ModelSchema
 
 from .common import unjson, get_obj
+from .exceptions import CreateDublicate
 
 
 class CRUD(object):
@@ -64,11 +65,12 @@ class CRUD(object):
                  'groups[]': ['["id", 1]', '["id", 2]']}
             )
         """
-        return self._add(
-            self.schema.load(data).data,  # Instance
-            unjson(data),
-            **kwargs
-        )
+        data = unjson(data)
+        if update is False:
+            if self.schema.get_instance(unjson(data)):
+                raise CreateDublicate
+        instance = self.schema.load(data).data
+        return self._add(instance, data, **kwargs)
 
     def read(self, *pk):
         """
@@ -188,6 +190,7 @@ class CRUD(object):
         """
         self.session.add(instance)
         self._commit(**kwargs)
+
         return instance
 
     def _commit(self, **kwargs):
