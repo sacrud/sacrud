@@ -1,3 +1,9 @@
+0.3.4 (2015-11-30)
+------------------
+
+- delete exttype module
+- fix bug when list JSON gets corrupted #105 
+
 0.3.3 (2015-10-09)
 ------------------
 
@@ -30,7 +36,7 @@
 - Added ``sacrud.common.ClassProperty``
 
 0.2.7 (2015-06-04)
------------------
+------------------
 
 - Added ``update`` option for create action.
 

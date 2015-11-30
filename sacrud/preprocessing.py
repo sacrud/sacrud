@@ -150,7 +150,8 @@ class RequestPreprocessing(object):
             self.column = getattr(table, key)
         column_type = self.column.type.__class__.__name__
         value = self.request[key]
-        if type(value) in (list, tuple):
+        if type(value) in (list, tuple) and\
+                column_type not in ['JSON', 'JSONB', 'HSTORE']:
             value = value[0]
 
         if not value\

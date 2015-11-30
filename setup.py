@@ -11,7 +11,7 @@ def read(name):
 
 setup(
     name='sacrud',
-    version='0.3.4.dev1',
+    version='0.3.4',
     url='http://github.com/ITCase/sacrud/',
     author='Svintsov Dmitry',
     author_email='root@uralbash.ru',
@@ -40,6 +40,7 @@ setup(
         "Programming Language :: Python :: 3.2",
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
         "Topic :: Database",
         "Topic :: Internet",
     ],

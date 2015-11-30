@@ -90,6 +90,18 @@ class RequestPreprocessingTest(object):
         with self.assertRaises(TypeError):
             prc._check_hstore("blablabla")
 
+        prc = RequestPreprocessing({
+            'json': [1, 2, 3],
+            'jsonb': [1, 2, 3],
+            'hstore': [1, 2, 3],
+        })
+        json = prc.check_type(Foo, 'json')
+        jsonb = prc.check_type(Foo, 'jsonb')
+        hstore = prc.check_type(Foo, 'hstore')
+        self.assertEqual(json, [1, 2, 3])
+        self.assertEqual(jsonb, [1, 2, 3])
+        self.assertEqual(hstore, [1, 2, 3])
+
     def test_default_in_preprocessor(self):
         prc = RequestPreprocessing({'name': ''})
         foo = prc.check_type(User, 'name')
