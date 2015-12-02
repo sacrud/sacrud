@@ -136,6 +136,7 @@ class User(Base):
     name = Column(String, default='')
     fullname = Column(String)
     password = Column(String, info={'verbose_name': 'user password'})
+    age = Column(Integer)
     sex = Column(Enum('male',
                       'female',
                       'alien',
@@ -158,6 +159,7 @@ class User(Base):
 
     def __init__(self, name, fullname, password, sex='unknown', groups=[]):
         self.name = name
+        self.age = 0
         self.fullname = fullname
         self.password = password
         self.sex = sex

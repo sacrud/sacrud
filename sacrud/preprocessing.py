@@ -16,6 +16,8 @@ from datetime import date, datetime
 
 import six
 
+import sqlalchemy
+
 from .common import get_columns
 
 
@@ -154,7 +156,7 @@ class RequestPreprocessing(object):
                 column_type not in ['JSON', 'JSONB', 'HSTORE']:
             value = value[0]
 
-        if not value\
+        if not isinstance(value, sqlalchemy.sql.elements.Null) and not value\
                 and not hasattr(value, 'filename')\
                 and not column_type == 'Boolean':
             if self.column.default or self.column.primary_key:

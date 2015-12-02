@@ -7,6 +7,7 @@
 # Distributed under terms of the MIT license.
 import json
 
+import sqlalchemy
 import transaction
 from sacrud.action import CRUD
 from sacrud.tests import (
@@ -283,6 +284,16 @@ class UpdateTest(object):
         CRUD(self.session, User).update(user.id, data={'name': 'Petya'})
         db_user = self.session.query(User).get(user.id)
         self.assertEqual(db_user.name, 'Petya')
+
+    def test_update_from_0_to_null(self):
+        user = self._add_item(User, 'Vasya', 'Pupkin', '123')
+        user = self.session.query(User).get(user.id)
+        self.assertEqual(user.age, 0)
+
+        CRUD(self.session, User).update(user.id,
+                                        data={'age': sqlalchemy.sql.null()})
+        db_user = self.session.query(User).get(user.id)
+        self.assertEqual(db_user.age, None)
 
     def test_update_json_by_int_id(self):
         user = self._add_item(User, 'Vasya', 'Pupkin', "123")

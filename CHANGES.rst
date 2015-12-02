@@ -1,3 +1,8 @@
+0.3.4 (2015-12-02)
+------------------
+
+- fix create/update with sqlalchemy.sql.null value
+
 0.3.4 (2015-11-30)
 ------------------
 
