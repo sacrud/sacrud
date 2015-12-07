@@ -104,7 +104,7 @@ def get_obj(session, table, pk):
     elif (type(pk) is int or str(pk).isdigit()) and len(pk_list) == 1:
         return query.get(pk)
     elif type(pk) is dict:
-        return query.filter(composite_pk_clauses(pk)).one()
+        return query.filter(composite_pk_clauses(pk))
     return None  # pragma: no cover
 
 
@@ -144,6 +144,11 @@ def pk_to_list(obj, as_json=False):
     if as_json:
         return json.dumps(pk_list)
     return pk_list
+
+
+def pk_to_dict(obj):
+    pk_list = pk_to_list(obj)
+    return pk_list_to_dict(pk_list)
 
 
 def pk_list_to_dict(pk_list):
