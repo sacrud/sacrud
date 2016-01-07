@@ -11,7 +11,7 @@ Overview
 
 SACRUD will solve your problem of CRUD interface for SQLAlchemy.
 Originally created for
-`pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
+`pyramid_sacrud <https://github.com/sacrud/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
 , but then in a separate project.
 
 Allows easy manipulation with CRUD operation and support JSON data.

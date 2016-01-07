@@ -7,16 +7,18 @@
 # Distributed under terms of the MIT license.
 import json
 
-import sqlalchemy
 import transaction
 from sacrud.action import CRUD
-from sacrud.tests import (
-    BaseSQLAlchemyTest,
-    BaseZopeTest,
+
+import sqlalchemy
+
+from . import (
+    User,
     Groups,
-    Groups2User,
     Profile,
-    User
+    Groups2User,
+    BaseZopeTest,
+    BaseSQLAlchemyTest
 )
 
 
@@ -70,11 +72,11 @@ class ReadTest(object):
 
     def test_read_by_dict_pk(self):
         user = CRUD(self.session, User).read({'id': 19})
-        self.assertEqual(user.id, 19)
+        self.assertEqual(user.one().id, 19)
 
     def test_read_json_by_dict_pk(self):
         user = CRUD(self.session, User).read('{"id": 19}')
-        self.assertEqual(user.id, 19)
+        self.assertEqual(user.one().id, 19)
 
     def test_read_list_of_dict(self):
         list_of_users = [{'id': '1'}, {'id': '2'}, {'id': '3'},

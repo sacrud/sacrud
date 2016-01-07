@@ -1,4 +1,9 @@
-0.3.4 (2015-12-02)
+0.3.6 (2016-01-07)
+------------------
+
+- fix common.get_obj function
+
+0.3.5 (2015-12-02)
 ------------------
 
 - fix create/update with sqlalchemy.sql.null value

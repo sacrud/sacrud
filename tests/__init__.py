@@ -7,16 +7,25 @@ import os
 import unittest
 
 import transaction
-from sqlalchemy import create_engine, orm, Table
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import backref, mapper, relationship
-from sqlalchemy.schema import Column, ForeignKey
-from sqlalchemy.types import LargeBinary as BYTEA
-from sqlalchemy.types import (Boolean, Date, DateTime, Enum, Float, Integer,
-                              String, Text, TIMESTAMP)
+from sacrud.common import TableProperty
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sacrud.common import TableProperty
+from sqlalchemy import orm, Table, create_engine
+from sqlalchemy.orm import mapper, backref, relationship
+from sqlalchemy.types import LargeBinary as BYTEA
+from sqlalchemy.types import (
+    Date,
+    Enum,
+    Text,
+    Float,
+    String,
+    Boolean,
+    Integer,
+    DateTime,
+    TIMESTAMP
+)
+from sqlalchemy.schema import Column, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 

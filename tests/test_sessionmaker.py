@@ -12,13 +12,14 @@ Session wrap by sacrud_sessionmaker tests
 
 import unittest
 
+import transaction
+from sacrud import CRUDSession, crud_sessionmaker
 from zope.sqlalchemy import ZopeTransactionExtension
 
-import transaction
-from sacrud import crud_sessionmaker, CRUDSession
-from sacrud.tests import Profile, User
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+from . import User, Profile
 
 
 class SessionMethodTest(unittest.TestCase):

@@ -9,6 +9,7 @@
 """
 CREATE, READ, DELETE, UPDATE actions for SQLAlchemy models
 """
+import sqlalchemy
 import transaction
 
 from .common import get_obj, get_obj_by_request_data, unjson
@@ -141,7 +142,6 @@ class CRUD(object):
         """
         pk = unjson(pk)
         data = unjson(data)
-
         obj = get_obj(self.session, self.table, pk)
         return self._add(obj, data, **kwargs)
 
@@ -179,6 +179,8 @@ class CRUD(object):
 
             DBSession.sacrud(Users)._add(UserObj, {'name': 'Gennady'})
         """
+        if isinstance(obj, sqlalchemy.orm.query.Query):
+            obj = obj.one()
         obj = self.preprocessing(obj=obj or self.table)\
             .add(self.session, data, self.table)
         self.session.add(obj)
@@ -202,6 +204,8 @@ class CRUD(object):
 
             DBSession.sacrud(Users, commit=False)._delete(UserObj)
         """
+        if isinstance(obj, sqlalchemy.orm.query.Query):
+            obj = obj.one()
         obj = self.preprocessing(obj=obj).delete()
         self.session.delete(obj)
         if kwargs.get('commit', self.commit) is True:

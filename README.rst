@@ -5,7 +5,7 @@ sacrud
 
 SACRUD will solve your problem of CRUD interface for SQLAlchemy.
 Originally created for
-`pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
+`pyramid_sacrud <https://github.com/sacrud/pyramid_sacrud/blob/master/pyramid_sacrud/views/CRUD.py>`_
 , but then in a separate project
 
 Look how easy it is to use:
@@ -118,7 +118,7 @@ Install from github:
 
 ::
 
-    pip install git+http://github.com/ITCase/sacrud.git
+    pip install git+http://github.com/sacrud/sacrud.git
 
 PyPi:
 
@@ -135,8 +135,8 @@ Source:
 Contribute
 ----------
 
--  Issue Tracker: http://github.com/ITCase/sacrud/issues
--  Source Code: http://github.com/ITCase/sacrud
+-  Issue Tracker: http://github.com/sacrud/sacrud/issues
+-  Source Code: http://github.com/sacrud/sacrud
 -  Docs: http://sacrud.readthedocs.org
 
 Support
@@ -150,11 +150,11 @@ License
 
 The project is licensed under the MIT license.
 
-.. |Build Status| image:: https://travis-ci.org/ITCase/sacrud.svg?branch=master
-   :target: https://travis-ci.org/ITCase/sacrud
-.. |Coverage Status| image:: https://coveralls.io/repos/ITCase/sacrud/badge.png?branch=master
-   :target: https://coveralls.io/r/ITCase/sacrud?branch=master
-.. |Stories in Progress| image:: https://badge.waffle.io/ITCase/sacrud.png?label=in%20progress&title=In%20Progress
-   :target: http://waffle.io/ITCase/sacrud
+.. |Build Status| image:: https://travis-ci.org/sacrud/sacrud.svg?branch=master
+   :target: https://travis-ci.org/sacrud/sacrud
+.. |Coverage Status| image:: https://coveralls.io/repos/sacrud/sacrud/badge.png?branch=master
+   :target: https://coveralls.io/r/sacrud/sacrud?branch=master
+.. |Stories in Progress| image:: https://badge.waffle.io/sacrud/sacrud.png?label=in%20progress&title=In%20Progress
+   :target: http://waffle.io/sacrud/sacrud
 .. |PyPI| image:: http://img.shields.io/pypi/dm/sacrud.svg
    :target: https://pypi.python.org/pypi/sacrud/

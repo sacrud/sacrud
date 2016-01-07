@@ -6,7 +6,7 @@ Install from github
 
 .. code-block:: bash
 
-    pip install git+http://github.com/ITCase/sacrud.git
+    pip install git+http://github.com/sacrud/sacrud.git
 
 PyPi
 ----
@@ -20,5 +20,5 @@ Source
 
 .. code-block:: bash
 
-    git clone git+http://github.com/ITCase/sacrud.git
+    git clone git+http://github.com/sacrud/sacrud.git
     python setup.py install

@@ -195,13 +195,13 @@ For more details see:
 * :mod:`sacrud.action.CRUD`
 * :py:class:`sacrud.tests.test_action.DeleteTest`
 
-Example projects use plain `sacrud`
------------------------------------
-
-`pyramid_sacrud <https://github.com/ITCase/pyramid_sacrud>`_
-
-.. literalinclude:: _pyramid_sacrud/pyramid_sacrud/views/CRUD.py
-   :linenos:
-   :language: python
-   :pyobject: Delete
-   :emphasize-lines: 6-7
+.. Example projects use plain `sacrud`
+.. -----------------------------------
+..
+.. `pyramid_sacrud <https://github.com/sacrud/pyramid_sacrud>`_
+..
+.. .. literalinclude:: _pyramid_sacrud/pyramid_sacrud/views/CRUD.py
+..    :linenos:
+..    :language: python
+..    :pyobject: Delete
+..    :emphasize-lines: 6-7

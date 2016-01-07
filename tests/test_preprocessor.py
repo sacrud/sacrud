@@ -13,10 +13,11 @@ import datetime
 
 from sacrud.action import CRUD
 from sacrud.preprocessing import RequestPreprocessing
-from sacrud.tests import (BaseSQLAlchemyTest, BaseZopeTest, TypesPreprocessor,
-                          User)
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+
+from . import User, BaseZopeTest, TypesPreprocessor, BaseSQLAlchemyTest
 
 
 class RequestPreprocessingTest(object):

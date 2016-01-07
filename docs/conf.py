@@ -55,6 +55,6 @@ htmlhelp_basename = 'sacruddoc'
 html_theme_options = {
     'travis_button': True,
     'github_button': True,
-    'github_user': 'ITCase',
+    'github_user': 'sacrud',
     'github_repo': 'sacrud',
 }
