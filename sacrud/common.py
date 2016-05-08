@@ -180,7 +180,7 @@ def get_obj_by_request_data(session, table, data):
 def columns_by_group(table):
     if hasattr(table, 'sacrud_detail_col'):
         return [c for c in table.sacrud_detail_col]
-    return [('', table.__table__.columns)]
+    return [('', sqlalchemy.inspection.inspect(table).columns)]
 
 
 def get_flat_columns(table):
