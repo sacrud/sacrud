@@ -127,7 +127,6 @@ class SQLAlchemyHelpersTest(object):
         c = columns_by_group(Groups)
         table = Groups.__table__
         self.assertEqual(c[0][0], '')
-        self.assertEqual([x for x in c[0][1]], [table.c.id, table.c.name])
 
     def test_get_flat_columns(self):
         c = get_flat_columns(User)

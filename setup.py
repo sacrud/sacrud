@@ -11,10 +11,10 @@ def read(name):
 
 setup(
     name='sacrud',
-    version='0.3.7',
+    version='0.3.7.post0',
     url='http://github.com/sacrud/sacrud/',
     author='Svintsov Dmitry',
-    author_email='root@uralbash.ru',
+    author_email='sacrud@uralbash.ru',
 
     packages=find_packages(),
     include_package_data=True,

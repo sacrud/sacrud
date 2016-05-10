@@ -6,14 +6,15 @@ action.py tests
 import os
 import unittest
 
-import transaction
-from sacrud.common import TableProperty
 from zope.sqlalchemy import ZopeTransactionExtension
 
-from sqlalchemy import orm, Table, create_engine
+import transaction
+from sqlalchemy import Table, orm, create_engine
+from sacrud.common import TableProperty
 from sqlalchemy.orm import mapper, backref, relationship
-from sqlalchemy.types import LargeBinary as BYTEA
+from sqlalchemy.types import LargeBinary as BYTEA  # noqa
 from sqlalchemy.types import (
+    TIMESTAMP,
     Date,
     Enum,
     Text,
@@ -21,8 +22,7 @@ from sqlalchemy.types import (
     String,
     Boolean,
     Integer,
-    DateTime,
-    TIMESTAMP
+    DateTime
 )
 from sqlalchemy.schema import Column, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
