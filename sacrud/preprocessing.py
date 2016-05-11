@@ -15,10 +15,9 @@ import inspect
 from datetime import date, datetime
 
 import six
-
 import sqlalchemy
 
-from .common import get_columns
+from .common import get_columns, column_to_attr_name
 
 
 def list_of_lists_to_dict(l):
@@ -190,7 +189,8 @@ class ObjPreprocessing(object):
                 data.pop(key, None)
                 continue
             data[key] = value
-        params = {k: v for k, v in data.items() if not k.endswith('[]')}
+        params = {column_to_attr_name(k, table): v
+                  for k, v in data.items() if not k.endswith('[]')}
         m2m_params = get_m2m_value(session, data, self.obj)
         params = dict(list(params.items()) + list(m2m_params.items()))
         if inspect.isclass(self.obj):

@@ -206,3 +206,12 @@ def get_columns(obj):
     if hasattr(obj, '__table__'):
         return obj.__table__.columns
     return sqlalchemy.inspect(obj).mapper.columns
+
+
+def column_to_attr_name(key, table):
+    for c in sorted(
+            sqlalchemy.inspection.inspect(table).column_attrs,
+            key=lambda col: col.columns[0]._creation_order):
+        if c._orig_columns[0].name == key:
+            return c.key
+    return key
